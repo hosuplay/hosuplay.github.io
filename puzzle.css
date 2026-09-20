@@ -17,3 +17,9 @@
 #puzzleScreen .puzzle-reference{position:absolute;z-index:3;top:44px;left:50%;transform:translateX(-50%);width:min(65%,200px);max-width:none;box-shadow:0 4px 20px #0005;border:3px solid white;pointer-events:none}
 #puzzleScreen .finish-button{font-size:17px;padding:8px;margin:4px 0}
 @media(prefers-reduced-motion:reduce){#puzzleScreen .puzzle-slot.filled{animation:none}}
+
+/* Keep sideways tray scrolling while allowing vertical touch dragging. */
+#puzzleScreen .puzzle-piece{touch-action:pan-x;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#puzzleScreen .puzzle-drag-source{opacity:.45}
+#puzzleScreen .puzzle-drop-target{outline:3px solid #edac28;outline-offset:-3px;background-color:#fff0be}
+.puzzle-touch-ghost{position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-65%);background-repeat:no-repeat;border:2px solid #efad25;border-radius:5px;box-shadow:0 5px 16px #0004;opacity:.92}

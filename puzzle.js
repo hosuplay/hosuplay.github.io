@@ -19,7 +19,7 @@ function startPuzzle(size){
   }
   puzzleOrder=shufflePhotos(Array.from({length:puzzleSize*puzzleSize},(_,i)=>i));
   puzzleOrder.forEach((i,index)=>{const piece=document.createElement('button');piece.className='puzzle-piece';piece.dataset.piece=i;piece.draggable=true;piece.setAttribute('aria-label',`${index+1}번 그림 조각`);piece.setAttribute('aria-pressed','false');piece.style.backgroundImage=`url("${url}")`;piece.style.backgroundSize=`${puzzleSize*100}% ${puzzleSize*100}%`;piece.style.backgroundPosition=`${i%puzzleSize/(puzzleSize-1)*100}% ${Math.floor(i/puzzleSize)/(puzzleSize-1)*100}%`;piece.onclick=()=>selectPuzzlePiece(i);piece.ondragstart=e=>{selectPuzzlePiece(i);e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'};tray.append(piece)});
-  puzzleEl('Message').textContent='조각을 옆으로 넘겨 고르고, 빈칸을 눌러요!';
+  puzzleEl('Message').textContent='옆으로 넘겨 고르고, 위로 끌어 놓거나 조각과 빈칸을 눌러요!';
  };img.onerror=()=>{if(token!==puzzleToken)return;puzzleEl('Message').textContent='그림을 불러오지 못했어요. 다시 시작해 주세요.';puzzleEl('Retry').hidden=false};img.src=`photos/${puzzleAnimal.id}.webp`;
 }
 function selectPuzzlePiece(i){if(puzzlePlaced.has(i))return;puzzleSelected=i;puzzleEl('Tray').querySelectorAll('button').forEach(b=>{const selected=Number(b.dataset.piece)===i;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected))});puzzleEl('Message').textContent='이 조각이 들어갈 빈칸을 눌러요.';}
