@@ -1,0 +1,3212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<base href="/">
+<script>
+// Normalize legacy shared links before rendering; all new links use real paths.
+(() => {
+  const old = { '#animals': '/animals/', '#puzzle': '/puzzle/', '#room': '/' };
+  let path = old[location.hash] || location.pathname.replace(/index\.html$/, '');
+  if (path === '/animals' || path === '/puzzle') path += '/';
+  if (location.hash || path !== location.pathname) history.replaceState(null, '', path + location.search);
+  window.hosuEntry = path === '/animals/' ? 'homeScreen' : path === '/puzzle/' ? 'puzzleChoose' : 'roomScreen';
+  const image = path === '/animals/' ? 'animal-hero' : path === '/puzzle/' ? null : 'playroom';
+  if (image) {
+    const preload = document.createElement('link');
+    preload.rel = 'preload'; preload.as = 'image'; preload.fetchPriority = 'high';
+    preload.href = '/' + image + '.webp';
+    preload.imageSrcset = '/' + image + '-768.webp 768w, /' + image + '.webp 1536w';
+    preload.imageSizes = image === 'animal-hero' ? '(max-width: 560px) calc(100vw - 36px), 524px' : '(max-width: 600px) calc(100vw - 20px), (max-width: 1120px) calc(100vw - 48px), 1072px';
+    document.head.append(preload);
+  }
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOSU PLAY 호수플레이 | 동물·수학·퍼즐 놀이터</title>
+<meta name="description" content="HOSU PLAY 호수플레이에서 동물 힌트, 사진, 실루엣, 발자국, 소리 퀴즈와 9조각·16조각 동물 퍼즐을 무료로 즐겨보세요.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="google-site-verification" content="ij5Xw7BgcyKi8aI7QAkNZrHuqc2m2sN9m6YljJKxAFM">
+<meta name="naver-site-verification" content="923520bded50b0a317f69eceeb016da8486c02a0">
+<link rel="canonical" href="https://hosuplay.github.io/animals/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="HOSU PLAY 호수플레이">
+<meta property="og:title" content="HOSU PLAY 호수플레이 | 동물·수학·퍼즐 놀이터">
+<meta property="og:description" content="듣고, 보고, 생각하며 즐기는 어린이 동물 퀴즈와 퍼즐">
+<meta property="og:url" content="https://hosuplay.github.io/animals/">
+<meta property="og:image" content="https://hosuplay.github.io/image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"HOSU PLAY 호수플레이","alternateName":"호수플레이","url":"https://hosuplay.github.io/","inLanguage":"ko-KR","description":"어린이를 위한 동물 퀴즈와 동물 그림 퍼즐"}</script>
+
+<style>
+* { box-sizing: border-box; }
+
+:root{
+  --cream:#fff8e8;
+  --white:#ffffff;
+  --green:#e9f7df;
+  --green2:#cfeec0;
+  --yellow:#ffe88d;
+  --blue:#e7f4ff;
+  --pink:#ffe1e1;
+  --text:#292929;
+  --gray:#777;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--cream);
+  color:var(--text);
+}
+
+button{
+  font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:active:not(:disabled){
+  transform:scale(.98);
+}
+
+.screen{
+  display:none;
+  width:min(560px,100%);
+  min-height:100vh;
+  margin:auto;
+  padding:22px 18px 55px;
+}
+
+.screen.active{
+  display:block;
+}
+
+/* =========================
+   첫 화면
+========================= */
+
+.hero{
+  text-align:center;
+}
+
+.hero h1{
+  font-size:38px;
+  margin:8px 0 4px;
+}
+
+.hero-sub{
+  color:#666;
+  font-size:17px;
+  margin-bottom:15px;
+}
+
+/* 직접 만든 동물 가족사진 */
+.family-art{
+  position:relative;
+  width:100%;
+  height:300px;
+  margin:10px auto 22px;
+  border-radius:30px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 20% 10%,#fffbd7 0 12%,transparent 13%),
+    linear-gradient(#ccefff 0 65%,#dff2b8 65%);
+  box-shadow:0 10px 30px rgba(0,0,0,.09);
+}
+
+.sun{
+  position:absolute;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:#ffd963;
+  right:30px;
+  top:25px;
+}
+
+.cloud{
+  position:absolute;
+  background:white;
+  width:75px;
+  height:28px;
+  border-radius:30px;
+  opacity:.9;
+}
+
+.cloud:before,
+.cloud:after{
+  content:"";
+  position:absolute;
+  background:white;
+  border-radius:50%;
+}
+
+.cloud:before{
+  width:35px;
+  height:35px;
+  top:-18px;
+  left:12px;
+}
+
+.cloud:after{
+  width:42px;
+  height:42px;
+  top:-24px;
+  right:8px;
+}
+
+.cloud.one{ left:25px; top:40px; }
+.cloud.two{ right:85px; top:90px; transform:scale(.7); }
+
+.animal{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.12));
+}
+
+/* 사자 */
+.lion{
+  left:205px;
+  bottom:34px;
+  width:115px;
+  height:115px;
+  border-radius:50%;
+  background:#b96a35;
+}
+.lion:after{
+  content:"🦁";
+  font-size:83px;
+}
+
+/* 코끼리 */
+.elephant{
+  left:52px;
+  bottom:28px;
+}
+.elephant:after{
+  content:"🐘";
+  font-size:105px;
+}
+
+/* 기린 */
+.giraffe{
+  right:35px;
+  bottom:45px;
+}
+.giraffe:after{
+  content:"🦒";
+  font-size:112px;
+}
+
+/* 토끼 */
+.rabbit{
+  left:150px;
+  bottom:17px;
+}
+.rabbit:after{
+  content:"🐰";
+  font-size:72px;
+}
+
+/* 원숭이 */
+.monkey{
+  right:145px;
+  bottom:18px;
+}
+.monkey:after{
+  content:"🐵";
+  font-size:70px;
+}
+
+/* 스컹크 */
+.skunk{
+  left:17px;
+  bottom:8px;
+}
+.skunk:after{
+  content:"🦨";
+  font-size:63px;
+}
+
+/* 뱀 */
+.snake{
+  right:10px;
+  bottom:8px;
+}
+.snake:after{
+  content:"🐍";
+  font-size:66px;
+}
+
+.family-label{
+  position:absolute;
+  top:17px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(8px);
+  padding:8px 15px;
+  border-radius:30px;
+  font-size:14px;
+  font-weight:800;
+}
+
+.big-start{
+  width:100%;
+  border:0;
+  padding:19px;
+  border-radius:22px;
+  background:#ffd94f;
+  font-size:22px;
+  font-weight:950;
+  cursor:pointer;
+  box-shadow:0 7px 0 #e7bc25;
+}
+
+.home-note{
+  font-size:14px;
+  color:#888;
+  margin-top:14px;
+}
+
+
+/* =========================
+   게임 선택
+========================= */
+
+.page-title{
+  text-align:center;
+  font-size:30px;
+  margin:10px 0 4px;
+}
+
+.page-desc{
+  text-align:center;
+  color:#777;
+  margin-bottom:20px;
+}
+
+.mode-grid{
+  display:grid;
+  gap:14px;
+}
+
+.mode-card{
+  background:white;
+  border-radius:23px;
+  padding:18px;
+  box-shadow:0 6px 20px rgba(0,0,0,.07);
+  text-align:left;
+}
+
+.mode-top{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.mode-icon{
+  font-size:43px;
+  width:60px;
+  text-align:center;
+}
+
+.mode-title{
+  font-size:21px;
+  font-weight:950;
+}
+
+.mode-desc{
+  font-size:14px;
+  color:#777;
+  margin-top:4px;
+}
+
+.mode-button{
+  margin-top:14px;
+  width:100%;
+  border:0;
+  padding:14px;
+  border-radius:16px;
+  font-size:17px;
+  font-weight:900;
+  cursor:pointer;
+  background:#dff3ce;
+}
+
+.mode-button.pending{
+  background:#eee;
+  color:#999;
+  cursor:default;
+}
+
+.back-button{
+  width:100%;
+  margin-top:18px;
+  border:0;
+  background:white;
+  padding:14px;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+
+/* =========================
+   퀴즈 화면
+========================= */
+
+.quiz-header{
+  text-align:center;
+}
+
+.quiz-main-title{
+  border:0;
+  background:transparent;
+  font-size:30px;
+  font-weight:950;
+  cursor:pointer;
+}
+
+.quiz-small{
+  color:#777;
+  margin:5px 0 15px;
+}
+
+.status{
+  display:flex;
+  justify-content:space-between;
+  background:white;
+  border-radius:18px;
+  padding:12px 15px;
+  box-shadow:0 5px 18px rgba(0,0,0,.06);
+  margin-bottom:14px;
+  font-weight:800;
+}
+
+.quiz-card{
+  background:white;
+  padding:22px 18px;
+  border-radius:27px;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.question-title{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  padding:15px;
+  background:var(--blue);
+  font-size:22px;
+  font-weight:950;
+  cursor:pointer;
+}
+
+.base-clue{
+  background:var(--green);
+  padding:17px;
+  border-radius:17px;
+  margin:15px 0;
+  font-size:19px;
+  line-height:1.5;
+  font-weight:850;
+  cursor:pointer;
+}
+
+.hint{
+  background:#fff3c3;
+  padding:13px;
+  border-radius:15px;
+  margin:8px 0;
+  font-size:17px;
+  font-weight:800;
+  line-height:1.45;
+  cursor:pointer;
+}
+
+.hint-button{
+  width:100%;
+  border:0;
+  background:var(--yellow);
+  border-radius:17px;
+  padding:15px;
+  font-size:18px;
+  font-weight:950;
+  cursor:pointer;
+  margin:8px 0 10px;
+}
+
+.score-info{
+  color:#777;
+  font-size:14px;
+  font-weight:800;
+  margin:10px 0 14px;
+}
+
+.answers{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.answer{
+  border:3px solid transparent;
+  background:#f5f5f5;
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.answer-name{
+  width:100%;
+  border:0;
+  background:transparent;
+  padding:15px 5px 7px;
+  font-size:20px;
+  font-weight:950;
+  cursor:pointer;
+}
+
+.answer-sound{
+  width:100%;
+  border:0;
+  background:transparent;
+  padding:4px 0 10px;
+  font-size:19px;
+  cursor:pointer;
+}
+
+.answer.correct{
+  background:#dff6df;
+  border-color:#63bd68;
+}
+
+.answer.wrong{
+  background:#ffe0e0;
+  border-color:#ef7474;
+}
+
+.result{
+  min-height:42px;
+  padding-top:15px;
+  font-size:20px;
+  font-weight:950;
+}
+
+.next-button{
+  display:block;
+  width:100%;
+  margin-top:10px;
+  border:0;
+  border-radius:18px;
+  padding:17px;
+  font-size:19px;
+  font-weight:950;
+  background:#ddd;
+  color:#999;
+  cursor:not-allowed;
+}
+
+.next-button.active{
+  background:#ffd94f;
+  color:#292929;
+  cursor:pointer;
+}
+
+
+/* =========================
+   피니시
+========================= */
+
+.finish-wrap{
+  text-align:center;
+  background:white;
+  border-radius:30px;
+  padding:35px 20px;
+  margin-top:50px;
+  box-shadow:0 10px 30px rgba(0,0,0,.09);
+}
+
+.trophy{
+  font-size:85px;
+}
+
+.finish-title{
+  font-size:32px;
+  margin:5px 0;
+}
+
+.final-score{
+  font-size:27px;
+  font-weight:950;
+  margin:20px 0 5px;
+}
+
+.finish-message{
+  color:#666;
+  font-size:18px;
+  margin-bottom:25px;
+}
+
+.finish-button{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  padding:16px;
+  margin:6px 0;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.retry{ background:#dff4cf; }
+.list{ background:#e6f3ff; }
+.home{ background:#f0f0f0; }
+
+
+/* =========================
+   폭죽
+========================= */
+
+#confetti{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:9999;
+}
+
+.confetti-piece{
+  position:absolute;
+  top:-20px;
+  width:10px;
+  height:16px;
+  border-radius:3px;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-20px) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(110vh) rotate(900deg);
+    opacity:.9;
+  }
+}
+
+@media(max-width:430px){
+  .family-art{height:265px;}
+  .lion{left:37%;width:95px;height:95px;}
+  .lion:after{font-size:70px;}
+  .elephant:after,.giraffe:after{font-size:88px;}
+  .rabbit:after,.monkey:after{font-size:61px;}
+  .hero h1{font-size:33px;}
+}
+
+/* 모바일에서는 동물마다 독립된 칸을 사용해 겹침을 방지합니다. */
+@media(max-width:559px){
+  .family-art{
+    display:grid;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    grid-template-rows:90px 78px;
+    align-content:end;
+    align-items:center;
+    justify-items:center;
+    height:270px;
+    padding:75px 10px 15px;
+  }
+  .family-art .animal{
+    position:relative;
+    inset:auto;
+    width:100%;
+    height:100%;
+    min-width:0;
+    grid-column:span 4;
+  }
+  .family-art .animal:after{
+    font-size:clamp(48px,15vw,76px);
+    line-height:1;
+  }
+  .family-art .lion{
+    width:auto;
+    height:auto;
+    background:transparent;
+  }
+  .family-art .rabbit,
+  .family-art .monkey,
+  .family-art .skunk,
+  .family-art .snake{
+    grid-column:span 3;
+  }
+  .family-art .rabbit:after,
+  .family-art .monkey:after,
+  .family-art .skunk:after,
+  .family-art .snake:after{
+    font-size:clamp(42px,12vw,62px);
+  }
+  .family-label{
+    width:max-content;
+    max-width:calc(100% - 24px);
+  }
+  .mode-top > div{min-width:0;}
+  .mode-icon{flex-shrink:0;}
+  .answers{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .answer-name{overflow-wrap:anywhere;}
+}
+/* 첫 화면 대표 사진: 원본 전체를 유지하고 화면 높이에 맞춰 축소 */
+#homeScreen .family-photo{
+  display:block;
+  width:100%;
+  height:auto;
+  max-width:524px;
+  max-height:min(350px,calc(100svh - 280px));
+  object-fit:contain;
+  margin:10px auto 22px;
+}
+/* 사진의 원본 비율을 유지하고 가림 영역만 넓힙니다. */
+.photo-frame{position:relative;aspect-ratio:1;width:100%;max-width:440px;margin:14px auto;background:repeating-linear-gradient(135deg,#edf3e7 0 12px,#e5eddd 12px 24px);border-radius:20px;overflow:hidden;}
+.photo-frame img{display:block;width:100%;height:100%;object-fit:contain;}
+.photo-frame img[hidden]{display:none;}
+.photo-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;pointer-events:none;}
+.photo-card{background:white;border-radius:24px;padding:18px;}
+.photo-card .answers{grid-template-columns:repeat(2,minmax(0,1fr));}
+.photo-card .answer-name{overflow-wrap:anywhere;}
+.photo-card button:disabled{cursor:default;}
+.photo-stage{text-align:center;color:#47613c;font-weight:700;}
+.photo-caption{text-align:center;font-size:12px;color:#777;margin:8px 0 16px;}
+#photoHint[hidden],#photoRetryImage[hidden]{display:none;}
+@media(prefers-reduced-motion:reduce){.confetti-piece{animation:none;}}
+#silhouetteRetry[hidden]{display:none;}
+</style>
+<link rel="stylesheet" href="puzzle.css?v=4">
+<link rel="stylesheet" href="playroom.css?v=1">
+</head>
+
+<body>
+
+<div id="confetti"></div>
+
+<!-- =========================
+     첫 화면
+========================= -->
+<section id="roomScreen" class="screen" aria-labelledby="roomTitle">
+  <header class="room-header">
+    <h1 class="room-brand" id="roomTitle">호수 <span>플레이</span></h1>
+    <p>오늘은 무슨 놀이를 해 볼까?</p>
+  </header>
+  <figure class="playroom" aria-label="책과 장난감을 눌러 놀이를 고르는 방">
+    <img data-src="/playroom.webp" data-srcset="/playroom-768.webp 768w, /playroom.webp 1536w" sizes="(max-width: 600px) calc(100vw - 20px), (max-width: 1120px) calc(100vw - 48px), 1072px" decoding="async" width="1536" height="1024" fetchpriority="high" alt="햇살이 드는 방에서 남자아이 두 명과 여자아이 한 명이 함께 놀고 있어요. 왼쪽에는 동물책, 오른쪽 책상에는 수학 문제집, 앞쪽에는 퍼즐 상자가 있어요.">
+    <a class="room-object animal" href="/animals/" data-room-link="animal" aria-label="동물책 — 동물 퀴즈로 이동"><span class="object-label">동물 퀴즈 <b aria-hidden="true">↗</b></span></a>
+    <a class="room-object math" href="/math/" data-room-link="math" aria-label="수학 문제집 — 수학 문제로 이동"><span class="object-label">수학 문제 <b aria-hidden="true">↗</b></span></a>
+    <a class="room-object puzzle" href="/puzzle/" data-room-link="puzzle" aria-label="퍼즐 상자 — 퍼즐로 이동"><span class="object-label">퍼즐 <b aria-hidden="true">↗</b></span></a>
+  </figure>
+  <p class="room-caption">책이나 장난감을 콕 눌러 봐!</p>
+  <nav class="room-nav" aria-label="놀이 바로가기">
+    <a href="/animals/" data-room-link="animal"><span aria-hidden="true">🐯</span> 동물</a>
+    <a href="/math/" data-room-link="math"><span aria-hidden="true">✏️</span> 수학</a>
+    <a href="/puzzle/" data-room-link="puzzle"><span aria-hidden="true">🧩</span> 퍼즐</a>
+  </nav>
+</section>
+<section id="homeScreen" class="screen active">
+
+  <div class="hero">
+
+    <img class="family-photo" data-src="/animal-hero.webp" data-srcset="/animal-hero-768.webp 768w, /animal-hero.webp 1536w" sizes="(max-width: 560px) calc(100vw - 36px), 524px" decoding="async" width="1536" height="1024"
+         alt="코끼리 가족, 기린, 사자, 돌고래, 고래와 거북이가 함께 있는 동물 가족사진">
+
+    <h1>나는 누구일까요?</h1>
+
+    <div class="hero-sub">
+      듣고, 보고, 생각하며 맞히는 동물 퀴즈
+    </div>
+
+    <button class="big-start" onclick="showModes()">
+      🐾 동물 퀴즈 풀기
+    </button>
+
+    <div class="home-note">
+      글을 아직 잘 읽지 못해도 🔊 버튼을 눌러 들을 수 있어요.
+    </div>
+
+  </div>
+  <a class="room-home-link" href="/">← 호수 플레이 방으로</a>
+
+</section>
+
+
+<!-- =========================
+     퀴즈 종류 선택
+========================= -->
+<section id="modeScreen" class="screen">
+
+  <h2 class="page-title">어떤 퀴즈를 할까요?</h2>
+
+  <div class="page-desc">
+    좋아하는 놀이를 골라보세요!
+  </div>
+
+  <div class="mode-grid">
+
+    <div class="mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">🧠</div>
+        <div>
+          <div class="mode-title">힌트로 맞히기</div>
+
+        </div>
+      </div>
+
+      <button class="mode-button" onclick="startHintQuiz()">
+        시작하기
+      </button>
+    </div>
+
+
+    <div class="mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">🔍</div>
+        <div>
+          <div class="mode-title">사진 일부 보고 맞히기</div>
+          <div class="mode-desc">
+            사진 조각을 넓혀 가며 동물을 찾아요.
+          </div>
+        </div>
+      </div>
+
+      <button class="mode-button" onclick="startPhotoQuiz()">
+        시작하기
+      </button>
+    </div>
+
+
+    <div class="mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">👤</div>
+        <div>
+          <div class="mode-title">실루엣 맞히기</div>
+          <div class="mode-desc">
+            동물의 그림자만 보고 맞혀요.
+          </div>
+        </div>
+      </div>
+
+      <button class="mode-button" onclick="startSilhouetteQuiz()">시작하기</button>
+    </div>
+
+
+    <div class="mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">🐾</div>
+        <div>
+          <div class="mode-title">발자국 맞히기</div>
+          <div class="mode-desc">
+            누구의 발자국인지 맞혀요.
+          </div>
+        </div>
+      </div>
+
+      <button class="mode-button" onclick="startFootprintQuiz()">시작하기</button>
+    </div>
+
+
+
+
+
+    <div class="mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">🔊</div>
+        <div>
+          <div class="mode-title">동물 소리 맞히기</div>
+          <div class="mode-desc">
+            소리를 듣고 어떤 동물인지 맞혀요.
+          </div>
+        </div>
+      </div>
+
+      <button class="mode-button" onclick="startSoundQuiz()">시작하기</button>
+    </div>
+<div class="mode-card"><div class="mode-top"><div class="mode-icon">🧩</div><div><div class="mode-title">동물 그림 퍼즐</div><div class="mode-desc">조각을 하나씩 옮겨 동물 그림을 완성해요.</div></div></div><button class="mode-button" onclick="openPuzzle()">시작하기</button></div>
+  </div>
+
+  <button class="back-button" onclick="showHome()">
+    ← 처음으로
+  </button>
+
+</section>
+
+
+<!-- =========================
+     실제 퀴즈
+========================= -->
+<section id="quizScreen" class="screen">
+
+  <div class="quiz-header">
+
+    <button class="quiz-main-title"
+            onclick="speak('나는 누구일까요?')">
+      나는 누구일까요? 🔊
+    </button>
+
+    <div class="quiz-small">
+      힌트를 적게 보고 맞힐수록 점수가 높아요!
+    </div>
+
+  </div>
+
+  <div class="status">
+    <div id="questionNumber">1 / 20</div>
+    <div>⭐ <span id="score">0</span>점</div>
+  </div>
+
+  <div class="quiz-card">
+
+    <button class="question-title"
+            onclick="speak('어떤 동물일까요?')">
+      🕵️ 어떤 동물일까요? 🔊
+    </button>
+
+    <div id="baseClue" class="base-clue"></div>
+
+    <div id="hints"></div>
+
+    <button id="hintButton"
+            class="hint-button"
+            onclick="showNextHint()">
+      💡 힌트 하나 보기
+    </button>
+
+    <div id="scoreInfo"
+         class="score-info"></div>
+
+    <div id="answers"
+         class="answers"></div>
+
+    <div id="result"
+         class="result"></div>
+
+    <button id="nextButton"
+            class="next-button"
+            onclick="nextQuestion()"
+            disabled>
+      다음 문제 ➜
+    </button>
+
+  </div>
+
+  <button class="back-button"
+          onclick="showModes()">
+    퀴즈 목록으로
+  </button>
+
+</section>
+
+
+<!-- =========================
+     피니시
+========================= -->
+<section id="finishScreen" class="screen">
+
+  <div class="finish-wrap">
+
+    <div class="trophy">🏆</div>
+
+    <div class="finish-title">
+      퀴즈 끝!
+    </div>
+
+    <div id="finalScore"
+         class="final-score"></div>
+
+    <div id="finishMessage"
+         class="finish-message"></div>
+
+    <button class="finish-button retry"
+            onclick="startHintQuiz()">
+      🔄 새로운 문제로 다시 풀기
+    </button>
+
+    <button class="finish-button list"
+            onclick="showModes()">
+      🎮 다른 퀴즈 고르기
+    </button>
+
+    <button class="finish-button home"
+            onclick="showHome()">
+      🏠 처음으로
+    </button>
+
+  </div>
+
+</section>
+
+
+
+<section id="photoScreen" class="screen">
+ <div class="quiz-header"><h2 class="page-title">🔍 사진 속 누구일까요?</h2><div class="quiz-small">사진을 조금만 보고 맞힐수록 점수가 높아요!</div></div>
+ <div class="status"><div id="photoCount">1 / 20</div><div>⭐ <span id="photoScore">0</span>점</div></div>
+ <div class="photo-card">
+  <button class="question-title" onclick="speak('사진 속 동물은 누구일까요? 사진 더 보기를 누르면 더 넓게 볼 수 있어요.')">어떤 동물일까요? 🔊</button>
+  <div id="photoStage" class="photo-stage"></div>
+  <div class="photo-frame"><img id="photoImage" alt="일부만 보이는 동물 사진"><div id="photoLoadStatus" class="photo-load" role="status"></div></div>
+  <button id="photoRetryImage" class="hint-button" onclick="loadPhotoQuestion()" hidden>사진 다시 불러오기</button>
+  <button id="photoHint" class="hint-button" onclick="revealPhotoHint()">🔍 사진 더 보기</button>
+  <div id="photoPoints" class="score-info"></div>
+  <div id="photoAnswers" class="answers"></div>
+  <div id="photoResult" class="result" role="status" aria-live="polite"></div>
+  <button id="photoNext" class="next-button active" onclick="nextPhotoQuestion()" disabled>다음 사진 ➜</button>
+  <p class="photo-caption">퀴즈용 AI 생성 이미지예요.</p>
+ </div>
+ <button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button>
+</section>
+<section id="photoFinishScreen" class="screen">
+ <div class="finish-wrap"><div class="trophy">🔎🏆</div><div class="finish-title">사진 퀴즈 끝!</div>
+ <div id="photoFinalScore" class="final-score"></div><div id="photoFinishMessage" class="finish-message"></div>
+ <button class="finish-button retry" onclick="startPhotoQuiz()">🔄 새로운 사진으로 다시 풀기</button>
+ <button class="finish-button list" onclick="showModes()">🎮 다른 퀴즈 고르기</button>
+ <button class="finish-button home" onclick="showHome()">🏠 처음으로</button></div>
+</section>
+
+
+<section id="silhouetteScreen" class="screen">
+ <div class="quiz-header"><h2 class="page-title">👤 실루엣 속 누구일까요?</h2><div class="quiz-small">검은 그림자만 보고 동물을 맞혀요!</div></div>
+ <div class="status"><div id="silhouetteCount">1 / 20</div><div>⭐ <span id="silhouetteScore">0</span>점</div></div>
+ <div class="photo-card">
+  <button class="question-title" onclick="speak('그림자 속 동물은 누구일까요?')">어떤 동물일까요? 🔊</button>
+  <div id="silhouetteStage" class="photo-stage"></div>
+  <div class="photo-frame" style="background:#fffdf4"><img id="silhouetteImage" alt="동물의 검은 실루엣"><div id="silhouetteLoad" class="photo-load" role="status"></div></div>
+  <button id="silhouetteRetry" class="hint-button" onclick="loadSilhouetteQuestion()" hidden>그림자 다시 불러오기</button>
+  <div class="score-info">정답을 맞히면 ⭐ 5점!</div>
+  <div id="silhouetteAnswers" class="answers"></div>
+  <div id="silhouetteResult" class="result" role="status" aria-live="polite"></div>
+  <button id="silhouetteNext" class="next-button active" onclick="nextSilhouetteQuestion()" disabled>다음 동물 ➜</button>
+ </div>
+ <button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button>
+</section>
+<section id="silhouetteFinishScreen" class="screen">
+ <div class="finish-wrap"><div class="trophy">👤🏆</div><div class="finish-title">실루엣 퀴즈 끝!</div>
+ <div id="silhouetteFinalScore" class="final-score"></div><div id="silhouetteFinishMessage" class="finish-message"></div>
+ <button class="finish-button retry" onclick="startSilhouetteQuiz()">🔄 다시 풀기</button>
+ <button class="finish-button list" onclick="showModes()">🎮 다른 퀴즈 고르기</button>
+ <button class="finish-button home" onclick="showHome()">🏠 처음으로</button></div>
+</section>
+<section id="puzzleChoose" class="screen"><a class="room-home-link" href="/">← 호수 플레이 방으로</a><h2 class="page-title">🧩 동물 그림 퍼즐</h2><p class="quiz-small">어떤 퍼즐을 해 볼까요?</p><div class="puzzle-levels"><button onclick="startPuzzle(3)">🌱 쉬운 퍼즐<small>9조각 · 3 × 3</small></button><button onclick="startPuzzle(4)">🌟 어려운 퍼즐<small>16조각 · 4 × 4</small></button></div><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
+<section id="puzzleScreen" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><div class="status"><span id="puzzleLevel"></span><span id="puzzleCount"></span></div><div class="puzzle-wrap"><button id="puzzleToggle" class="hint-button" onclick="togglePuzzleReference()">👀 완성 그림 보기</button><div><img id="puzzleReference" class="puzzle-reference" hidden alt="완성 그림"></div><div id="puzzleBoard" class="puzzle-board" role="group" aria-label="조각을 놓는 자리"></div><p id="puzzleMessage" class="puzzle-message" role="status"></p><button id="puzzleRetry" class="hint-button" onclick="startPuzzle(puzzleSize)" hidden>다시 시작하기</button><div id="puzzleTray" class="puzzle-tray" role="group" aria-label="그림 조각"></div><div id="puzzleComplete" hidden><button class="finish-button retry" onclick="nextPuzzle()">🧩 다른 동물 퍼즐</button></div></div><button class="back-button" onclick="openPuzzle()">← 난이도 고르기</button><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
+
+<section id="soundScreen" class="screen">
+ <div class="quiz-header"><h2 class="page-title">🔊 누구의 소리일까요?</h2><div class="quiz-small">진짜 동물 소리를 듣고 찾아요!</div></div>
+ <div class="status"><div id="soundCount"></div><div>⭐ <span id="soundScore">0</span>점</div></div>
+ <div class="photo-card">
+  <div style="font-size:72px;margin:12px auto;text-align:center;width:100%" aria-hidden="true">👂</div>
+  <button id="soundPlay" class="hint-button" onclick="playAnimalSound()" style="min-height:64px;width:100%;font-size:24px">▶ 소리 듣기</button>
+  <p id="soundStatus" class="quiz-small" role="status"></p>
+  <div id="soundAnswers" class="answers"></div>
+  <div id="soundResult" class="result" role="status"></div>
+  <img id="soundReveal" hidden alt="" style="width:100%;max-width:200px;height:160px;object-fit:contain;border-radius:18px">
+  <button id="soundNext" class="next-button active" onclick="nextSoundQuestion()" disabled>다음 소리 ➜</button>
+ </div>
+ <button class="back-button" onclick="stopAnimalSound();showModes()">← 퀴즈 목록으로</button>
+ <p class="quiz-small"><a href="sound-credits.html" target="_blank" rel="noopener">소리 출처</a></p>
+</section>
+<section id="soundFinishScreen" class="screen"><div class="finish-wrap">
+ <div class="trophy">🎧🏆</div><div class="finish-title">동물 소리 퀴즈 끝!</div>
+ <div id="soundFinalScore" class="final-score"></div><div class="finish-message">동물 친구들의 목소리를 만났어요! 🎉</div>
+ <button class="finish-button retry" onclick="startSoundQuiz()">🔄 다시 풀기</button>
+ <button class="finish-button list" onclick="showModes()">🎮 다른 퀴즈 고르기</button>
+ <button class="finish-button home" onclick="showHome()">🏠 처음으로</button>
+</div></section>
+
+<section id="footprintScreen" class="screen">
+ <div class="quiz-header"><h2 class="page-title">🐾 발자국 속 누구일까요?</h2><div class="quiz-small">모양을 살펴보고 동물을 찾아요!</div></div>
+ <div class="status"><div id="footprintCount">1 / 8</div><div>⭐ <span id="footprintScore">0</span>점</div></div>
+ <div class="photo-card">
+  <button class="question-title" onclick="speak('발자국 속 동물은 누구일까요?')">어떤 동물일까요? 🔊</button>
+  <div id="footprintStage" class="photo-stage"></div>
+  <div class="photo-frame" style="background:#fffdf4"><img id="footprintImage" alt="동물의 검은 발자국"><div id="footprintLoad" class="photo-load" role="status"></div></div>
+  <button id="footprintRetry" class="hint-button" onclick="loadFootprintQuestion()" hidden>발자국 다시 불러오기</button>
+  <button id="footprintHint" class="hint-button" onclick="showFootprintHint()">💡 힌트 듣기</button><p id="footprintHintText" class="quiz-small" aria-live="polite"></p><img id="footprintAnimal" hidden alt="" style="width:100%;max-width:220px;height:auto;border-radius:18px;margin:12px auto"><p class="quiz-small">특징을 쉽게 표현한 그림이에요. 동물마다 실제 발자국 크기는 달라요.</p><div class="score-info">정답을 맞히면 ⭐ 5점!</div>
+  <div id="footprintAnswers" class="answers"></div>
+  <div id="footprintResult" class="result" role="status" aria-live="polite"></div>
+  <button id="footprintNext" class="next-button active" onclick="nextFootprintQuestion()" disabled>다음 동물 ➜</button>
+ </div>
+ <button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button>
+</section>
+<section id="footprintFinishScreen" class="screen">
+ <div class="finish-wrap"><div class="trophy">🐾🏆</div><div class="finish-title">발자국 퀴즈 끝!</div>
+ <div id="footprintFinalScore" class="final-score"></div><div id="footprintFinishMessage" class="finish-message"></div>
+ <button class="finish-button retry" onclick="startFootprintQuiz()">🔄 다시 풀기</button>
+ <button class="finish-button list" onclick="showModes()">🎮 다른 퀴즈 고르기</button>
+ <button class="finish-button home" onclick="showHome()">🏠 처음으로</button></div>
+</section>
+
+<script>
+
+/* =========================
+   문제 데이터 100문항
+========================= */
+
+const animalQuiz = [
+
+{
+answer:"기린",
+base:"나는 아주 키가 큰 동물이에요.",
+hints:[
+"내 이름은 두 글자예요.",
+"나는 풀과 나뭇잎을 먹어요.",
+"몸에 갈색 얼룩무늬가 있어요.",
+"목이 아주 길어요."
+],
+choices:["기린","낙타","사슴","얼룩말"]
+},
+
+{
+answer:"코끼리",
+base:"나는 육지에서 사는 아주 크고 무거운 동물이에요.",
+hints:[
+"내 이름은 세 글자예요.",
+"식물을 먹어요.",
+"귀가 아주 크고 넓어요.",
+"코가 아주 길어요."
+],
+choices:["코끼리","하마","코뿔소","기린"]
+},
+
+{
+answer:"토끼",
+base:"나는 작고 깡충깡충 잘 뛰어요.",
+hints:[
+"내 이름은 두 글자예요.",
+"식물을 먹어요.",
+"뒷다리가 튼튼해요.",
+"귀가 길어요."
+],
+choices:["토끼","다람쥐","고슴도치","미어캣"]
+},
+
+{
+answer:"사자",
+base:"나는 몸집이 큰 고양잇과 동물이에요.",
+hints:[
+"내 이름은 두 글자예요.",
+"고기를 먹어요.",
+"무리를 이루어 사는 것으로 유명해요.",
+"수컷은 얼굴 주변에 갈기가 있어요."
+],
+choices:["사자","치타","호랑이","표범"]
+},
+
+{
+answer:"호랑이",
+base:"나는 몸집이 큰 고양잇과 동물이에요.",
+hints:[
+"내 이름은 세 글자예요.",
+"고기를 먹어요.",
+"몸에 검은 줄무늬가 있어요.",
+"우리나라를 상징하는 동물로 자주 등장해요."
+],
+choices:["호랑이","사자","표범","치타"]
+},
+
+{
+answer:"얼룩말",
+base:"나는 말과 비슷하게 생긴 동물이에요.",
+hints:[
+"내 이름은 세 글자예요.",
+"풀을 먹어요.",
+"아프리카에서 살아요.",
+"몸에 검은색과 흰색 줄무늬가 있어요."
+],
+choices:["얼룩말","말","당나귀","사슴"]
+},
+
+{
+answer:"낙타",
+base:"나는 덥고 건조한 곳에서도 잘 살아요.",
+hints:[
+"내 이름은 두 글자예요.",
+"식물을 먹어요.",
+"사막에서 사람이나 짐을 태우기도 해요.",
+"등에 혹이 있어요."
+],
+choices:["낙타","라마","말","당나귀"]
+},
+
+
+{
+answer:"원숭이",
+base:"나는 손과 발을 잘 사용하는 동물이에요.",
+hints:[
+"내 이름은 세 글자예요.",
+"나무에서 생활하는 종류가 많아요.",
+"손으로 물건을 잡을 수 있어요.",
+"바나나와 함께 자주 떠올리는 동물이에요."
+],
+choices:["원숭이","미어캣","너구리","다람쥐"]
+},
+
+{
+answer:"치타",
+base:"나는 날씬하고 긴 다리를 가진 고양잇과 동물이에요.",
+hints:[
+"내 이름은 두 글자예요.",
+"고기를 먹어요.",
+"몸에 검은 점무늬가 많아요.",
+"육지에서 매우 빠르게 달리는 것으로 유명해요."
+],
+choices:["치타","표범","사자","호랑이"]
+},
+
+{
+answer:"스컹크",
+base:"나는 위험할 때 특별한 방법으로 나를 지켜요.",
+hints:[
+"내 이름은 세 글자예요.",
+"북아메리카 등에 살아요.",
+"검은색 몸에 흰색 무늬가 있는 종류가 유명해요.",
+"위험하면 아주 강한 냄새가 나는 액체를 뿜어요."
+],
+choices:["스컹크","너구리","오소리","미어캣"]
+},
+
+{
+answer:"개미핥기",
+base:"나는 아주 독특한 주둥이를 가진 동물이에요.",
+hints:[
+"내 이름은 네 글자예요.",
+"이빨이 거의 없어요.",
+"혀가 아주 길어요.",
+"개미와 흰개미를 주로 먹어요."
+],
+choices:["개미핥기","두더지","나무늘보","오소리"]
+},
+
+{
+answer:"뱀",
+base:"나는 다리가 없이 움직이는 동물이에요.",
+hints:[
+"내 이름은 한 글자예요.",
+"몸이 길어요.",
+"몸을 구불구불 움직여 이동해요.",
+"혀를 날름거리며 주변의 냄새 정보를 알아봐요."
+],
+choices:["뱀","도마뱀","악어","지렁이"]
+},
+
+{
+answer:"악어",
+base:"나는 물과 육지를 오가며 사는 큰 파충류예요.",
+hints:[
+"내 이름은 두 글자예요.",
+"알에서 태어나요.",
+"이빨이 아주 많고 강해요.",
+"눈과 콧구멍이 머리 위쪽에 있어 물속에서도 주변을 살피기 좋아요."
+],
+choices:["악어","이구아나","도마뱀","뱀"]
+},
+
+{
+answer:"하마",
+base:"나는 몸집이 크고 물속에서 많은 시간을 보내요.",
+hints:[
+"내 이름은 두 글자예요.",
+"아프리카에 살아요.",
+"풀을 먹어요.",
+"입을 아주 크게 벌릴 수 있어요."
+],
+choices:["하마","코뿔소","코끼리","물소"]
+},
+
+{
+answer:"코뿔소",
+base:"나는 몸집이 크고 튼튼한 동물이에요.",
+hints:[
+"내 이름은 세 글자예요.",
+"주로 식물을 먹어요.",
+"피부가 두껍게 보여요.",
+"코 위에 뿔이 있어요."
+],
+choices:["코뿔소","하마","코끼리","물소"]
+},
+
+{
+answer:"고슴도치",
+base:"나는 작지만 몸을 보호하는 특별한 무기가 있어요.",
+hints:[
+"내 이름은 네 글자예요.",
+"밤에 활발하게 움직이는 종류가 많아요.",
+"위험하면 몸을 둥글게 말기도 해요.",
+"등에 뾰족한 가시가 많아요."
+],
+choices:["고슴도치","두더지","다람쥐","미어캣"]
+},
+
+{
+answer:"미어캣",
+base:"나는 여러 마리가 함께 생활하는 작은 동물이에요.",
+hints:[
+"내 이름은 세 글자예요.",
+"아프리카 남부에 살아요.",
+"굴을 파고 생활해요.",
+"뒷발로 서서 주변을 살피는 모습으로 유명해요."
+],
+choices:["미어캣","프레리도그","너구리","다람쥐"]
+},
+
+{
+answer:"캥거루",
+base:"나는 아주 특별한 방법으로 이동하는 동물이에요.",
+hints:[
+"내 이름은 세 글자예요.",
+"호주를 대표하는 동물 중 하나예요.",
+"뒷다리가 매우 크고 튼튼해요.",
+"어미의 배에는 새끼를 기르는 주머니가 있어요."
+],
+choices:["캥거루","코알라","왈라비","웜뱃"]
+},
+
+{
+answer:"판다",
+base:"나는 검은색과 흰색이 아주 눈에 띄는 동물이에요.",
+hints:[
+"내 이름은 두 글자예요.",
+"중국에 사는 동물로 유명해요.",
+"곰과에 속해요.",
+"대나무를 많이 먹어요."
+],
+choices:["판다","북극곰","너구리","오소리"]
+}
+,
+{
+  "answer": "개",
+  "base": "나는 사람과 함께 살며 멍멍 짖는 동물이에요.",
+  "hints": [
+    "내 이름은 한 글자예요.",
+    "냄새를 잘 맡아요.",
+    "기분이 좋으면 꼬리를 흔들기도 해요.",
+    "내 새끼는 강아지라고 불러요."
+  ],
+  "choices": [
+    "개",
+    "고양이",
+    "토끼",
+    "햄스터"
+  ]
+},
+{
+  "answer": "고양이",
+  "base": "나는 야옹 소리를 내는 동물이에요.",
+  "hints": [
+    "내 이름은 세 글자예요.",
+    "얼굴에 긴 수염이 있어요.",
+    "높은 곳으로 잘 뛰어올라요.",
+    "발톱을 숨겼다가 내밀 수 있어요."
+  ],
+  "choices": [
+    "고양이",
+    "개",
+    "토끼",
+    "기니피그"
+  ]
+},
+{
+  "answer": "소",
+  "base": "나는 음메 하고 울며 송아지를 낳는 동물이에요.",
+  "hints": [
+    "내 이름은 한 글자예요.",
+    "발굽이 있어요.",
+    "먹이를 되새김질해요.",
+    "젖소에게서 우유를 얻어요."
+  ],
+  "choices": [
+    "소",
+    "말",
+    "돼지",
+    "토끼"
+  ]
+},
+{
+  "answer": "돼지",
+  "base": "나는 코로 땅을 뒤지며 꿀꿀 소리를 내요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "발굽이 있어요.",
+    "코끝이 넓고 납작해요.",
+    "진흙에서 뒹굴며 몸을 식히기도 해요."
+  ],
+  "choices": [
+    "돼지",
+    "소",
+    "양",
+    "말"
+  ]
+},
+{
+  "answer": "말",
+  "base": "나는 히힝 울고 사람이 등에 타기도 하는 동물이에요.",
+  "hints": [
+    "내 이름은 한 글자예요.",
+    "풀을 먹어요.",
+    "목 뒤에 갈기가 있어요.",
+    "내 새끼는 망아지라고 불러요."
+  ],
+  "choices": [
+    "말",
+    "소",
+    "돼지",
+    "양"
+  ]
+},
+{
+  "answer": "양",
+  "base": "나는 복슬복슬한 털을 깎아 털실을 만드는 가축이에요.",
+  "hints": [
+    "내 이름은 한 글자예요.",
+    "풀을 먹어요.",
+    "무리 지어 지내요.",
+    "내 털로 만든 섬유를 양모라고 해요."
+  ],
+  "choices": [
+    "양",
+    "돼지",
+    "말",
+    "닭"
+  ]
+},
+{
+  "answer": "염소",
+  "base": "나는 턱수염이 있는 종류가 익숙한 가축이에요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "풀과 나뭇잎을 먹어요.",
+    "가파른 곳도 잘 올라가요.",
+    "흑염소처럼 검은 몸을 가진 종류도 있어요."
+  ],
+  "choices": [
+    "염소",
+    "돼지",
+    "말",
+    "토끼"
+  ]
+},
+{
+  "answer": "닭",
+  "base": "나는 꼬끼오 우는 수컷과 병아리 새끼로 익숙한 새예요.",
+  "hints": [
+    "내 이름은 한 글자예요.",
+    "부리로 먹이를 쪼아요.",
+    "머리에 볏이 있어요.",
+    "내 알은 달걀이라고 불러요."
+  ],
+  "choices": [
+    "닭",
+    "오리",
+    "참새",
+    "비둘기"
+  ]
+},
+{
+  "answer": "오리",
+  "base": "나는 꽥꽥 울고 물갈퀴로 헤엄치는 새예요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "알에서 태어나요.",
+    "부리가 넓적한 종류가 익숙해요.",
+    "물 위에 둥둥 떠서 헤엄쳐요."
+  ],
+  "choices": [
+    "오리",
+    "닭",
+    "참새",
+    "타조"
+  ]
+},
+{
+  "answer": "펭귄",
+  "base": "나는 날지 못하지만 날개로 물속을 헤엄치는 새예요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "주로 남반구에 살아요.",
+    "육지에서는 두 발로 뒤뚱뒤뚱 걸어요.",
+    "검은 등과 흰 배가 있는 모습이 익숙해요."
+  ],
+  "choices": [
+    "펭귄",
+    "타조",
+    "참새",
+    "닭"
+  ]
+},
+{
+  "answer": "부엉이",
+  "base": "나는 밤에 사냥하고 머리에 귀처럼 보이는 깃털이 있는 새예요.",
+  "hints": [
+    "내 이름은 세 글자예요.",
+    "큰 눈이 앞을 향해 있어요.",
+    "목을 크게 돌릴 수 있어요.",
+    "부엉부엉 하는 울음소리로 익숙해요."
+  ],
+  "choices": [
+    "부엉이",
+    "오리",
+    "닭",
+    "참새"
+  ]
+},
+{
+  "answer": "딱따구리",
+  "base": "나는 부리로 나무를 두드려 구멍을 만드는 새예요.",
+  "hints": [
+    "내 이름은 네 글자예요.",
+    "나무줄기에 매달릴 수 있어요.",
+    "나무 속 벌레를 찾아 먹어요.",
+    "나무를 두드릴 때 딱딱 소리가 나요."
+  ],
+  "choices": [
+    "딱따구리",
+    "오리",
+    "펭귄",
+    "타조"
+  ]
+},
+{
+  "answer": "공작",
+  "base": "나는 수컷이 눈무늬가 있는 긴 깃털을 부채처럼 펼치는 새예요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "알에서 태어나요.",
+    "머리에도 장식처럼 깃털이 있어요.",
+    "깃털을 활짝 펼쳐 암컷에게 뽐내요."
+  ],
+  "choices": [
+    "공작",
+    "닭",
+    "참새",
+    "펭귄"
+  ]
+},
+{
+  "answer": "홍학",
+  "base": "나는 분홍빛 몸과 길고 가느다란 다리로 유명한 새예요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "얕은 물에서 먹이를 찾아요.",
+    "목이 길어요.",
+    "한쪽 다리로 서 있는 모습이 유명해요."
+  ],
+  "choices": [
+    "홍학",
+    "펭귄",
+    "까마귀",
+    "참새"
+  ]
+},
+{
+  "answer": "타조",
+  "base": "나는 현존하는 새 중 몸집이 가장 크지만 날지는 못해요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "아프리카에 살아요.",
+    "목과 다리가 길어요.",
+    "튼튼한 다리로 빠르게 달려요."
+  ],
+  "choices": [
+    "타조",
+    "닭",
+    "참새",
+    "오리"
+  ]
+},
+{
+  "answer": "나비",
+  "base": "나는 애벌레와 번데기 시기를 거쳐 넓은 날개를 펼치는 곤충이에요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "다리가 여섯 개예요.",
+    "꽃의 꿀을 먹는 종류가 많아요.",
+    "나풀나풀 날아다니는 모습이 익숙해요."
+  ],
+  "choices": [
+    "나비",
+    "잠자리",
+    "메뚜기",
+    "사마귀"
+  ]
+},
+{
+  "answer": "꿀벌",
+  "base": "나는 꽃에서 모은 것으로 벌집에 꿀을 저장하는 곤충이에요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "다리가 여섯 개예요.",
+    "꽃가루를 옮겨 식물을 도와요.",
+    "여왕벌과 일벌이 함께 살아요."
+  ],
+  "choices": [
+    "꿀벌",
+    "나비",
+    "잠자리",
+    "무당벌레"
+  ]
+},
+{
+  "answer": "개미",
+  "base": "나는 땅 위에서 줄지어 먹이를 나르는 모습이 익숙한 곤충이에요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "더듬이가 있어요.",
+    "여러 마리가 한 집에서 함께 살아요.",
+    "집을 개미집이라고 불러요."
+  ],
+  "choices": [
+    "개미",
+    "나비",
+    "잠자리",
+    "메뚜기"
+  ]
+},
+{
+  "answer": "문어",
+  "base": "나는 바다에서 빨판이 있는 여덟 팔로 움직이는 동물이에요.",
+  "hints": [
+    "내 이름은 두 글자예요.",
+    "뼈가 없는 말랑한 몸이에요.",
+    "몸 색을 바꾸거나 먹물을 내보낼 수 있어요.",
+    "오징어의 열 개와 달리 팔이 여덟 개예요."
+  ],
+  "choices": [
+    "문어",
+    "오징어",
+    "게",
+    "해파리"
+  ]
+},
+{
+  "answer": "오징어",
+  "base": "나는 여덟 팔과 먹이를 잡는 긴 촉완 두 개가 있는 바다동물이에요.",
+  "hints": [
+    "내 이름은 세 글자예요.",
+    "빨판이 있어요.",
+    "위험할 때 먹물을 내보내기도 해요.",
+    "흔히 다리가 열 개라고 말해요."
+  ],
+  "choices": [
+    "오징어",
+    "문어",
+    "게",
+    "해파리"
+  ]
+},
+{
+  "answer": "게",
+  "base": "나는 단단한 껍데기와 집게발이 있고 옆걸음으로 유명해요.",
+  "hints": [
+    "내 이름은 한 글자예요.",
+    "다리에 마디가 있어요.",
+    "자라면서 껍데기를 벗어요.",
+    "꽃게와 대게 같은 종류가 있어요."
+  ],
+  "choices": [
+    "게",
+    "문어",
+    "해파리",
+    "불가사리"
+  ]
+},
+{
+  "answer": "돌고래",
+  "base": "나는 바다에서 살며 물 위로 뛰어오르기도 하는 포유류예요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "물고기를 먹어요.",
+    "머리 위의 숨구멍으로 공기를 마셔요.",
+    "웃는 것처럼 보이는 긴 주둥이가 익숙해요."
+  ],
+  "choices": [
+    "돌고래",
+    "상어",
+    "참치",
+    "문어"
+  ]
+},
+{
+  "answer": "고래",
+  "base": "나는 물고기처럼 보여도 새끼에게 젖을 먹이는 아주 큰 바다동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "폐로 숨을 쉬어요.",
+    "숨을 쉬러 물 위로 올라와요.",
+    "흰긴수염고래처럼 아주 거대한 종류가 있어요."
+  ],
+  "choices": [
+    "고래",
+    "상어",
+    "참치",
+    "가오리"
+  ]
+},
+{
+  "answer": "상어",
+  "base": "나는 아가미로 숨 쉬고 날카로운 이빨로 유명한 바다 물고기예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "지느러미로 헤엄쳐요.",
+    "뼈대가 주로 연골로 이루어져 있어요.",
+    "백상아리와 귀상어 같은 종류가 있어요."
+  ],
+  "choices": [
+    "상어",
+    "돌고래",
+    "고래",
+    "물개"
+  ]
+},
+{
+  "answer": "해파리",
+  "base": "나는 우산 모양의 말랑한 몸으로 바다를 떠다녀요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "몸에 물이 아주 많아요.",
+    "촉수에 먹이를 잡는 쏘는 세포가 있어요.",
+    "우산을 오므렸다 펴며 움직여요."
+  ],
+  "choices": [
+    "해파리",
+    "불가사리",
+    "게",
+    "문어"
+  ]
+},
+{
+  "answer": "불가사리",
+  "base": "나는 바다 밑에서 별처럼 팔을 펼치고 사는 동물이에요.",
+  "hints": [
+    "내 이름은 4글자예요.",
+    "팔이 다섯 개인 종류가 익숙해요.",
+    "팔 아래에 작은 관발이 있어요.",
+    "끊어진 팔을 다시 자라게 하는 종류가 있어요."
+  ],
+  "choices": [
+    "불가사리",
+    "해파리",
+    "새우",
+    "문어"
+  ]
+},
+{
+  "answer": "해마",
+  "base": "나는 말처럼 생긴 머리를 가진 작은 물고기예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "아가미로 숨을 쉬어요.",
+    "꼬리로 물풀 등을 붙잡아요.",
+    "수컷의 주머니에서 알이 자라요."
+  ],
+  "choices": [
+    "해마",
+    "금붕어",
+    "참치",
+    "가오리"
+  ]
+},
+{
+  "answer": "복어",
+  "base": "나는 위험할 때 몸을 풍선처럼 부풀리는 물고기예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "지느러미가 있어요.",
+    "몸이 부풀면 적이 삼키기 어려워져요.",
+    "독이 있는 종류가 많아 함부로 먹으면 안 돼요."
+  ],
+  "choices": [
+    "복어",
+    "참치",
+    "연어",
+    "금붕어"
+  ]
+},
+{
+  "answer": "가오리",
+  "base": "나는 몸이 납작하고 넓은 지느러미가 날개처럼 보이는 물고기예요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "바다에 사는 종류가 많아요.",
+    "넓은 몸을 물결치듯 움직여요.",
+    "길고 가느다란 꼬리를 가진 종류가 익숙해요."
+  ],
+  "choices": [
+    "가오리",
+    "복어",
+    "해마",
+    "참치"
+  ]
+},
+{
+  "answer": "연어",
+  "base": "나는 바다에서 자란 뒤 알을 낳으러 강으로 돌아오는 것으로 유명한 물고기예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "아가미로 숨을 쉬어요.",
+    "지느러미로 헤엄쳐요.",
+    "강물을 거슬러 올라가는 모습이 유명해요."
+  ],
+  "choices": [
+    "연어",
+    "해마",
+    "가오리",
+    "복어"
+  ]
+},
+{
+  "answer": "금붕어",
+  "base": "나는 어항에서 기르며 금빛이나 주황빛 몸으로 익숙한 물고기예요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "아가미로 숨을 쉬어요.",
+    "민물에서 살아요.",
+    "꼬리지느러미가 넓고 화려한 종류도 있어요."
+  ],
+  "choices": [
+    "금붕어",
+    "상어",
+    "참치",
+    "가오리"
+  ]
+},
+{
+  "answer": "새우",
+  "base": "나는 긴 더듬이와 구부러진 몸을 가진 작은 물속 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "몸에 단단한 껍데기가 있어요.",
+    "자라면서 허물을 벗어요.",
+    "꼬리를 재빨리 굽혀 뒤로 튀듯 움직이기도 해요."
+  ],
+  "choices": [
+    "새우",
+    "문어",
+    "해파리",
+    "불가사리"
+  ]
+},
+{
+  "answer": "바닷가재",
+  "base": "나는 바다 밑에서 살며 커다란 집게 두 개로 익숙한 동물이에요.",
+  "hints": [
+    "내 이름은 4글자예요.",
+    "긴 더듬이가 있어요.",
+    "단단한 껍데기를 벗으며 자라요.",
+    "새우처럼 긴 몸 앞에 큰 집게가 달려 있어요."
+  ],
+  "choices": [
+    "바닷가재",
+    "문어",
+    "해마",
+    "불가사리"
+  ]
+},
+{
+  "answer": "조개",
+  "base": "나는 두 장의 껍데기를 여닫으며 몸을 보호하는 물속 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "말랑한 몸을 가졌어요.",
+    "물속의 작은 먹이를 걸러 먹는 종류가 많아요.",
+    "바지락과 대합 같은 종류가 있어요."
+  ],
+  "choices": [
+    "조개",
+    "문어",
+    "새우",
+    "해파리"
+  ]
+},
+{
+  "answer": "물개",
+  "base": "나는 앞지느러미로 몸을 받치고 육지에서도 움직이는 바다 포유류예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "새끼에게 젖을 먹여요.",
+    "물고기를 먹어요.",
+    "귓바퀴가 보이고 털이 빽빽해요."
+  ],
+  "choices": [
+    "물개",
+    "상어",
+    "펭귄",
+    "문어"
+  ]
+},
+{
+  "answer": "바다코끼리",
+  "base": "나는 바다에서 살며 입 밖으로 길게 나온 엄니 두 개가 유명해요.",
+  "hints": [
+    "내 이름은 5글자예요.",
+    "추운 북극 주변에 살아요.",
+    "입 주변에 굵은 수염이 있어요.",
+    "이름에 코끼리가 들어가지만 긴 코는 없어요."
+  ],
+  "choices": [
+    "바다코끼리",
+    "물개",
+    "돌고래",
+    "펭귄"
+  ]
+},
+{
+  "answer": "해달",
+  "base": "나는 바다에 등을 대고 떠서 배 위에서 먹이를 먹기도 해요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "털이 아주 빽빽해요.",
+    "조개 등을 먹어요.",
+    "돌을 도구로 써서 단단한 먹이를 깨기도 해요."
+  ],
+  "choices": [
+    "해달",
+    "상어",
+    "펭귄",
+    "해마"
+  ]
+},
+{
+  "answer": "북극곰",
+  "base": "나는 북극의 얼음 위에서 살며 흰 털로 유명한 큰 곰이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "새끼에게 젖을 먹여요.",
+    "헤엄을 잘 쳐요.",
+    "물범을 사냥해 먹어요."
+  ],
+  "choices": [
+    "북극곰",
+    "판다",
+    "코알라",
+    "갈색곰"
+  ]
+},
+{
+  "answer": "갈색곰",
+  "base": "나는 갈색 털과 큰 몸집을 가진 곰이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "새끼에게 젖을 먹여요.",
+    "열매와 물고기 등 여러 먹이를 먹어요.",
+    "불곰이라고도 불러요."
+  ],
+  "choices": [
+    "갈색곰",
+    "판다",
+    "북극곰",
+    "코알라"
+  ]
+},
+{
+  "answer": "늑대",
+  "base": "나는 무리 생활과 아우 하고 길게 우는 소리로 유명한 개과 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "고기를 먹어요.",
+    "냄새를 잘 맡아요.",
+    "동화에서 빨간 모자를 만나는 동물로 나와요."
+  ],
+  "choices": [
+    "늑대",
+    "여우",
+    "토끼",
+    "사슴"
+  ]
+},
+{
+  "answer": "여우",
+  "base": "나는 뾰족한 주둥이와 풍성한 꼬리를 가진 개과 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "귀가 뾰족해요.",
+    "작은 동물과 열매 등을 먹어요.",
+    "전래 이야기의 구미호는 내 모습을 닮았어요."
+  ],
+  "choices": [
+    "여우",
+    "늑대",
+    "곰",
+    "사슴"
+  ]
+},
+{
+  "answer": "너구리",
+  "base": "나는 눈 주변의 검은 무늬가 익숙한 개과 동물이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "잡식성 동물이에요.",
+    "숲과 들에서 살아요.",
+    "이름은 비슷하지만 라쿤과는 다른 동물이에요."
+  ],
+  "choices": [
+    "너구리",
+    "라쿤",
+    "판다",
+    "고양이"
+  ]
+},
+{
+  "answer": "라쿤",
+  "base": "나는 눈가의 검은 무늬와 꼬리의 고리무늬가 유명한 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "앞발로 먹이를 다뤄요.",
+    "북아메리카가 원래 고향이에요.",
+    "미국너구리라고도 불러요."
+  ],
+  "choices": [
+    "라쿤",
+    "너구리",
+    "판다",
+    "코알라"
+  ]
+},
+{
+  "answer": "다람쥐",
+  "base": "나는 도토리와 볼주머니, 등에 난 줄무늬로 익숙한 작은 동물이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "나무를 잘 타요.",
+    "앞니가 계속 자라는 설치류예요.",
+    "먹이를 볼주머니에 넣어 옮겨요."
+  ],
+  "choices": [
+    "다람쥐",
+    "토끼",
+    "고슴도치",
+    "두더지"
+  ]
+},
+{
+  "answer": "청설모",
+  "base": "나는 나무를 잘 타며 회갈색 몸과 길고 풍성한 꼬리가 있는 동물이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "견과류와 씨앗 등을 먹어요.",
+    "앞니가 계속 자라는 설치류예요.",
+    "다람쥐와 달리 등에 뚜렷한 줄무늬가 없어요."
+  ],
+  "choices": [
+    "청설모",
+    "다람쥐",
+    "두더지",
+    "토끼"
+  ]
+},
+{
+  "answer": "햄스터",
+  "base": "나는 볼주머니에 먹이를 넣고 쳇바퀴를 타는 반려동물로 익숙해요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "앞니가 계속 자라는 설치류예요.",
+    "밤에 활발한 편이에요.",
+    "꼬리가 아주 짧은 종류가 익숙해요."
+  ],
+  "choices": [
+    "햄스터",
+    "토끼",
+    "고양이",
+    "고슴도치"
+  ]
+},
+{
+  "answer": "기니피그",
+  "base": "나는 통통한 몸에 겉으로 보이는 꼬리가 거의 없는 작은 반려동물이에요.",
+  "hints": [
+    "내 이름은 4글자예요.",
+    "풀을 먹는 설치류예요.",
+    "남아메리카가 원래 고향이에요.",
+    "이름에 피그가 들어가지만 돼지는 아니에요."
+  ],
+  "choices": [
+    "기니피그",
+    "햄스터",
+    "토끼",
+    "고양이"
+  ]
+},
+{
+  "answer": "두더지",
+  "base": "나는 삽처럼 넓은 앞발로 땅속에 굴을 파는 동물이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "지렁이 등을 먹어요.",
+    "눈이 작아요.",
+    "대부분의 시간을 땅속에서 보내요."
+  ],
+  "choices": [
+    "두더지",
+    "다람쥐",
+    "토끼",
+    "고양이"
+  ]
+},
+{
+  "answer": "박쥐",
+  "base": "나는 앞다리가 날개로 바뀌어 날아다니는 포유류예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "새끼에게 젖을 먹여요.",
+    "거꾸로 매달려 쉬는 종류가 많아요.",
+    "초음파로 주변을 살피는 종류가 많아요."
+  ],
+  "choices": [
+    "박쥐",
+    "참새",
+    "나비",
+    "잠자리"
+  ]
+},
+{
+  "answer": "나무늘보",
+  "base": "나는 나무에 매달려 아주 느리게 움직이는 동물이에요.",
+  "hints": [
+    "내 이름은 4글자예요.",
+    "중남아메리카에 살아요.",
+    "긴 발톱으로 가지를 붙잡아요.",
+    "이름에도 느릿느릿한 모습이 담겨 있어요."
+  ],
+  "choices": [
+    "나무늘보",
+    "원숭이",
+    "다람쥐",
+    "미어캣"
+  ]
+},
+{
+  "answer": "코알라",
+  "base": "나는 호주에서 유칼립투스 잎을 먹으며 나무에서 지내요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "새끼를 기르는 주머니가 있어요.",
+    "코가 크고 검어요.",
+    "둥글고 털이 많은 귀가 있어요."
+  ],
+  "choices": [
+    "코알라",
+    "판다",
+    "원숭이",
+    "나무늘보"
+  ]
+},
+{
+  "answer": "웜뱃",
+  "base": "나는 호주에서 굴을 파고 살며 네모난 똥으로 유명해요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "풀을 먹어요.",
+    "새끼를 기르는 주머니가 있어요.",
+    "다리가 짧고 몸이 통통해요."
+  ],
+  "choices": [
+    "웜뱃",
+    "코알라",
+    "캥거루",
+    "판다"
+  ]
+},
+{
+  "answer": "오리너구리",
+  "base": "나는 알을 낳고 오리처럼 납작한 부리가 있는 포유류예요.",
+  "hints": [
+    "내 이름은 5글자예요.",
+    "호주에 살아요.",
+    "발에 물갈퀴가 있어요.",
+    "부리는 오리 같아도 새끼에게 젖을 먹여요."
+  ],
+  "choices": [
+    "오리너구리",
+    "오리",
+    "비버",
+    "수달"
+  ]
+},
+{
+  "answer": "비버",
+  "base": "나는 나무를 갉아 쓰러뜨리고 물길에 댐을 만드는 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "앞니가 계속 자라는 설치류예요.",
+    "물속을 잘 헤엄쳐요.",
+    "꼬리가 넓고 납작해요."
+  ],
+  "choices": [
+    "비버",
+    "수달",
+    "두더지",
+    "다람쥐"
+  ]
+},
+{
+  "answer": "수달",
+  "base": "나는 강에서 물고기를 잡으며 유연한 몸으로 헤엄치는 족제비과 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "새끼에게 젖을 먹여요.",
+    "발에 물갈퀴가 있어요.",
+    "해달과 달리 강과 냇가에서 사는 모습이 익숙해요."
+  ],
+  "choices": [
+    "수달",
+    "비버",
+    "해달",
+    "하마"
+  ]
+},
+{
+  "answer": "사슴",
+  "base": "나는 수컷이 나뭇가지처럼 갈라진 뿔을 가진 모습으로 익숙해요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "풀과 나뭇잎을 먹어요.",
+    "발굽이 있어요.",
+    "뿔이 떨어졌다 다시 자라는 종류가 많아요."
+  ],
+  "choices": [
+    "사슴",
+    "소",
+    "염소",
+    "말"
+  ]
+},
+{
+  "answer": "순록",
+  "base": "나는 암컷도 뿔을 갖는 경우가 흔한 추운 지방의 사슴이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "툰드라와 추운 숲에 살아요.",
+    "발굽이 있어요.",
+    "이야기 속 산타의 썰매를 끄는 동물이에요."
+  ],
+  "choices": [
+    "순록",
+    "말",
+    "소",
+    "염소"
+  ]
+},
+{
+  "answer": "당나귀",
+  "base": "나는 말과 닮았지만 귀가 아주 긴 가축이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "풀을 먹어요.",
+    "발굽이 있어요.",
+    "이솝 이야기에서 소금 자루를 지고 가기도 해요."
+  ],
+  "choices": [
+    "당나귀",
+    "말",
+    "소",
+    "돼지"
+  ]
+},
+{
+  "answer": "라마",
+  "base": "나는 남아메리카에서 짐을 나르는 데 쓰이는 낙타과 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "풀을 먹어요.",
+    "목이 길지만 등에 혹은 없어요.",
+    "안데스산맥 지역의 가축으로 유명해요."
+  ],
+  "choices": [
+    "라마",
+    "낙타",
+    "말",
+    "소"
+  ]
+},
+{
+  "answer": "알파카",
+  "base": "나는 남아메리카에서 부드러운 털을 얻으려고 기르는 낙타과 동물이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "풀을 먹어요.",
+    "등에 혹이 없어요.",
+    "라마보다 작은 몸과 복슬복슬한 털이 익숙해요."
+  ],
+  "choices": [
+    "알파카",
+    "낙타",
+    "말",
+    "돼지"
+  ]
+},
+{
+  "answer": "고릴라",
+  "base": "나는 현존하는 영장류 중 몸집이 가장 큰 동물이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "아프리카에 살아요.",
+    "주로 식물을 먹어요.",
+    "다 자란 수컷의 등에 은빛 털이 나기도 해요."
+  ],
+  "choices": [
+    "고릴라",
+    "침팬지",
+    "원숭이",
+    "오랑우탄"
+  ]
+},
+{
+  "answer": "침팬지",
+  "base": "나는 검은 털과 도구 사용으로 유명한 아프리카의 유인원이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "꼬리가 없어요.",
+    "무리 생활을 해요.",
+    "막대기로 흰개미를 꺼내 먹기도 해요."
+  ],
+  "choices": [
+    "침팬지",
+    "오랑우탄",
+    "코알라",
+    "나무늘보"
+  ]
+},
+{
+  "answer": "오랑우탄",
+  "base": "나는 붉은 갈색 털과 긴 팔을 가진 아시아의 유인원이에요.",
+  "hints": [
+    "내 이름은 4글자예요.",
+    "꼬리가 없어요.",
+    "나무 위에서 많은 시간을 보내요.",
+    "보르네오와 수마트라에 살아요."
+  ],
+  "choices": [
+    "오랑우탄",
+    "침팬지",
+    "고릴라",
+    "판다"
+  ]
+},
+{
+  "answer": "개구리",
+  "base": "나는 올챙이로 태어나 자라면서 다리가 생기는 양서류예요.",
+  "hints": [
+    "내 이름은 세 글자예요.",
+    "물과 육지를 오가며 살아요.",
+    "뒷다리로 폴짝 뛰어요.",
+    "개굴개굴 하는 울음소리가 익숙해요."
+  ],
+  "choices": [
+    "개구리",
+    "도마뱀",
+    "물고기",
+    "달팽이"
+  ]
+},
+{
+  "answer": "지렁이",
+  "base": "나는 다리 없이 흙 속을 기어 다니며 몸에 고리 같은 마디가 있어요.",
+  "hints": [
+    "내 이름은 세 글자예요.",
+    "촉촉한 피부로 숨을 쉬어요.",
+    "흙 속의 썩은 유기물을 먹어요.",
+    "땅을 파고 다녀 흙에 공기가 통하게 도와요."
+  ],
+  "choices": [
+    "지렁이",
+    "뱀",
+    "달팽이",
+    "거미"
+  ]
+},
+{
+  "answer": "장수풍뎅이",
+  "base": "나는 수컷의 머리에 길고 멋진 뿔이 있는 딱정벌레예요.",
+  "hints": [
+    "내 이름은 다섯 글자예요.",
+    "다리가 여섯 개예요.",
+    "나무의 진을 먹어요.",
+    "수컷은 뿔로 다른 수컷을 밀어내기도 해요."
+  ],
+  "choices": [
+    "장수풍뎅이",
+    "무당벌레",
+    "잠자리",
+    "나비"
+  ]
+},
+{
+  "answer": "참새",
+  "base": "나는 짹짹 울며 집 주변에서 흔히 보이는 작은 갈색 새예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "씨앗과 곤충 등을 먹어요.",
+    "두 발로 깡충깡충 뛰어요.",
+    "볼에 검은 점이 있는 모습이 익숙해요."
+  ],
+  "choices": [
+    "참새",
+    "비둘기",
+    "까마귀",
+    "오리"
+  ]
+},
+{
+  "answer": "비둘기",
+  "base": "나는 구구 울며 도시의 광장에서 자주 보이는 새예요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "씨앗 등을 먹어요.",
+    "고개를 까딱거리며 걸어요.",
+    "흰색인 내 모습은 평화의 상징으로 쓰여요."
+  ],
+  "choices": [
+    "비둘기",
+    "참새",
+    "까마귀",
+    "닭"
+  ]
+},
+{
+  "answer": "까마귀",
+  "base": "나는 까악까악 울고 검은 깃털로 익숙한 새예요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "여러 가지 먹이를 먹어요.",
+    "문제를 해결하는 똑똑한 행동을 보여요.",
+    "이름이 까로 시작해요."
+  ],
+  "choices": [
+    "까마귀",
+    "참새",
+    "비둘기",
+    "공작"
+  ]
+},
+{
+  "answer": "까치",
+  "base": "나는 긴 꼬리와 검은색·흰색 깃털이 눈에 띄는 새예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "나뭇가지로 둥지를 만들어요.",
+    "깍깍 하고 울어요.",
+    "우리나라에서는 반가운 손님 소식과 연결하는 새예요."
+  ],
+  "choices": [
+    "까치",
+    "까마귀",
+    "참새",
+    "비둘기"
+  ]
+},
+{
+  "answer": "제비",
+  "base": "나는 꼬리가 깊게 갈라지고 처마 밑에 진흙 둥지를 짓는 새예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "날면서 곤충을 잡아요.",
+    "계절에 따라 먼 곳으로 이동해요.",
+    "흥부 이야기에서 다친 다리를 고쳐 주는 새예요."
+  ],
+  "choices": [
+    "제비",
+    "참새",
+    "까마귀",
+    "오리"
+  ]
+},
+{
+  "answer": "앵무새",
+  "base": "나는 굽은 부리와 사람 말소리를 흉내 내는 능력으로 유명해요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "발로 먹이를 잡기도 해요.",
+    "화려한 깃털을 가진 종류가 많아요.",
+    "사람 말을 따라 하는 반려조로 익숙해요."
+  ],
+  "choices": [
+    "앵무새",
+    "참새",
+    "펭귄",
+    "타조"
+  ]
+},
+{
+  "answer": "펠리컨",
+  "base": "나는 부리 아래에 커다란 주머니가 있는 물새예요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "물고기를 먹어요.",
+    "발에 물갈퀴가 있어요.",
+    "주머니가 달린 긴 부리로 물고기를 건져요."
+  ],
+  "choices": [
+    "펠리컨",
+    "홍학",
+    "참새",
+    "닭"
+  ]
+},
+{
+  "answer": "벌새",
+  "base": "나는 꽃 앞에서 공중에 멈춘 듯 날며 꿀을 먹는 작은 새예요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "아메리카에 살아요.",
+    "날갯짓이 아주 빨라요.",
+    "뒤로도 날 수 있어요."
+  ],
+  "choices": [
+    "벌새",
+    "타조",
+    "펭귄",
+    "닭"
+  ]
+},
+{
+  "answer": "잠자리",
+  "base": "나는 긴 배와 두 쌍의 투명한 날개를 가진 곤충이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "다리가 여섯 개예요.",
+    "눈이 아주 커요.",
+    "어린 시절에는 물속에서 살아요."
+  ],
+  "choices": [
+    "잠자리",
+    "나비",
+    "개미",
+    "메뚜기"
+  ]
+},
+{
+  "answer": "무당벌레",
+  "base": "나는 둥근 등에 점무늬가 있는 작은 곤충으로 익숙해요.",
+  "hints": [
+    "내 이름은 4글자예요.",
+    "다리가 여섯 개예요.",
+    "진딧물을 먹는 종류가 많아요.",
+    "빨간 등에 검은 점이 있는 모습이 유명해요."
+  ],
+  "choices": [
+    "무당벌레",
+    "잠자리",
+    "개미",
+    "나비"
+  ]
+},
+{
+  "answer": "사마귀",
+  "base": "나는 앞다리를 접었다 펴서 먹이를 붙잡는 곤충이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "다리가 여섯 개예요.",
+    "다른 곤충을 잡아먹어요.",
+    "앞다리에 날카로운 가시가 있어요."
+  ],
+  "choices": [
+    "사마귀",
+    "나비",
+    "개미",
+    "무당벌레"
+  ]
+},
+{
+  "answer": "메뚜기",
+  "base": "나는 긴 뒷다리로 멀리 뛰며 풀을 먹는 곤충이에요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "다리가 여섯 개예요.",
+    "날개가 있는 종류가 많아요.",
+    "논과 풀밭에서 폴짝 뛰는 모습이 익숙해요."
+  ],
+  "choices": [
+    "메뚜기",
+    "나비",
+    "개미",
+    "사마귀"
+  ]
+},
+{
+  "answer": "매미",
+  "base": "나는 여름에 나무에 붙어 맴맴 소리를 내는 곤충이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "어린 시절을 땅속에서 보내요.",
+    "나무의 즙을 빨아 먹어요.",
+    "수컷이 큰 소리를 내요."
+  ],
+  "choices": [
+    "매미",
+    "잠자리",
+    "나비",
+    "개미"
+  ]
+},
+{
+  "answer": "거미",
+  "base": "나는 다리가 여덟 개이며 실을 만드는 동물이에요.",
+  "hints": [
+    "내 이름은 2글자예요.",
+    "곤충과는 다른 무리예요.",
+    "작은 동물을 잡아먹어요.",
+    "실로 그물을 쳐 먹이를 잡는 종류가 많아요."
+  ],
+  "choices": [
+    "거미",
+    "개미",
+    "나비",
+    "메뚜기"
+  ]
+},
+{
+  "answer": "달팽이",
+  "base": "나는 나선 모양 껍데기를 등에 지고 천천히 기어가요.",
+  "hints": [
+    "내 이름은 3글자예요.",
+    "말랑한 몸을 가졌어요.",
+    "촉수를 내밀어 주변을 살펴요.",
+    "지나간 자리에 끈끈한 점액 자국이 남기도 해요."
+  ],
+  "choices": [
+    "달팽이",
+    "지렁이",
+    "거미",
+    "개미"
+  ]
+}
+];
+
+
+/* =========================
+   상태값
+========================= */
+
+let quiz=[];
+let current=0;
+let score=0;
+let hintsShown=0;
+let answered=false;
+let choices=[];
+
+const roundSize=20;
+let maxScore=roundSize * 5;
+
+
+/* =========================
+   화면 이동
+========================= */
+
+function showScreen(id){
+  const path = id === 'roomScreen' ? '/' : ['puzzleChoose','puzzleScreen'].includes(id) ? '/puzzle/' : '/animals/';
+  if (location.pathname !== path || location.hash) history.replaceState(null, '', path + location.search);
+  document.querySelector('link[rel="canonical"]').href = location.origin + path;
+  document.querySelector('meta[property="og:url"]').content = location.origin + path;
+  // Hidden screens have no src, so the browser never fetches their hero early.
+  document.getElementById(id).querySelectorAll('img[data-src]').forEach(img => {
+    img.loading = 'eager'; img.fetchPriority = 'high';
+    if (img.dataset.srcset) { img.srcset = img.dataset.srcset; delete img.dataset.srcset; }
+    img.src = img.dataset.src; delete img.dataset.src;
+  });
+
+  document.querySelectorAll(".screen")
+    .forEach(screen=>{
+      screen.classList.remove("active");
+    });
+
+  document.getElementById(id)
+    .classList.add("active");
+
+  window.scrollTo(0,0);
+}
+
+function showHome(){
+  speechSynthesis.cancel();
+  showScreen("homeScreen");
+}
+
+function showModes(){
+  speechSynthesis.cancel();
+  showScreen("modeScreen");
+}
+
+
+/* =========================
+   배열 섞기
+========================= */
+
+function shuffle(array){
+
+  const copy=[...array];
+
+  for(let i=copy.length-1;i>0;i--){
+
+    const j=Math.floor(
+      Math.random()*(i+1)
+    );
+
+    [copy[i],copy[j]]=
+    [copy[j],copy[i]];
+  }
+
+  return copy;
+}
+
+
+/* =========================
+   게임 시작
+========================= */
+
+// 본 문제만 기록합니다. 저장이 막힌 환경에서는 현재 창의 기록을 사용합니다.
+const historyKey="hosu-play-seen-v1";
+let seenQuestions=[];
+try{
+  const saved=JSON.parse(localStorage.getItem(historyKey)||"[]");
+  if(Array.isArray(saved)) seenQuestions=[...new Set(saved.filter(name=>animalQuiz.some(q=>q.answer===name)))];
+}catch(e){}
+
+function rememberQuestion(name){
+  seenQuestions=seenQuestions.filter(item=>item!==name);
+  seenQuestions.push(name);
+  try{localStorage.setItem(historyKey,JSON.stringify(seenQuestions));}catch(e){}
+}
+
+function selectRound(){
+  // 미출제 문제부터, 그 다음에는 가장 오래전에 본 문제부터 뽑습니다.
+  const candidates=shuffle(animalQuiz);
+  candidates.sort((a,b)=>seenQuestions.indexOf(a.answer)-seenQuestions.indexOf(b.answer));
+  return shuffle(candidates.slice(0,Math.min(roundSize,candidates.length)));
+}
+
+function startHintQuiz(){
+
+  speechSynthesis.cancel();
+
+  quiz=selectRound();
+  maxScore=quiz.length * 5;
+
+  current=0;
+  score=0;
+
+  document.getElementById("score")
+    .innerText="0";
+
+  showScreen("quizScreen");
+
+  loadQuestion();
+}
+
+
+/* =========================
+   문제 로딩
+========================= */
+
+function loadQuestion(){
+
+  answered=false;
+  hintsShown=0;
+
+  const q=quiz[current];
+  rememberQuestion(q.answer);
+
+  document.getElementById("questionNumber")
+    .innerText=
+    `${current+1} / ${quiz.length}`;
+
+  const base=
+    document.getElementById("baseClue");
+
+  base.innerText=
+    "🔊 " + q.base;
+
+  base.onclick=()=>{
+    speak(q.base);
+  };
+
+  document.getElementById("hints")
+    .innerHTML="";
+
+  document.getElementById("result")
+    .innerText="";
+
+  document.getElementById("hintButton")
+    .style.display="block";
+
+  choices=shuffle(q.choices);
+
+  renderAnswers();
+
+  updateScoreInfo();
+
+  const next=
+    document.getElementById("nextButton");
+
+  next.disabled=true;
+
+  next.classList.remove("active");
+
+  next.innerText=
+    current===quiz.length-1
+    ? "결과 보기 🏆"
+    : "다음 문제 ➜";
+}
+
+
+/* =========================
+   보기 생성
+========================= */
+
+function renderAnswers(){
+
+  const box=
+    document.getElementById("answers");
+
+  box.innerHTML="";
+
+  choices.forEach(choice=>{
+
+    const answer=
+      document.createElement("div");
+
+    answer.className="answer";
+
+
+    const name=
+      document.createElement("button");
+
+    name.className="answer-name";
+
+    name.innerText=choice;
+
+    name.onclick=()=>{
+      chooseAnswer(choice,answer);
+    };
+
+
+    const sound=
+      document.createElement("button");
+
+    sound.className="answer-sound";
+
+    sound.innerText="🔊";
+
+    sound.onclick=(event)=>{
+
+      event.stopPropagation();
+
+      speak(choice);
+    };
+
+
+    answer.appendChild(name);
+    answer.appendChild(sound);
+
+    box.appendChild(answer);
+  });
+}
+
+
+/* =========================
+   힌트
+========================= */
+
+function showNextHint(){
+
+  if(answered)return;
+
+  const q=quiz[current];
+
+  if(hintsShown>=q.hints.length)return;
+
+  const number=hintsShown+1;
+  const text=q.hints[hintsShown];
+
+  const hint=
+    document.createElement("div");
+
+  hint.className="hint";
+
+  hint.innerText=
+    `🔊 힌트 ${number}. ${text}`;
+
+  hint.onclick=()=>{
+    speak(`힌트 ${number}. ${text}`);
+  };
+
+  document.getElementById("hints")
+    .appendChild(hint);
+
+  hintsShown++;
+
+  updateScoreInfo();
+
+  if(hintsShown>=4){
+
+    document.getElementById("hintButton")
+      .style.display="none";
+  }
+}
+
+
+function updateScoreInfo(){
+
+  const points=
+    Math.max(1,5-hintsShown);
+
+  document.getElementById("scoreInfo")
+    .innerText=
+    `지금 맞히면 ⭐ ${points}점!`;
+}
+
+
+/* =========================
+   답 선택
+========================= */
+
+function chooseAnswer(choice,answerBox){
+
+  if(answered)return;
+
+  answered=true;
+
+  const q=quiz[current];
+
+  const all=
+    document.querySelectorAll(".answer");
+
+
+  if(choice===q.answer){
+
+    const earned=
+      Math.max(1,5-hintsShown);
+
+    score+=earned;
+
+    answerBox.classList.add("correct");
+
+    document.getElementById("score")
+      .innerText=score;
+
+    document.getElementById("result")
+      .innerText=
+      `🎉 정답! ${q.answer}! +${earned}점`;
+
+    speak(
+      `정답! ${q.answer}! ${earned}점!`
+    );
+
+  }else{
+
+    answerBox.classList.add("wrong");
+
+    all.forEach(box=>{
+
+      const name=
+        box.querySelector(".answer-name")
+           .innerText;
+
+      if(name===q.answer){
+        box.classList.add("correct");
+      }
+
+    });
+
+    document.getElementById("result")
+      .innerText=
+      `😊 아쉽다! 정답은 ${q.answer}야.`;
+
+    speak(
+      `아쉽다! 정답은 ${q.answer}야.`
+    );
+  }
+
+
+  document.getElementById("hintButton")
+    .style.display="none";
+
+
+  const next=
+    document.getElementById("nextButton");
+
+  next.disabled=false;
+  next.classList.add("active");
+
+
+  /* 마지막 문제는 잠시 후 자동으로 피니시 */
+  if(current===quiz.length-1){
+
+    next.innerText="결과 보기 🏆";
+
+    setTimeout(()=>{
+
+      if(
+        document.getElementById("quizScreen")
+        .classList.contains("active")
+      ){
+        finishQuiz();
+      }
+
+    },1800);
+  }
+}
+
+
+/* =========================
+   다음 문제
+========================= */
+
+function nextQuestion(){
+
+  if(!answered)return;
+
+  speechSynthesis.cancel();
+
+  if(current<quiz.length-1){
+
+    current++;
+
+    loadQuestion();
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+
+  }else{
+
+    finishQuiz();
+  }
+}
+
+
+/* =========================
+   종료
+========================= */
+
+function finishQuiz(){
+
+  speechSynthesis.cancel();
+
+  showScreen("finishScreen");
+
+  document.getElementById("finalScore")
+    .innerHTML=
+    `${maxScore}점 만점에 <strong>${score}점!</strong>`;
+
+
+  let message="";
+
+  if(score===maxScore){
+
+    message=
+      "우와! 완벽해요! 진짜 동물 박사네요! 🌟";
+
+  }else if(score>=80){
+
+    message=
+      "정말 잘했어요! 동물 박사가 거의 다 됐어요! 👏";
+
+  }else if(score>=60){
+
+    message=
+      "멋져요! 다음에는 더 높은 점수에 도전해봐요! 🐾";
+
+  }else{
+
+    message=
+      "좋은 도전이었어요! 다시 하면 더 잘할 수 있어요! 🌱";
+  }
+
+  document.getElementById("finishMessage")
+    .innerText=message;
+
+
+  launchConfetti();
+
+  playApplause();
+
+  setTimeout(()=>{
+    speak(
+      `퀴즈 끝! ${maxScore}점 만점에 ${score}점이에요!`
+    );
+  },700);
+}
+
+
+/* =========================
+   폭죽
+========================= */
+
+function launchConfetti(){
+
+  const container=
+    document.getElementById("confetti");
+
+  container.innerHTML="";
+
+  const colors=[
+    "#ff5b5b",
+    "#ffd43b",
+    "#74c0fc",
+    "#69db7c",
+    "#da77f2",
+    "#ff922b"
+  ];
+
+  for(let i=0;i<100;i++){
+
+    const piece=
+      document.createElement("div");
+
+    piece.className=
+      "confetti-piece";
+
+    piece.style.left=
+      Math.random()*100+"vw";
+
+    piece.style.background=
+      colors[
+        Math.floor(
+          Math.random()*colors.length
+        )
+      ];
+
+    piece.style.animationDuration=
+      2.2+
+      Math.random()*2+
+      "s";
+
+    piece.style.animationDelay=
+      Math.random()*.5+
+      "s";
+
+    piece.style.transform=
+      `rotate(${Math.random()*360}deg)`;
+
+    container.appendChild(piece);
+  }
+
+  setTimeout(()=>{
+    container.innerHTML="";
+  },5000);
+}
+
+
+/* =========================
+   박수 느낌 효과음
+========================= */
+
+function playApplause(){
+
+  try{
+
+    const AudioContext=
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    const ctx=
+      new AudioContext();
+
+    for(let i=0;i<22;i++){
+
+      const start=
+        ctx.currentTime+
+        i*.055+
+        Math.random()*.04;
+
+      const buffer=
+        ctx.createBuffer(
+          1,
+          ctx.sampleRate*.055,
+          ctx.sampleRate
+        );
+
+      const data=
+        buffer.getChannelData(0);
+
+      for(
+        let j=0;
+        j<data.length;
+        j++
+      ){
+
+        data[j]=
+          (Math.random()*2-1)*
+          Math.pow(
+            1-j/data.length,
+            2
+          );
+      }
+
+      const source=
+        ctx.createBufferSource();
+
+      source.buffer=buffer;
+
+      const gain=
+        ctx.createGain();
+
+      gain.gain.value=
+        .12+Math.random()*.08;
+
+      source.connect(gain);
+      gain.connect(ctx.destination);
+
+      source.start(start);
+    }
+
+  }catch(e){
+    console.log("효과음을 재생할 수 없어요.");
+  }
+}
+
+
+/* =========================
+   음성 읽기
+========================= */
+
+function speak(text){
+
+  speechSynthesis.cancel();
+
+  const speech=
+    new SpeechSynthesisUtterance(
+      text.replace(/(^|[^0-9])([1-5])\s*글자/g,
+        (_, prefix, count)=>prefix+["", "한", "두", "세", "네", "다섯"][count]+" 글자")
+    );
+
+  speech.lang="ko-KR";
+  speech.rate=.88;
+  speech.pitch=1.03;
+
+  const voices=
+    speechSynthesis.getVoices();
+
+  const korean=
+    voices.find(
+      voice=>
+      voice.lang &&
+      voice.lang
+      .toLowerCase()
+      .startsWith("ko")
+    );
+
+  if(korean){
+    speech.voice=korean;
+  }
+
+  speechSynthesis.speak(speech);
+}
+
+</script>
+
+<script src="photo-quiz.js?v=20260921"></script>
+<script src="silhouette-quiz.js?v=20260921"></script>
+<script src="footprint-quiz.js?v=20260921"></script>
+<script src="sound-quiz.js?v=1"></script>
+<script src="puzzle.js?v=20260921"></script>
+<script src="puzzle-touch.js?v=1"></script>
+<script src="playroom.js?v=20260921"></script>
+</body>
+</html>
