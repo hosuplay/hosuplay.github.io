@@ -25,14 +25,14 @@ function loadSilhouetteQuestion(){
   const sound=document.createElement('button');sound.className='answer-sound';sound.innerText='🔊';sound.setAttribute('aria-label',`${name} 이름 듣기`);sound.onclick=()=>speak(name);
   row.appendChild(button);row.appendChild(sound);box.appendChild(row);
  });
- const img=silhouetteEl('Image');img.hidden=true;img.alt='동물의 검은 실루엣';
+ const img=silhouetteEl('Image');img.fetchPriority='high';img.decoding='async';img.hidden=true;img.alt='동물의 검은 실루엣';
  img.onload=()=>{
   if(token!==silhouetteToken)return;
   img.hidden=false;silhouetteReady=true;silhouetteEl('Load').innerText='';
   box.querySelectorAll('.answer-name').forEach(b=>b.disabled=false);
   const next=silhouetteRound[silhouetteIndex+1];
-  if(next){const preload=new Image();preload.src=`silhouettes/${next.id}.png`;silhouettePreloads.push(preload);if(silhouettePreloads.length>2)silhouettePreloads.shift();}
-  const full=new Image();full.src=q.variants[0].src;silhouettePreloads.push(full);if(silhouettePreloads.length>3)silhouettePreloads.shift();
+  if(next){const preload=new Image();preload.fetchPriority='low';preload.decoding='async';preload.src=`silhouettes/${next.id}.png`;silhouettePreloads.push(preload);if(silhouettePreloads.length>2)silhouettePreloads.shift();}
+  const full=new Image();full.fetchPriority='low';full.decoding='async';full.src=q.variants[0].src;silhouettePreloads.push(full);if(silhouettePreloads.length>3)silhouettePreloads.shift();
  };
  img.onerror=()=>{if(token!==silhouetteToken)return;silhouetteEl('Load').innerText='그림자를 불러오지 못했어요. 다시 눌러 주세요.';silhouetteEl('Retry').hidden=false;};
  img.src=`silhouettes/${q.id}.png`;

@@ -72,7 +72,7 @@ function preloadNextPhoto(){
  if(!next)return;
  const src=next.variants[0].src;
  if(photoPreloads.has(src))return;
- const preview=new Image();preview.decoding='async';preview.src=src;
+ const preview=new Image();preview.decoding='async';preview.fetchPriority='low';preview.src=src;
  photoPreloads.set(src,preview);
  if(photoPreloads.size>3)photoPreloads.delete(photoPreloads.keys().next().value);
 }
@@ -118,7 +118,7 @@ function loadPhotoQuestion(){
   const sound=document.createElement('button');sound.className='answer-sound';sound.innerText='🔊';sound.setAttribute('aria-label',`${name} 이름 듣기`);sound.onclick=()=>speak(name);
   row.appendChild(button);row.appendChild(sound);box.appendChild(row);
  });
- const img=photoEl('photoImage');img.hidden=true;img.alt='일부만 보이는 동물 사진';
+ const img=photoEl('photoImage');img.fetchPriority='high';img.decoding='async';img.hidden=true;img.alt='일부만 보이는 동물 사진';
  img.onload=()=>{
   if(token!==photoToken)return;
   photoCrops[q.id]=cropIndex;

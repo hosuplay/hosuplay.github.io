@@ -25,17 +25,17 @@ function loadFootprintQuestion(){
   const sound=document.createElement('button');sound.className='answer-sound';sound.innerText='🔊';sound.setAttribute('aria-label',`${name} 이름 듣기`);sound.onclick=()=>speak(name);
   row.appendChild(button);row.appendChild(sound);box.appendChild(row);
  });
- const img=footprintEl('Image');img.hidden=true;img.alt='동물의 발자국';
+ const img=footprintEl('Image');img.fetchPriority='high';img.decoding='async';img.hidden=true;img.alt='동물의 발자국';
  img.onload=()=>{
   if(token!==footprintToken)return;
   img.hidden=false;footprintReady=true;footprintEl('Load').innerText='';
   box.querySelectorAll('.answer-name').forEach(b=>b.disabled=false);
   const next=footprintRound[footprintIndex+1];
-  if(next){const preload=new Image();preload.src=`footprints/${next.id}.png`;footprintPreloads.push(preload);if(footprintPreloads.length>2)footprintPreloads.shift();}
-  const full=new Image();full.src=`photos/${q.id}.webp`;footprintPreloads.push(full);if(footprintPreloads.length>3)footprintPreloads.shift();
+  if(next){const preload=new Image();preload.fetchPriority='low';preload.decoding='async';preload.src=`/footprint-${next.id}.webp`;footprintPreloads.push(preload);if(footprintPreloads.length>2)footprintPreloads.shift();}
+  const full=new Image();full.fetchPriority='low';full.decoding='async';full.src=`photos/${q.id}.webp`;footprintPreloads.push(full);if(footprintPreloads.length>3)footprintPreloads.shift();
  };
  img.onerror=()=>{if(token!==footprintToken)return;footprintEl('Load').innerText='발자국을 불러오지 못했어요. 다시 눌러 주세요.';footprintEl('Retry').hidden=false;};
- img.src=`footprints/${q.id}.png`;
+ img.src=`/footprint-${q.id}.webp`;
 }
 function answerFootprint(name,row){
  if(!footprintReady||footprintAnswered)return;
