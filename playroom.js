@@ -1,20 +1,17 @@
-/* Both the illustrated objects and the lower menu read the same destinations.
-   Replace these values with independent domain URLs when those are available. */
-const HOSU_DESTINATIONS = Object.freeze({
-  animal: '#animals',
-  math: './math/',
-  puzzle: '#puzzle'
-});
+/* Public entry points are real static directories, including on refresh. */
+const HOSU_DESTINATIONS = Object.freeze({ animal: '/animals/', math: '/math/', puzzle: '/puzzle/' });
 document.querySelectorAll('[data-room-link]').forEach(link => {
   link.href = HOSU_DESTINATIONS[link.dataset.roomLink];
 });
 function routePlayroom() {
-  if (location.hash === '#animals') showScreen('homeScreen');
-  else if (location.hash === '#puzzle') openPuzzle();
-  else if (!location.hash || location.hash === '#room') showScreen('roomScreen');
-}
-window.addEventListener('hashchange', () => {
+  const legacy = { '#animals': '/animals/', '#puzzle': '/puzzle/', '#room': '/' };
+  const path = legacy[location.hash] || location.pathname;
+  if (location.hash) history.replaceState(null, '', path + location.search);
   speechSynthesis.cancel();
-  routePlayroom();
-});
+  if (path === '/animals/') showScreen('homeScreen');
+  else if (path === '/puzzle/') openPuzzle();
+  else showScreen('roomScreen');
+}
+window.addEventListener('hashchange', routePlayroom);
+window.addEventListener('popstate', routePlayroom);
 routePlayroom();

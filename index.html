@@ -2,6 +2,26 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<base href="/">
+<script>
+// Normalize legacy shared links before rendering; all new links use real paths.
+(() => {
+  const old = { '#animals': '/animals/', '#puzzle': '/puzzle/', '#room': '/' };
+  let path = old[location.hash] || location.pathname.replace(/index\.html$/, '');
+  if (path === '/animals' || path === '/puzzle') path += '/';
+  if (location.hash || path !== location.pathname) history.replaceState(null, '', path + location.search);
+  window.hosuEntry = path === '/animals/' ? 'homeScreen' : path === '/puzzle/' ? 'puzzleChoose' : 'roomScreen';
+  const image = path === '/animals/' ? 'animal-hero' : path === '/puzzle/' ? null : 'playroom';
+  if (image) {
+    const preload = document.createElement('link');
+    preload.rel = 'preload'; preload.as = 'image'; preload.fetchPriority = 'high';
+    preload.href = '/' + image + '.webp';
+    preload.imageSrcset = '/' + image + '-768.webp 768w, /' + image + '.webp 1536w';
+    preload.imageSizes = image === 'animal-hero' ? '(max-width: 560px) calc(100vw - 36px), 524px' : '(max-width: 600px) calc(100vw - 20px), (max-width: 1120px) calc(100vw - 48px), 1072px';
+    document.head.append(preload);
+  }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HOSU PLAY 호수플레이 | 동물·수학·퍼즐 놀이터</title>
 <meta name="description" content="HOSU PLAY 호수플레이에서 동물 힌트, 사진, 실루엣, 발자국, 소리 퀴즈와 9조각·16조각 동물 퍼즐을 무료로 즐겨보세요.">
@@ -680,23 +700,23 @@ button:active:not(:disabled){
     <p>오늘은 무슨 놀이를 해 볼까?</p>
   </header>
   <figure class="playroom" aria-label="책과 장난감을 눌러 놀이를 고르는 방">
-    <img src="playroom.png" width="1536" height="1024" fetchpriority="high" alt="햇살이 드는 방에서 남자아이 두 명과 여자아이 한 명이 함께 놀고 있어요. 왼쪽에는 동물책, 오른쪽 책상에는 수학 문제집, 앞쪽에는 퍼즐 상자가 있어요.">
-    <a class="room-object animal" href="#animals" data-room-link="animal" aria-label="동물책 — 동물 퀴즈로 이동"><span class="object-label">동물 퀴즈 <b aria-hidden="true">↗</b></span></a>
-    <a class="room-object math" href="./math/" data-room-link="math" aria-label="수학 문제집 — 수학 문제로 이동"><span class="object-label">수학 문제 <b aria-hidden="true">↗</b></span></a>
-    <a class="room-object puzzle" href="#puzzle" data-room-link="puzzle" aria-label="퍼즐 상자 — 퍼즐로 이동"><span class="object-label">퍼즐 <b aria-hidden="true">↗</b></span></a>
+    <img data-src="/playroom.webp" data-srcset="/playroom-768.webp 768w, /playroom.webp 1536w" sizes="(max-width: 600px) calc(100vw - 20px), (max-width: 1120px) calc(100vw - 48px), 1072px" decoding="async" width="1536" height="1024" fetchpriority="high" alt="햇살이 드는 방에서 남자아이 두 명과 여자아이 한 명이 함께 놀고 있어요. 왼쪽에는 동물책, 오른쪽 책상에는 수학 문제집, 앞쪽에는 퍼즐 상자가 있어요.">
+    <a class="room-object animal" href="/animals/" data-room-link="animal" aria-label="동물책 — 동물 퀴즈로 이동"><span class="object-label">동물 퀴즈 <b aria-hidden="true">↗</b></span></a>
+    <a class="room-object math" href="/math/" data-room-link="math" aria-label="수학 문제집 — 수학 문제로 이동"><span class="object-label">수학 문제 <b aria-hidden="true">↗</b></span></a>
+    <a class="room-object puzzle" href="/puzzle/" data-room-link="puzzle" aria-label="퍼즐 상자 — 퍼즐로 이동"><span class="object-label">퍼즐 <b aria-hidden="true">↗</b></span></a>
   </figure>
   <p class="room-caption">책이나 장난감을 콕 눌러 봐!</p>
   <nav class="room-nav" aria-label="놀이 바로가기">
-    <a href="#animals" data-room-link="animal"><span aria-hidden="true">🐯</span> 동물</a>
-    <a href="./math/" data-room-link="math"><span aria-hidden="true">✏️</span> 수학</a>
-    <a href="#puzzle" data-room-link="puzzle"><span aria-hidden="true">🧩</span> 퍼즐</a>
+    <a href="/animals/" data-room-link="animal"><span aria-hidden="true">🐯</span> 동물</a>
+    <a href="/math/" data-room-link="math"><span aria-hidden="true">✏️</span> 수학</a>
+    <a href="/puzzle/" data-room-link="puzzle"><span aria-hidden="true">🧩</span> 퍼즐</a>
   </nav>
 </section>
 <section id="homeScreen" class="screen">
 
   <div class="hero">
 
-    <img class="family-photo" src="image.png" width="1536" height="1024"
+    <img class="family-photo" data-src="/animal-hero.webp" data-srcset="/animal-hero-768.webp 768w, /animal-hero.webp 1536w" sizes="(max-width: 560px) calc(100vw - 36px), 524px" decoding="async" width="1536" height="1024"
          alt="코끼리 가족, 기린, 사자, 돌고래, 고래와 거북이가 함께 있는 동물 가족사진">
 
     <h1>나는 누구일까요?</h1>
@@ -714,7 +734,7 @@ button:active:not(:disabled){
     </div>
 
   </div>
-  <a class="room-home-link" href="#room">← 호수 플레이 방으로</a>
+  <a class="room-home-link" href="/">← 호수 플레이 방으로</a>
 
 </section>
 
@@ -974,7 +994,7 @@ button:active:not(:disabled){
  <button class="finish-button list" onclick="showModes()">🎮 다른 퀴즈 고르기</button>
  <button class="finish-button home" onclick="showHome()">🏠 처음으로</button></div>
 </section>
-<section id="puzzleChoose" class="screen"><a class="room-home-link" href="#room">← 호수 플레이 방으로</a><h2 class="page-title">🧩 동물 그림 퍼즐</h2><p class="quiz-small">어떤 퍼즐을 해 볼까요?</p><div class="puzzle-levels"><button onclick="startPuzzle(3)">🌱 쉬운 퍼즐<small>9조각 · 3 × 3</small></button><button onclick="startPuzzle(4)">🌟 어려운 퍼즐<small>16조각 · 4 × 4</small></button></div><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
+<section id="puzzleChoose" class="screen"><a class="room-home-link" href="/">← 호수 플레이 방으로</a><h2 class="page-title">🧩 동물 그림 퍼즐</h2><p class="quiz-small">어떤 퍼즐을 해 볼까요?</p><div class="puzzle-levels"><button onclick="startPuzzle(3)">🌱 쉬운 퍼즐<small>9조각 · 3 × 3</small></button><button onclick="startPuzzle(4)">🌟 어려운 퍼즐<small>16조각 · 4 × 4</small></button></div><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
 <section id="puzzleScreen" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><div class="status"><span id="puzzleLevel"></span><span id="puzzleCount"></span></div><div class="puzzle-wrap"><button id="puzzleToggle" class="hint-button" onclick="togglePuzzleReference()">👀 완성 그림 보기</button><div><img id="puzzleReference" class="puzzle-reference" hidden alt="완성 그림"></div><div id="puzzleBoard" class="puzzle-board" role="group" aria-label="조각을 놓는 자리"></div><p id="puzzleMessage" class="puzzle-message" role="status"></p><button id="puzzleRetry" class="hint-button" onclick="startPuzzle(puzzleSize)" hidden>다시 시작하기</button><div id="puzzleTray" class="puzzle-tray" role="group" aria-label="그림 조각"></div><div id="puzzleComplete" hidden><button class="finish-button retry" onclick="nextPuzzle()">🧩 다른 동물 퍼즐</button></div></div><button class="back-button" onclick="openPuzzle()">← 난이도 고르기</button><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
 
 <section id="soundScreen" class="screen">
@@ -2579,6 +2599,16 @@ let maxScore=roundSize * 5;
 ========================= */
 
 function showScreen(id){
+  const path = id === 'roomScreen' ? '/' : ['puzzleChoose','puzzleScreen'].includes(id) ? '/puzzle/' : '/animals/';
+  if (location.pathname !== path || location.hash) history.replaceState(null, '', path + location.search);
+  document.querySelector('link[rel="canonical"]').href = location.origin + path;
+  document.querySelector('meta[property="og:url"]').content = location.origin + path;
+  // Hidden screens have no src, so the browser never fetches their hero early.
+  document.getElementById(id).querySelectorAll('img[data-src]').forEach(img => {
+    img.loading = 'eager'; img.fetchPriority = 'high';
+    if (img.dataset.srcset) { img.srcset = img.dataset.srcset; delete img.dataset.srcset; }
+    img.src = img.dataset.src; delete img.dataset.src;
+  });
 
   document.querySelectorAll(".screen")
     .forEach(screen=>{
@@ -3171,12 +3201,12 @@ function speak(text){
 
 </script>
 
-<script src="photo-quiz.js?v=3"></script>
-<script src="silhouette-quiz.js?v=1"></script>
-<script src="footprint-quiz.js?v=1"></script>
+<script src="photo-quiz.js?v=20260921"></script>
+<script src="silhouette-quiz.js?v=20260921"></script>
+<script src="footprint-quiz.js?v=20260921"></script>
 <script src="sound-quiz.js?v=1"></script>
-<script src="puzzle.js?v=4"></script>
+<script src="puzzle.js?v=20260921"></script>
 <script src="puzzle-touch.js?v=1"></script>
-<script src="playroom.js?v=1"></script>
+<script src="playroom.js?v=20260921"></script>
 </body>
 </html>
