@@ -26,4 +26,3 @@ let insectCropCenter=[.5,.5];const insectLastCrop={};
 function chooseInsectCrop(q){const points=insectCropPoints[q.id];const n=insectLastCrop[q.id]===undefined?Math.floor(Math.random()*points.length):(insectLastCrop[q.id]+1)%points.length;insectLastCrop[q.id]=n;insectCropCenter=points[n]}
 function applyInsectCrop(){const size=[.18,.26,.36,.52,1][insectHints];const x=Math.min(1-size,Math.max(0,insectCropCenter[0]-size/2)),y=Math.min(1-size,Math.max(0,insectCropCenter[1]-size/2));ie('Art').style.clipPath=`inset(${y*100}% ${(1-x-size)*100}% ${(1-y-size)*100}% ${x*100}%)`}
 
-window.addEventListener('hashchange',()=>{if(location.hash==='#insects')openInsects()});if(location.hash==='#insects'||/\/insects(?:\.html)?\/?$/.test(location.pathname))openInsects();
