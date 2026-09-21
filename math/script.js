@@ -7,7 +7,19 @@ const MathEngine=(()=>{
  let divisionIndex=0;
  function generate(mode,opts={}){
   let a,b,r=0;
-  if(mode==='subtract'){const [lo,hi]=range(Number(opts.digits||2));a=rand(lo,hi);b=rand(lo,hi);if(a<b)[a,b]=[b,a];return {mode,a,b,answer:a-b,r};}
+  if(mode==='subtract'){
+   const shape=String(opts.subShape||'2,1').split(',').map(Number),borrow=opts.borrow||'mixed';
+   const [alo,ahi]=range(shape[0]),[blo,bhi]=range(shape[1]);
+   for(let i=0;i<300;i++){
+    a=rand(alo,ahi);b=rand(blo,bhi);
+    if(a<b)continue;
+    const needsBorrow=a%10<b%10;
+    if(borrow==='yes'&&!needsBorrow)continue;
+    if(borrow==='no'&&needsBorrow)continue;
+    return {mode,a,b,answer:a-b,r};
+   }
+   a=rand(alo,ahi);b=Math.min(rand(blo,bhi),a);return {mode,a,b,answer:a-b,r};
+  }
   if(mode==='add'){const [lo,hi]=range(Number(opts.digits||2));a=rand(lo,hi);b=rand(lo,hi);return {mode,a,b,answer:a+b,r};}
   if(mode==='multiply'||mode==='table'){const ds=String(opts.shape||'1,1').split(',').map(Number);a=mode==='table'?Number(opts.table)||rand(2,9):rand(...range(ds[0]));b=mode==='table'?rand(1,9):rand(...range(ds[1]));return {mode,a,b,answer:a*b,r};}
   const [lo,hi]=range(Number(opts.digits||2));const wantR=opts.rem==='yes';const kinds=['direct','front','carry','zero'];const target=kinds[divisionIndex++%4];let candidates=[];
@@ -26,11 +38,11 @@ function save(){try{localStorage.setItem(STORAGE,JSON.stringify(data));}catch{$(
 function rollover(){if(data.date!==dateKey()){Object.assign(data,{date:dateKey(),solved:0,correct:0,streak:0});save();}}
 function stats(){rollover();$('stats').innerHTML=[['오늘 푼 문제',data.solved],['오늘 맞힌 문제',data.correct],['정답률',`${data.solved?Math.round(data.correct/data.solved*100):0}%`],['연속 정답',data.streak],['60초 최고 기록',data.best]].map(([l,v])=>`<div>${l}<strong>${v}</strong></div>`).join('');$('wrongCount').textContent=`(${data.wrong.length})`;}
 function select(id,label,items){return `<label>${label}<select id="${id}">${items.map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select></label>`;}
-function opts(){return {digits:$('digits')?.value,shape:$('shape')?.value,rem:$('rem')?.value,display:$('display')?.value,table:$('table')?.value};}
+function opts(){return {digits:$('digits')?.value,shape:$('shape')?.value,subShape:$('subShape')?.value,borrow:$('borrow')?.value,rem:$('rem')?.value,display:$('display')?.value,table:$('table')?.value};}
 function isChallenge(){return mode==='table'&&$('gameMode')?.value==='challenge'&&!review;}
 function stop(){clearInterval(timer);timer=null;active=false;}
 function openMode(m,isReview=false){stop();requestAnimationFrame(sizeScratch);mode=m;review=isReview;$('home').hidden=true;$('play').hidden=false;$('challengeInfo').textContent='';$('modeTitle').textContent=isReview?'틀린 문제 다시 풀기':{add:'덧셈',subtract:'뺄셈',multiply:'곱셈',divide:'나눗셈',table:'구구단 게임'}[m];let html='';
- if(!isReview){if(m==='add'||m==='subtract')html=select('digits','자릿수',[[2,'2자리 수'],[3,'3자리 수'],[4,'4자리 수']]);if(m==='multiply')html=select('shape','계산 형태',[['1,1','한 자리 × 한 자리'],['2,1','두 자리 × 한 자리'],['3,1','세 자리 × 한 자리'],['2,2','두 자리 × 두 자리'],['3,2','세 자리 × 두 자리'],['3,3','세 자리 × 세 자리']]);if(m==='divide')html=select('digits','계산 형태',[[2,'두 자리 ÷ 한 자리'],[3,'세 자리 ÷ 한 자리']])+select('rem','나머지',[['no','나머지 없는 문제'],['yes','나머지 있는 문제']])+select('display','표시 방법',[['horizontal','가로식'],['vertical','세로식'],['mixed','섞어서']]);if(m==='table')html=select('table','구구단',[[0,'전체 랜덤'],...Array.from({length:8},(_,i)=>[i+2,`${i+2}단`])])+select('gameMode','모드',[['practice','시간 제한 없는 연습'],['challenge','60초 도전']]);}
+ if(!isReview){if(m==='add')html=select('digits','자릿수',[[2,'2자리 수'],[3,'3자리 수'],[4,'4자리 수']]);if(m==='subtract')html=select('subShape','계산 형태',[['2,1','두 자리 − 한 자리'],['2,2','두 자리 − 두 자리']])+select('borrow','받아내림',[['mixed','받아내림 섞어서'],['no','받아내림 없음'],['yes','받아내림 있음']]);if(m==='multiply')html=select('shape','계산 형태',[['1,1','한 자리 × 한 자리'],['2,1','두 자리 × 한 자리'],['3,1','세 자리 × 한 자리'],['2,2','두 자리 × 두 자리'],['3,2','세 자리 × 두 자리'],['3,3','세 자리 × 세 자리']]);if(m==='divide')html=select('digits','계산 형태',[[2,'두 자리 ÷ 한 자리'],[3,'세 자리 ÷ 한 자리']])+select('rem','나머지',[['no','나머지 없는 문제'],['yes','나머지 있는 문제']])+select('display','표시 방법',[['horizontal','가로식'],['vertical','세로식'],['mixed','섞어서']]);if(m==='table')html=select('table','구구단',[[0,'전체 랜덤'],...Array.from({length:8},(_,i)=>[i+2,`${i+2}단`])])+select('gameMode','모드',[['practice','시간 제한 없는 연습'],['challenge','60초 도전']]);}
  $('settings').innerHTML=html;$('settings').querySelectorAll('select').forEach(el=>el.addEventListener('change',()=>{stop();$('challengeInfo').textContent='';next();}));next();}
 function next(){clearScratch();attempts=0;resolved=false;$('feedback').textContent='';$('feedback').className='';$('nextButton').hidden=true;$('answer').value='';$('remainder').value='';$('answer').disabled=false;$('remainder').disabled=false;$('checkButton').disabled=false;$('startButton').hidden=true;
  if(review&&!data.wrong.length){problem=null;$('question').textContent='모두 다시 맞혔어요!';$('answerForm').hidden=true;$('choices').hidden=true;return;}
