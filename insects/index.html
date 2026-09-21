@@ -687,9 +687,59 @@ button:active:not(:disabled){
 
 
 
+<section id="insectHome" class="screen active">
+  <div class="hero">
+    <img class="insect-jar" src="insects/jar.png" alt="곤충 관찰통">
+    <h1>곤충 친구들을 만나볼까요?</h1>
+    <div class="hero-sub">
+      듣고, 보고, 생각하며 만나는 작은 곤충 친구들
+    </div>
 
-<section id="insectMenu" class="screen active"><div class="hero"><img class="insect-jar" src="insects/jar.png" alt="곤충 관찰통"><h1>곤충 친구들은 누구일까요?</h1><p>듣고, 보고, 생각하며 만나는 작은 친구들</p></div><div class="mode-grid">
-<div class="mode-card"><div class="mode-title">🌿 힌트로 맞히기</div><button class="mode-button" onclick="startInsectQuiz('hint')">시작하기</button></div><div class="mode-card"><div class="mode-title">🔍 사진 일부 보고 맞히기</div><button class="mode-button" onclick="startInsectQuiz('photo')">시작하기</button></div><div class="mode-card"><div class="mode-title">👤 실루엣 맞히기</div><button class="mode-button" onclick="startInsectQuiz('silhouette')">시작하기</button></div><div class="mode-card"><div class="mode-title">🧩 곤충 그림 퍼즐</div><button class="mode-button" onclick="showScreen('insectPuzzleChoose')">시작하기</button></div></div><p class="quiz-small">관찰하기 쉽게 표현한 곤충 그림이에요.</p></section>
+    <button class="big-start" onclick="showScreen('insectMenu')">
+      🐞 곤충 퀴즈 시작하기
+    </button>
+
+    <div class="home-note">
+      사진, 실루엣, 힌트, 퍼즐을 골라 즐길 수 있어요.
+    </div>
+  </div>
+</section>
+<section id="insectMenu" class="screen">
+  <div class="hero">
+    <img class="insect-jar" src="insects/jar.png" alt="곤충 관찰통">
+    <h1>곤충 친구들은 누구일까요?</h1>
+    <p>듣고, 보고, 생각하며 만나는 작은 친구들</p>
+  </div>
+
+  <div class="mode-grid">
+    <div class="mode-card">
+      <div class="mode-title">🌿 힌트로 맞히기</div>
+      <button class="mode-button" onclick="startInsectQuiz('hint')">시작하기</button>
+    </div>
+
+    <div class="mode-card">
+      <div class="mode-title">🔍 사진 일부 보고 맞히기</div>
+      <button class="mode-button" onclick="startInsectQuiz('photo')">시작하기</button>
+    </div>
+
+    <div class="mode-card">
+      <div class="mode-title">👤 실루엣 맞히기</div>
+      <button class="mode-button" onclick="startInsectQuiz('silhouette')">시작하기</button>
+    </div>
+
+    <div class="mode-card">
+      <div class="mode-title">🧩 곤충 그림 퍼즐</div>
+      <button class="mode-button" onclick="showScreen('insectPuzzleChoose')">시작하기</button>
+    </div>
+  </div>
+
+  <p class="quiz-small">관찰하기 쉽게 표현한 곤충 그림이에요.</p>
+
+  <button class="back-button" onclick="showScreen('insectHome')">
+    ← 곤충 첫 화면으로
+  </button>
+</section>
+
 <section id="insectScreen" class="screen"><h2 id="insectTitle" class="page-title"></h2><div class="status"><span id="insectCount"></span><span>⭐ <span id="insectScore">0</span>점</span></div><div class="photo-card"><button id="insectClue" class="question-title"></button><div id="insectFrame" class="insect-frame"><div id="insectArt" class="insect-art" role="img"></div></div><div id="insectHints"></div><button id="insectHint" class="hint-button" onclick="insectHint()">💡 다음 힌트 듣기</button><p id="insectPoints" class="score-info"></p><div id="insectAnswers" class="answers"></div><div id="insectResult" class="result" role="status"></div><button id="insectNext" class="next-button active" onclick="nextInsect()" disabled>다음 곤충 ➜</button></div><button class="back-button" onclick="openInsects()">← 곤충 놀이 고르기</button></section>
 <section id="insectFinish" class="screen"><div class="finish-wrap"><div class="trophy">🌿🏆</div><div class="finish-title">곤충 퀴즈 완성!</div><div id="insectFinalScore" class="final-score"></div><button class="finish-button retry" onclick="startInsectQuiz(insectMode)">🔄 다시 풀기</button><button class="finish-button list" onclick="openInsects()">🌿 다른 곤충 놀이</button></div></section>
 <section id="insectPuzzleChoose" class="screen"><h2 class="page-title">🧩 곤충 그림 퍼즐</h2><div class="puzzle-levels"><button onclick="startInsectPuzzle(3)">🧩 곤충 퍼즐 시작<small>3 × 3 · 9조각</small></button></div><button class="back-button" onclick="openInsects()">← 곤충 놀이 고르기</button></section>
