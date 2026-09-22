@@ -711,29 +711,58 @@ button:active:not(:disabled){
 <section id="insectMenu" class="screen">
   <div class="hero">
     <img class="insect-jar" src="insects/jar.png" alt="곤충 관찰통">
-    <h1>곤충 친구들은 누구일까요?</h1>
-    <p>듣고, 보고, 생각하며 만나는 작은 친구들</p>
+    <h1>어떤 곤충 놀이를 할까요?</h1>
+    <p>그림을 보고 고르거나 🔊 버튼을 눌러 들어보세요.</p>
+    <button class="insect-menu-guide" onclick="speak('어떤 곤충 놀이를 할까요? 각 놀이의 스피커 버튼을 누르면 설명을 들을 수 있어요.')">🔊 놀이 설명 듣기</button>
   </div>
 
-  <div class="mode-grid">
-    <div class="mode-card">
-      <div class="mode-title">🌿 힌트로 맞히기</div>
-      <button class="mode-button" onclick="startInsectQuiz('hint')">시작하기</button>
+  <div class="mode-grid insect-mode-grid">
+    <div class="mode-card insect-mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">💡</div>
+        <div>
+          <div class="mode-title">힌트 퀴즈</div>
+          <div class="mode-desc">설명을 듣고 어떤 곤충인지 맞혀요.</div>
+        </div>
+      </div>
+      <button class="insect-listen" onclick="speak('힌트 퀴즈. 설명을 듣고 어떤 곤충인지 맞혀요.')">🔊 이 놀이 듣기</button>
+      <button class="mode-button" onclick="startInsectQuiz('hint')">💡 힌트 퀴즈 시작</button>
     </div>
 
-    <div class="mode-card">
-      <div class="mode-title">🔍 사진 일부 보고 맞히기</div>
-      <button class="mode-button" onclick="startInsectQuiz('photo')">시작하기</button>
+    <div class="mode-card insect-mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">🔎</div>
+        <div>
+          <div class="mode-title">사진 조각 퀴즈</div>
+          <div class="mode-desc">곤충 사진의 작은 부분을 보고 맞혀요.</div>
+        </div>
+      </div>
+      <button class="insect-listen" onclick="speak('사진 조각 퀴즈. 곤충 사진의 작은 부분을 보고 맞혀요.')">🔊 이 놀이 듣기</button>
+      <button class="mode-button" onclick="startInsectQuiz('photo')">🔎 사진 조각 퀴즈 시작</button>
     </div>
 
-    <div class="mode-card">
-      <div class="mode-title">👤 실루엣 맞히기</div>
-      <button class="mode-button" onclick="startInsectQuiz('silhouette')">시작하기</button>
+    <div class="mode-card insect-mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">🌑</div>
+        <div>
+          <div class="mode-title">그림자 퀴즈</div>
+          <div class="mode-desc">검은 그림자 모양을 보고 곤충을 맞혀요.</div>
+        </div>
+      </div>
+      <button class="insect-listen" onclick="speak('그림자 퀴즈. 검은 그림자 모양을 보고 어떤 곤충인지 맞혀요.')">🔊 이 놀이 듣기</button>
+      <button class="mode-button" onclick="startInsectQuiz('silhouette')">🌑 그림자 퀴즈 시작</button>
     </div>
 
-    <div class="mode-card">
-      <div class="mode-title">🧩 곤충 그림 퍼즐</div>
-      <button class="mode-button" onclick="showScreen('insectPuzzleChoose')">시작하기</button>
+    <div class="mode-card insect-mode-card">
+      <div class="mode-top">
+        <div class="mode-icon">🧩</div>
+        <div>
+          <div class="mode-title">곤충 퍼즐</div>
+          <div class="mode-desc">곤충 그림 조각을 제자리에 맞춰요.</div>
+        </div>
+      </div>
+      <button class="insect-listen" onclick="speak('곤충 퍼즐. 곤충 그림 조각을 제자리에 맞춰요.')">🔊 이 놀이 듣기</button>
+      <button class="mode-button" onclick="showScreen('insectPuzzleChoose')">🧩 곤충 퍼즐 시작</button>
     </div>
   </div>
 
