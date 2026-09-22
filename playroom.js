@@ -1,5 +1,5 @@
 /* Public entry points are real static directories, including on refresh. */
-const HOSU_DESTINATIONS = Object.freeze({ animal: '/animals/', math: '/math/', puzzle: '/puzzle/' });
+const HOSU_DESTINATIONS = Object.freeze({ animal: '/animals/', math: '/math/', insect: '/insects/', puzzle: '/puzzle/' });
 document.querySelectorAll('[data-room-link]').forEach(link => {
   link.href = HOSU_DESTINATIONS[link.dataset.roomLink];
 });
