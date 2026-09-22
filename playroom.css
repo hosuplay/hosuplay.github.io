@@ -24,3 +24,8 @@
 @keyframes room-twinkle{0%,100%{opacity:.6;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
 @media(max-width:600px){#roomScreen{padding:30px 10px 24px}.room-header{margin-bottom:22px}.room-header p{font-size:14px}.playroom{border-radius:18px}.room-object{border-width:2px;border-radius:12px}.object-label{padding:6px 9px;gap:3px;border-width:1.5px}.room-object.math{left:24%;width:25%;min-height:44px}.room-object.insect{left:53%;width:25%;min-height:44px}.room-caption{margin-top:23px;font-size:12px}.room-nav{gap:8px}.room-nav a{min-width:88px;padding:10px 14px}}
 @media(prefers-reduced-motion:reduce){.room-object::after{animation:none}.room-object,.object-label,.room-nav a{transition:none}}
+
+/* Cover the baked-in puzzle label typo with the correct clickable label. */
+.room-object.puzzle .object-label{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;padding:9px 14px;background:#fffdf5;border:2px solid #ce825e;border-radius:99px;box-shadow:0 3px 10px #67442226;font-size:clamp(12px,1.6vw,17px);font-weight:750;color:#c96832;transform:translateY(10%)}
+.room-object.puzzle .object-label b{color:#ce825e}
+@media(max-width:600px){.room-object.puzzle .object-label{padding:6px 9px;border-width:1.5px;transform:translateY(8%)}}
