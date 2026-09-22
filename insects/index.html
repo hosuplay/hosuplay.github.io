@@ -651,7 +651,11 @@ button:active:not(:disabled){
 </style>
 <link rel="stylesheet" href="/puzzle.css?v=3">
 <link rel="stylesheet" href="insects.css?v=1">
-</head>
+<style>
+.playroom-home-button{display:block;width:min(320px,calc(100% - 36px));margin:34px auto 28px;padding:14px 18px;border:2px solid #d8ceb7;border-radius:999px;background:#fffdf6;color:#5f533f;text-align:center;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 4px 14px rgba(90,70,40,.08)}
+.playroom-home-button:hover{background:#f3eedf}
+.playroom-home-button:focus-visible{outline:3px solid #477650;outline-offset:3px}
+</style></head>
 
 <body>
 
@@ -2906,6 +2910,7 @@ function speak(text){
 <script src="/sound-quiz.js?v=1"></script>
 <script src="/puzzle.js?v=4"></script>
 <script src="insect-data.js?v=1"></script>
+<a class="playroom-home-button" href="/" aria-label="플레이룸 메인화면으로 돌아가기">🏠 플레이룸으로 돌아가기</a>
 <script src="insect-quiz.js?v=3"></script>
 </body>
 </html>
