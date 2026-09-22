@@ -685,7 +685,11 @@ button:active:not(:disabled){
 </style>
 <link rel="stylesheet" href="puzzle.css?v=4">
 <link rel="stylesheet" href="playroom.css?v=1">
-</head>
+<style>
+.playroom-home-button{display:block;width:min(320px,calc(100% - 36px));margin:34px auto 28px;padding:14px 18px;border:2px solid #d8ceb7;border-radius:999px;background:#fffdf6;color:#5f533f;text-align:center;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 4px 14px rgba(90,70,40,.08)}
+.playroom-home-button:hover{background:#f3eedf}
+.playroom-home-button:focus-visible{outline:3px solid #477650;outline-offset:3px}
+</style></head>
 
 <body>
 
@@ -734,7 +738,6 @@ button:active:not(:disabled){
     </div>
 
   </div>
-  <a class="room-home-link" href="/">← 호수 플레이 방으로</a>
 
 </section>
 
@@ -994,7 +997,7 @@ button:active:not(:disabled){
  <button class="finish-button list" onclick="showModes()">🎮 다른 퀴즈 고르기</button>
  <button class="finish-button home" onclick="showHome()">🏠 처음으로</button></div>
 </section>
-<section id="puzzleChoose" class="screen"><a class="room-home-link" href="/">← 호수 플레이 방으로</a><h2 class="page-title">🧩 동물 그림 퍼즐</h2><p class="quiz-small">어떤 퍼즐을 해 볼까요?</p><div class="puzzle-levels"><button onclick="startPuzzle(3)">🌱 쉬운 퍼즐<small>9조각 · 3 × 3</small></button><button onclick="startPuzzle(4)">🌟 어려운 퍼즐<small>16조각 · 4 × 4</small></button></div><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
+<section id="puzzleChoose" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><p class="quiz-small">어떤 퍼즐을 해 볼까요?</p><div class="puzzle-levels"><button onclick="startPuzzle(3)">🌱 쉬운 퍼즐<small>9조각 · 3 × 3</small></button><button onclick="startPuzzle(4)">🌟 어려운 퍼즐<small>16조각 · 4 × 4</small></button></div><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
 <section id="puzzleScreen" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><div class="status"><span id="puzzleLevel"></span><span id="puzzleCount"></span></div><div class="puzzle-wrap"><button id="puzzleToggle" class="hint-button" onclick="togglePuzzleReference()">👀 완성 그림 보기</button><div><img id="puzzleReference" class="puzzle-reference" hidden alt="완성 그림"></div><div id="puzzleBoard" class="puzzle-board" role="group" aria-label="조각을 놓는 자리"></div><p id="puzzleMessage" class="puzzle-message" role="status"></p><button id="puzzleRetry" class="hint-button" onclick="startPuzzle(puzzleSize)" hidden>다시 시작하기</button><div id="puzzleTray" class="puzzle-tray" role="group" aria-label="그림 조각"></div><div id="puzzleComplete" hidden><button class="finish-button retry" onclick="nextPuzzle()">🧩 다른 동물 퍼즐</button></div></div><button class="back-button" onclick="openPuzzle()">← 난이도 고르기</button><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
 
 <section id="soundScreen" class="screen">
@@ -3207,6 +3210,7 @@ function speak(text){
 <script src="sound-quiz.js?v=1"></script>
 <script src="puzzle.js?v=20260921"></script>
 <script src="puzzle-touch.js?v=1"></script>
+<a class="playroom-home-button" href="/" aria-label="플레이룸 메인화면으로 돌아가기">🏠 플레이룸으로 돌아가기</a>
 <script src="playroom.js?v=20260921"></script>
 </body>
 </html>
