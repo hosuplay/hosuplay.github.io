@@ -10,8 +10,9 @@
   let path = old[location.hash] || location.pathname.replace(/index\.html$/, '');
   if (path === '/animals' || path === '/puzzle') path += '/';
   if (location.hash || path !== location.pathname) history.replaceState(null, '', path + location.search);
-  window.hosuEntry = path === '/animals/' ? 'homeScreen' : path === '/puzzle/' ? 'puzzleChoose' : 'roomScreen';
-  const image = path === '/animals/' ? 'animal-hero' : null;
+  window.hosuHabitat = path === '/animals/' && new URLSearchParams(location.search).get('habitat') === 'sea' ? 'sea' : 'land';
+  window.hosuEntry = path === '/animals/' ? (window.hosuHabitat === 'sea' ? 'seaMenu' : 'homeScreen') : path === '/puzzle/' ? 'puzzleChoose' : 'roomScreen';
+  const image = path === '/animals/' && window.hosuHabitat !== 'sea' ? 'animal-hero' : null;
   if (image) {
     const preload = document.createElement('link');
     preload.rel = 'preload'; preload.as = 'image'; preload.fetchPriority = 'high';
@@ -683,7 +684,7 @@ button:active:not(:disabled){
 @media(prefers-reduced-motion:reduce){.confetti-piece{animation:none;}}
 #silhouetteRetry[hidden]{display:none;}
 </style>
-<link rel="stylesheet" href="puzzle.css?v=4">
+<link rel="stylesheet" href="puzzle.css?v=5">
 <link rel="stylesheet" href="playroom.css?v=4">
 <style>
 .playroom-home-button{display:block;width:min(320px,calc(100% - 36px));margin:34px auto 28px;padding:14px 18px;border:2px solid #d8ceb7;border-radius:999px;background:#fffdf6;color:#5f533f;text-align:center;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 4px 14px rgba(90,70,40,.08)}
@@ -705,6 +706,7 @@ button:active:not(:disabled){
 <nav id="roomMenu" class="approved-hotspots" aria-label="놀이 고르기"></nav>
 </div>
 </section>
+<section id="seaMenu" class="screen"><a class="room-home-link" href="/animals/choose/">← 동물 고르기</a><h1 class="page-title">바다동물 퀴즈</h1><p id="seaStatus" class="quiz-small">준비중</p><div class="puzzle-levels"><button data-sea-mode="description" onclick="startSeaQuiz('description')" disabled>설명 듣고 맞히기</button><button data-sea-mode="photo" onclick="startSeaQuiz('photo')" disabled>사진 일부 보고 맞히기</button><button data-sea-mode="silhouette" onclick="startSeaQuiz('silhouette')" disabled>실루엣 맞히기</button></div></section>
 <section id="homeScreen" class="screen active">
 
   <div class="hero">
@@ -986,8 +988,8 @@ button:active:not(:disabled){
  <button class="finish-button list" onclick="showModes()">🎮 다른 퀴즈 고르기</button>
  <button class="finish-button home" onclick="showHome()">🏠 처음으로</button></div>
 </section>
-<section id="puzzleChoose" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><p class="quiz-small">어떤 퍼즐을 해 볼까요?</p><div class="puzzle-levels"><button onclick="startPuzzle(3)">🌱 쉬운 퍼즐<small>9조각 · 3 × 3</small></button><button onclick="startPuzzle(4)">🌟 어려운 퍼즐<small>16조각 · 4 × 4</small></button></div><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
-<section id="puzzleScreen" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><div class="status"><span id="puzzleLevel"></span><span id="puzzleCount"></span></div><div class="puzzle-wrap"><button id="puzzleToggle" class="hint-button" onclick="togglePuzzleReference()">👀 완성 그림 보기</button><div><img id="puzzleReference" class="puzzle-reference" hidden alt="완성 그림"></div><div id="puzzleBoard" class="puzzle-board" role="group" aria-label="조각을 놓는 자리"></div><p id="puzzleMessage" class="puzzle-message" role="status"></p><button id="puzzleRetry" class="hint-button" onclick="startPuzzle(puzzleSize)" hidden>다시 시작하기</button><div id="puzzleTray" class="puzzle-tray" role="group" aria-label="그림 조각"></div><div id="puzzleComplete" hidden><button class="finish-button retry" onclick="nextPuzzle()">🧩 다른 동물 퍼즐</button></div></div><button class="back-button" onclick="openPuzzle()">← 난이도 고르기</button><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
+<section id="puzzleChoose" class="screen"><a class="room-home-link" href="/">← 호수플레이</a><h2 id="puzzleChooseTitle" class="page-title">퍼즐 게임</h2><div id="puzzleCategories" class="puzzle-levels"></div><div id="puzzleDifficulties" class="puzzle-levels" hidden><button onclick="startPuzzle(3)">🌱 쉬운 퍼즐<small>9조각 · 3 × 3</small></button><button onclick="startPuzzle(4)">🌟 어려운 퍼즐<small>16조각 · 4 × 4</small></button></div><button id="puzzleCategoryBack" class="back-button" onclick="showPuzzleCategories()" hidden>← 퍼즐 종류 고르기</button></section>
+<section id="puzzleScreen" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><div class="status"><span id="puzzleLevel"></span><span id="puzzleCount"></span></div><div class="puzzle-wrap"><button class="hint-button" onclick="startPuzzle(puzzleSize,true)">🔀 다시 섞기</button><button id="puzzleToggle" class="hint-button" onclick="togglePuzzleReference()">👀 완성 그림 보기</button><div><img id="puzzleReference" class="puzzle-reference" hidden alt="완성 그림"></div><div id="puzzleBoard" class="puzzle-board" role="group" aria-label="조각을 놓는 자리"></div><p id="puzzleMessage" class="puzzle-message" role="status"></p><button id="puzzleRetry" class="hint-button" onclick="startPuzzle(puzzleSize)" hidden>다시 시작하기</button><div id="puzzleTray" class="puzzle-tray" role="group" aria-label="그림 조각"></div><div id="puzzleComplete" hidden><button class="finish-button retry" onclick="nextPuzzle()">🧩 다른 그림 퍼즐</button></div></div><button class="back-button" onclick="openPuzzle()">← 난이도 고르기</button><button class="back-button" onclick="showModes()">← 퀴즈 목록으로</button></section>
 
 <section id="soundScreen" class="screen">
  <div class="quiz-header"><h2 class="page-title">🔊 누구의 소리일까요?</h2><div class="quiz-small">진짜 동물 소리를 듣고 찾아요!</div></div>
@@ -2614,11 +2616,13 @@ function showScreen(id){
 }
 
 function showHome(){
+  if(window.hosuHabitat==='sea'){openSeaMenu();return;}
   speechSynthesis.cancel();
   showScreen("homeScreen");
 }
 
 function showModes(){
+  if(window.hosuHabitat==='sea'){openSeaMenu();return;}
   speechSynthesis.cancel();
   showScreen("modeScreen");
 }
@@ -2671,11 +2675,13 @@ function selectRound(){
   return shuffle(candidates.slice(0,Math.min(roundSize,candidates.length)));
 }
 
-function startHintQuiz(){
+function startHintQuiz(customQuestions){
+  if(!Array.isArray(customQuestions)&&window.hosuHabitat==='sea'){startSeaQuiz('description');return;}
 
   speechSynthesis.cancel();
 
-  quiz=selectRound();
+  quiz=Array.isArray(customQuestions)?shuffle(customQuestions):selectRound();
+  if(!quiz.length)return;
   maxScore=quiz.length * 5;
 
   current=0;
@@ -3193,13 +3199,17 @@ function speak(text){
 
 </script>
 
-<script src="photo-quiz.js?v=20260921"></script>
-<script src="silhouette-quiz.js?v=20260921"></script>
+<script src="photo-quiz.js?v=20260928"></script>
+<script src="silhouette-quiz.js?v=20260928"></script>
 <script src="footprint-quiz.js?v=20260921"></script>
 <script src="sound-quiz.js?v=1"></script>
-<script src="puzzle.js?v=20260921"></script>
+<script src="/animal-categories.js?v=2"></script>
+<script src="/insects/insect-data.js?v=1"></script>
+<script src="/puzzle-categories.js?v=1"></script>
+<script src="puzzle.js?v=20260928"></script>
 <script src="puzzle-touch.js?v=1"></script>
 <a class="playroom-home-button" href="/" aria-label="플레이룸 메인화면으로 돌아가기">🏠 플레이룸으로 돌아가기</a>
-<script src="playroom.js?v=5"></script>
+<script src="/sea-quiz.js?v=1"></script>
+<script src="playroom.js?v=6"></script>
 </body>
 </html>

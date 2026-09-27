@@ -23,3 +23,6 @@
 #puzzleScreen .puzzle-drag-source{opacity:.45}
 #puzzleScreen .puzzle-drop-target{outline:3px solid #edac28;outline-offset:-3px;background-color:#fff0be}
 .puzzle-touch-ghost{position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-65%);background-repeat:no-repeat;border:2px solid #efad25;border-radius:5px;box-shadow:0 5px 16px #0004;opacity:.92}
+
+/* Respect category/difficulty visibility despite the grid display rule. */
+#puzzleCategories[hidden],#puzzleDifficulties[hidden]{display:none}#puzzleCategories button:disabled{opacity:.6;cursor:default}

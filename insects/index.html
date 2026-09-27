@@ -712,8 +712,7 @@ button:active:not(:disabled){
   <div class="hero">
     <img class="insect-jar" src="insects/jar.png" alt="곤충 관찰통">
     <h1>어떤 곤충 놀이를 할까요?</h1>
-    <p>그림을 보고 고르거나 🔊 버튼을 눌러 들어보세요.</p>
-    <button class="insect-menu-guide" onclick="speak('어떤 곤충 놀이를 할까요? 각 놀이의 스피커 버튼을 누르면 설명을 들을 수 있어요.')">🔊 놀이 설명 듣기</button>
+    <p>하고 싶은 곤충 놀이를 골라 주세요.</p>
   </div>
 
   <div class="mode-grid insect-mode-grid">
@@ -725,7 +724,6 @@ button:active:not(:disabled){
           <div class="mode-desc">설명을 듣고 어떤 곤충인지 맞혀요.</div>
         </div>
       </div>
-      <button class="insect-listen" onclick="speak('힌트 퀴즈. 설명을 듣고 어떤 곤충인지 맞혀요.')">🔊 이 놀이 듣기</button>
       <button class="mode-button" onclick="startInsectQuiz('hint')">💡 힌트 퀴즈 시작</button>
     </div>
 
@@ -737,7 +735,6 @@ button:active:not(:disabled){
           <div class="mode-desc">곤충 사진의 작은 부분을 보고 맞혀요.</div>
         </div>
       </div>
-      <button class="insect-listen" onclick="speak('사진 조각 퀴즈. 곤충 사진의 작은 부분을 보고 맞혀요.')">🔊 이 놀이 듣기</button>
       <button class="mode-button" onclick="startInsectQuiz('photo')">🔎 사진 조각 퀴즈 시작</button>
     </div>
 
@@ -749,7 +746,6 @@ button:active:not(:disabled){
           <div class="mode-desc">검은 그림자 모양을 보고 곤충을 맞혀요.</div>
         </div>
       </div>
-      <button class="insect-listen" onclick="speak('그림자 퀴즈. 검은 그림자 모양을 보고 어떤 곤충인지 맞혀요.')">🔊 이 놀이 듣기</button>
       <button class="mode-button" onclick="startInsectQuiz('silhouette')">🌑 그림자 퀴즈 시작</button>
     </div>
 
@@ -761,8 +757,7 @@ button:active:not(:disabled){
           <div class="mode-desc">곤충 그림 조각을 제자리에 맞춰요.</div>
         </div>
       </div>
-      <button class="insect-listen" onclick="speak('곤충 퍼즐. 곤충 그림 조각을 제자리에 맞춰요.')">🔊 이 놀이 듣기</button>
-      <button class="mode-button" onclick="showScreen('insectPuzzleChoose')">🧩 곤충 퍼즐 시작</button>
+      <button class="mode-button" onclick="location.href='/puzzle/?category=insect'">🧩 곤충 퍼즐 시작</button>
     </div>
   </div>
 
@@ -778,7 +773,7 @@ button:active:not(:disabled){
 <section id="insectPuzzleChoose" class="screen"><h2 class="page-title">🧩 곤충 그림 퍼즐</h2><div class="puzzle-levels"><button onclick="startInsectPuzzle(3)">🧩 곤충 퍼즐 시작<small>3 × 3 · 9조각</small></button></div><button class="back-button" onclick="openInsects()">← 곤충 놀이 고르기</button></section>
 
 
-<section id="puzzleScreen" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><div class="status"><span id="puzzleLevel"></span><span id="puzzleCount"></span></div><div class="puzzle-wrap"><button id="puzzleToggle" class="hint-button" onclick="togglePuzzleReference()">👀 완성 그림 보기</button><div><img id="puzzleReference" class="puzzle-reference" hidden alt="완성 그림"></div><div id="puzzleBoard" class="puzzle-board" role="group" aria-label="조각을 놓는 자리"></div><p id="puzzleMessage" class="puzzle-message" role="status"></p><button id="puzzleRetry" class="hint-button" onclick="startPuzzle(puzzleSize)" hidden>다시 시작하기</button><div id="puzzleTray" class="puzzle-tray" role="group" aria-label="그림 조각"></div><div id="puzzleComplete" hidden><button class="finish-button retry" onclick="nextPuzzle()">🧩 다른 동물 퍼즐</button></div></div><button class="back-button" onclick="showScreen('insectPuzzleChoose')">← 난이도 고르기</button><button class="back-button" onclick="openInsects()">← 퀴즈 목록으로</button></section>
+<section id="puzzleScreen" class="screen"><h2 class="page-title">🧩 동물 그림 퍼즐</h2><div class="status"><span id="puzzleLevel"></span><span id="puzzleCount"></span></div><div class="puzzle-wrap"><button id="puzzleToggle" class="hint-button" onclick="togglePuzzleReference()">👀 완성 그림 보기</button><div><img id="puzzleReference" class="puzzle-reference" hidden alt="완성 그림"></div><div id="puzzleBoard" class="puzzle-board" role="group" aria-label="조각을 놓는 자리"></div><p id="puzzleMessage" class="puzzle-message" role="status"></p><button id="puzzleRetry" class="hint-button" onclick="startPuzzle(puzzleSize)" hidden>다시 시작하기</button><div id="puzzleTray" class="puzzle-tray" role="group" aria-label="그림 조각"></div><div id="puzzleComplete" hidden><button class="finish-button retry" onclick="nextPuzzle()">🧩 다른 동물 퍼즐</button></div></div><button class="back-button" onclick="location.href='/puzzle/?category=insect'">← 난이도 고르기</button><button class="back-button" onclick="openInsects()">← 퀴즈 목록으로</button></section>
 
 
 
@@ -2937,9 +2932,9 @@ function speak(text){
 <script src="/photo-quiz.js?v=3"></script>
 <script src="/silhouette-quiz.js?v=1"></script>
 <script src="/sound-quiz.js?v=1"></script>
-<script src="/puzzle.js?v=4"></script>
+
 <script src="insect-data.js?v=1"></script>
 <a class="playroom-home-button" href="/" aria-label="플레이룸 메인화면으로 돌아가기">🏠 플레이룸으로 돌아가기</a>
-<script src="insect-quiz.js?v=3"></script>
+<script src="insect-quiz.js?v=4"></script>
 </body>
 </html>

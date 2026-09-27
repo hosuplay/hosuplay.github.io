@@ -2,15 +2,16 @@
 let puzzleSize=3,puzzleAnimal=null,puzzleSelected=null,puzzlePlaced=new Set(),puzzleOrder=[],puzzleToken=0,puzzleBag=[];
 let puzzleImageURL=null;
 const puzzleEl=id=>document.getElementById('puzzle'+id);
-function openPuzzle(){speechSynthesis.cancel();showScreen('puzzleChoose');}
-function startPuzzle(size){
+function openPuzzle(){speechSynthesis.cancel();const key=new URLSearchParams(location.search).get('category');if(HOSU_PUZZLE_CATEGORIES[key]?.ready)choosePuzzleCategory(key);else showPuzzleCategories();}
+function startPuzzle(size,keepImage=false){
+ const category=puzzleCategoryData();if(!category?.ready||!category.images().length){showPuzzleCategories();return;}
  puzzleSize=size===4?4:3;const token=++puzzleToken;puzzleSelected=null;puzzlePlaced=new Set();
- if(!puzzleBag.length)puzzleBag=shufflePhotos(photoAnimals);
- puzzleAnimal=puzzleBag.pop();showScreen('puzzleScreen');
+ if(!keepImage||!puzzleAnimal){if(!puzzleBag.length)puzzleBag=shufflePhotos(category.images());puzzleAnimal=puzzleBag.pop();}
+ document.querySelector("#puzzleScreen .page-title").textContent="🧩 "+category.label+" 퍼즐";showScreen('puzzleScreen');
  puzzleEl('Tray').hidden=false;puzzleEl('Board').innerHTML='';puzzleEl('Tray').innerHTML='';puzzleEl('Complete').hidden=true;puzzleEl('Retry').hidden=true;puzzleEl('Reference').hidden=true;
  if(puzzleImageURL){URL.revokeObjectURL(puzzleImageURL);puzzleImageURL=null;}
  puzzleEl('Reference').removeAttribute('src');
- puzzleEl('Toggle').textContent='👀 완성 그림 보기';puzzleEl('Message').textContent='동물 그림을 불러오고 있어요…';puzzleEl('Count').textContent=`0 / ${puzzleSize*puzzleSize}`;
+ puzzleEl('Toggle').textContent='👀 완성 그림 보기';puzzleEl('Message').textContent='그림을 불러오고 있어요…';puzzleEl('Count').textContent=`0 / ${puzzleSize*puzzleSize}`;
  puzzleEl('Level').textContent=puzzleSize===3?'쉬움 · 9조각':'어려움 · 16조각';
  const img=new Image();img.fetchPriority='high';img.decoding='async';img.onload=()=>{if(token!==puzzleToken)return;
   // Fit the entire selected picture into a square before making equal tiles.
@@ -32,7 +33,7 @@ function startPuzzle(size){
   puzzleOrder.forEach((i,index)=>{const piece=document.createElement('button');piece.className='puzzle-piece';piece.dataset.piece=i;piece.draggable=true;piece.setAttribute('aria-label',`${index+1}번 그림 조각`);piece.setAttribute('aria-pressed','false');piece.style.backgroundImage=`url("${url}")`;piece.style.backgroundSize=`${puzzleSize*100}% ${puzzleSize*100}%`;piece.style.backgroundPosition=`${i%puzzleSize/(puzzleSize-1)*100}% ${Math.floor(i/puzzleSize)/(puzzleSize-1)*100}%`;piece.onclick=()=>selectPuzzlePiece(i);piece.ondragstart=e=>{selectPuzzlePiece(i);e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'};tray.append(piece)});
   puzzleEl('Message').textContent='옆으로 넘겨 고르고, 위로 끌어 놓거나 조각과 빈칸을 눌러요!';
   },'image/png');
- };img.onerror=()=>{if(token!==puzzleToken)return;puzzleEl('Message').textContent='그림을 불러오지 못했어요. 다시 시작해 주세요.';puzzleEl('Retry').hidden=false};img.src=puzzleAnimal.atlas?(puzzleAnimal.src||'insects/atlas.png'):`photos/${puzzleAnimal.id}.webp`;
+ };img.onerror=()=>{if(token!==puzzleToken)return;puzzleEl('Message').textContent='그림을 불러오지 못했어요. 다시 시작해 주세요.';puzzleEl('Retry').hidden=false};img.src=puzzleAnimal.atlas?(puzzleAnimal.src||'/insects/insects/atlas.png'):(puzzleAnimal.src||`photos/${puzzleAnimal.id}.webp`);
 }
 function selectPuzzlePiece(i){if(puzzlePlaced.has(i))return;puzzleSelected=i;puzzleEl('Tray').querySelectorAll('button').forEach(b=>{const selected=Number(b.dataset.piece)===i;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected))});puzzleEl('Message').textContent='이 조각이 들어갈 빈칸을 눌러요.';}
 function placePuzzlePiece(slot){

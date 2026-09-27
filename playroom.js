@@ -13,7 +13,7 @@ function routePlayroom() {
   const path = legacy[location.hash] || location.pathname;
   if (location.hash) history.replaceState(null, '', path + location.search);
   speechSynthesis.cancel();
-  if (path === '/animals/') showScreen('homeScreen');
+  if (path === '/animals/') {if(window.hosuHabitat==='sea')openSeaMenu();else showScreen('homeScreen');}
   else if (path === '/puzzle/') openPuzzle();
   else showScreen('roomScreen');
 }

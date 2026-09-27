@@ -87,9 +87,11 @@ const photoHistoryKey='hosu-play-photo-seen-v1';
 let photoSeen=[];
 try{const saved=JSON.parse(localStorage.getItem(photoHistoryKey)||'[]');if(Array.isArray(saved))photoSeen=[...new Set(saved.filter(id=>photoAnimals.some(q=>q.id===id)))];}catch(e){}
 const photoEl=id=>document.getElementById(id);
-function startPhotoQuiz(){
+function startPhotoQuiz(customQuestions){
+ if(!Array.isArray(customQuestions)&&window.hosuHabitat==='sea'){startSeaQuiz('photo');return;}
  speechSynthesis.cancel();
- const candidates=shufflePhotos(photoAnimals);
+ const candidates=shufflePhotos(Array.isArray(customQuestions)?customQuestions:photoAnimals);
+ if(!candidates.length)return;
  candidates.sort((a,b)=>photoSeen.indexOf(a.id)-photoSeen.indexOf(b.id));
  const selected=candidates.slice(0,20);
  photoRound=[...shufflePhotos(selected.filter(q=>!photoSeen.includes(q.id))),...shufflePhotos(selected.filter(q=>photoSeen.includes(q.id)))];photoIndex=0;photoScore=0;
