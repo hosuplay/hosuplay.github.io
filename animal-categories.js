@@ -1,0 +1,1 @@
+window.HOSU_ANIMAL_CATEGORIES = Object.freeze({"land": {"label": "육지동물", "ready": true, "href": "/animals/"}, "sea": {"label": "바다동물", "ready": false, "href": "/animals/sea/", "modes": ["description", "photo", "silhouette"], "questions": [], "puzzleImages": []}});
