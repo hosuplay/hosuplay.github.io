@@ -10,9 +10,8 @@
   let path = old[location.hash] || location.pathname.replace(/index\.html$/, '');
   if (path === '/animals' || path === '/puzzle') path += '/';
   if (location.hash || path !== location.pathname) history.replaceState(null, '', path + location.search);
-  window.hosuHabitat = path === '/animals/' && new URLSearchParams(location.search).get('habitat') === 'sea' ? 'sea' : 'land';
-  window.hosuEntry = path === '/animals/' ? (window.hosuHabitat === 'sea' ? 'seaMenu' : 'homeScreen') : path === '/puzzle/' ? 'puzzleChoose' : 'roomScreen';
-  const image = path === '/animals/' && window.hosuHabitat !== 'sea' ? 'animal-hero' : null;
+  window.hosuEntry = path === '/animals/' ? 'homeScreen' : path === '/puzzle/' ? 'puzzleChoose' : 'roomScreen';
+  const image = path === '/animals/' ? 'animal-hero' : null;
   if (image) {
     const preload = document.createElement('link');
     preload.rel = 'preload'; preload.as = 'image'; preload.fetchPriority = 'high';
@@ -706,7 +705,6 @@ button:active:not(:disabled){
 <nav id="roomMenu" class="approved-hotspots" aria-label="놀이 고르기"></nav>
 </div>
 </section>
-<section id="seaMenu" class="screen"><a class="room-home-link" href="/animals/choose/">← 동물 고르기</a><h1 class="page-title">바다동물 퀴즈</h1><p id="seaStatus" class="quiz-small">준비중</p><div class="puzzle-levels"><button data-sea-mode="description" onclick="startSeaQuiz('description')" disabled>설명 듣고 맞히기</button><button data-sea-mode="photo" onclick="startSeaQuiz('photo')" disabled>사진 일부 보고 맞히기</button><button data-sea-mode="silhouette" onclick="startSeaQuiz('silhouette')" disabled>실루엣 맞히기</button></div></section>
 <section id="homeScreen" class="screen active">
 
   <div class="hero">
@@ -2616,13 +2614,11 @@ function showScreen(id){
 }
 
 function showHome(){
-  if(window.hosuHabitat==='sea'){openSeaMenu();return;}
   speechSynthesis.cancel();
   showScreen("homeScreen");
 }
 
 function showModes(){
-  if(window.hosuHabitat==='sea'){openSeaMenu();return;}
   speechSynthesis.cancel();
   showScreen("modeScreen");
 }
@@ -2676,8 +2672,6 @@ function selectRound(){
 }
 
 function startHintQuiz(customQuestions){
-  if(!Array.isArray(customQuestions)&&window.hosuHabitat==='sea'){startSeaQuiz('description');return;}
-
   speechSynthesis.cancel();
 
   quiz=Array.isArray(customQuestions)?shuffle(customQuestions):selectRound();
@@ -3203,13 +3197,12 @@ function speak(text){
 <script src="silhouette-quiz.js?v=20260928"></script>
 <script src="footprint-quiz.js?v=20260921"></script>
 <script src="sound-quiz.js?v=1"></script>
-<script src="/animal-categories.js?v=2"></script>
+<script src="/animal-categories.js?v=3"></script>
 <script src="/insects/insect-data.js?v=1"></script>
-<script src="/puzzle-categories.js?v=1"></script>
-<script src="puzzle.js?v=20260928"></script>
+<script src="/puzzle-categories.js?v=2"></script>
+<script src="puzzle.js?v=20260930"></script>
 <script src="puzzle-touch.js?v=1"></script>
 <a class="playroom-home-button" href="/" aria-label="플레이룸 메인화면으로 돌아가기">🏠 플레이룸으로 돌아가기</a>
-<script src="/sea-quiz.js?v=1"></script>
-<script src="playroom.js?v=6"></script>
+<script src="playroom.js?v=7"></script>
 </body>
 </html>
