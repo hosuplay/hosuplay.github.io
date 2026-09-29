@@ -2,7 +2,7 @@
 let puzzleSize=3,puzzleAnimal=null,puzzleSelected=null,puzzlePlaced=new Set(),puzzleOrder=[],puzzleToken=0,puzzleBag=[];
 let puzzleImageURL=null;
 const puzzleEl=id=>document.getElementById('puzzle'+id);
-function openPuzzle(){speechSynthesis.cancel();const key=new URLSearchParams(location.search).get('category');if(HOSU_PUZZLE_CATEGORIES[key]?.ready)choosePuzzleCategory(key);else showPuzzleCategories();}
+function openPuzzle(){speechSynthesis.cancel();let key=new URLSearchParams(location.search).get('category');if(key==='land')key='animal';if(HOSU_PUZZLE_CATEGORIES[key]?.ready)choosePuzzleCategory(key);else showPuzzleCategories();}
 function startPuzzle(size,keepImage=false){
  const category=puzzleCategoryData();if(!category?.ready||!category.images().length){showPuzzleCategories();return;}
  puzzleSize=size===4?4:3;const token=++puzzleToken;puzzleSelected=null;puzzlePlaced=new Set();
