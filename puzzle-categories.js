@@ -1,6 +1,5 @@
 const HOSU_PUZZLE_CATEGORIES = Object.freeze({
- land:{label:'육지동물',ready:true,images:()=>photoAnimals},
- sea:{label:'바다동물',ready:false,images:()=>window.HOSU_ANIMAL_CATEGORIES?.sea.puzzleImages||[]},
+ animal:{label:'동물',ready:true,images:()=>photoAnimals},
  insect:{label:'곤충',ready:true,images:()=>insectAnimals.map(q=>({...q,src:'/insects/insects/atlas.png',atlas:q}))},
  dinosaur:{label:'공룡',ready:false,images:()=>[]}
 });
