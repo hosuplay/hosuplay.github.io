@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>최짱 링크홈</title>
+  <meta name="description" content="블로그, 쿠팡 추천, 유튜브를 한곳에 모은 링크홈">
+  <style>
+    :root{--card:#fffdfd;--text:#3e3135;--sub:#8d7a80;--accent:#b86f80;--shadow:0 10px 30px rgba(91,58,66,.10);--radius:28px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:linear-gradient(180deg,#f7d9de 0%,#fcebed 100%);color:var(--text)}
+    .wrap{width:min(680px,100%);margin:0 auto;padding:36px 18px 64px;min-height:100vh}
+    .hero{text-align:center;padding:18px 10px 24px}
+    .avatar{width:108px;height:108px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,#fff,#e9c8cf);display:grid;place-items:center;font-size:46px;box-shadow:var(--shadow);border:4px solid rgba(255,255,255,.75)}
+    h1{font-size:30px;margin:0 0 8px;letter-spacing:-.5px}.bio{margin:0;color:var(--sub);font-size:15px;line-height:1.6}
+    .section-title{margin:26px 4px 12px;font-size:15px;color:#6d5960;font-weight:800}
+    .card{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.93);border:1px solid rgba(255,255,255,.8);border-radius:var(--radius);padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit;box-shadow:var(--shadow)}
+    .icon{flex:0 0 56px;width:56px;height:56px;border-radius:18px;background:#f6e8eb;display:grid;place-items:center;font-size:27px}
+    .txt{min-width:0;flex:1}.title{font-size:18px;font-weight:850;margin-bottom:3px}.desc{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.arrow{font-size:24px;color:#bca8ae}
+    .featured{background:#fff;padding:20px;border-radius:32px;box-shadow:var(--shadow);margin-top:12px}.featured h2{font-size:20px;margin:0 0 8px}.featured p{margin:0 0 14px;color:var(--sub);font-size:14px;line-height:1.55}
+    .btn{display:block;text-align:center;padding:14px 16px;border-radius:18px;background:var(--accent);color:#fff;font-weight:800;text-decoration:none}
+    footer{text-align:center;color:#a38d94;font-size:12px;padding-top:30px;line-height:1.7}
+    @media (max-width:430px){.wrap{padding-top:24px}h1{font-size:27px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="avatar">☕</div>
+      <h1>최짱의 작은 링크홈</h1>
+      <p class="bio">엄마 영어 · 아이들 놀이학습 · 블로그 · 유튜브<br>내가 직접 써보고 만든 것만 모아두는 곳</p>
+    </section>
+
+    <div class="section-title">먼저 블로그로 👀</div>
+    <a class="card" href="https://m.blog.naver.com/sanghee96/224415158613" target="_blank" rel="noopener">
+      <div class="icon">✍️</div>
+      <div class="txt"><div class="title">아이들 수학 · 동물퀴즈 블로그</div><div class="desc">블로그 글 보고 수학문제·동물퀴즈 웹으로 들어가기</div></div>
+      <div class="arrow">›</div>
+    </a>
+
+    <section class="featured">
+      <h2>☕ 엄마영어</h2>
+      <p>왕초보 엄마가 하루 5~10분씩 복습하는 영어. 단어, 듣기, 테스트, 오답 복습까지.</p>
+      <a class="btn" href="#" onclick="return false;">엄마영어 준비중</a>
+    </section>
+
+    <div class="section-title">쿠팡 추천템 🛒</div>
+    <a class="card" href="https://link.coupang.com/a/htsrSpM7xc" target="_blank" rel="nofollow sponsored noopener">
+      <div class="icon">🛍️</div>
+      <div class="txt"><div class="title">쿠팡 추천템</div><div class="desc">내가 직접 골라본 추천 제품 보러가기</div></div>
+      <div class="arrow">›</div>
+    </a>
+
+    <div class="section-title">영상으로 보기 🎥</div>
+    <a class="card" href="https://youtube.com/channel/UCnPuVIcEs4c5liQbNWVN2xQ?si=pDJ0fypv32K9DUHR" target="_blank" rel="noopener">
+      <div class="icon">▶️</div>
+      <div class="txt"><div class="title">YouTube</div><div class="desc">아이들, 공부, 일상, 만들기 영상</div></div>
+      <div class="arrow">›</div>
+    </a>
+
+    <footer>이 페이지에는 쿠팡 파트너스 제휴 링크가 포함되어 있으며, 구매 시 일정액의 수수료를 제공받을 수 있습니다.<br>© 최짱</footer>
+  </main>
+</body>
+</html>
