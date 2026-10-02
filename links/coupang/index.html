@@ -6,35 +6,47 @@
   <title>최짱 쿠팡 추천템</title>
   <meta name="description" content="직접 써보고 괜찮았던 쿠팡 추천템 모음">
   <style>
-    :root{--bg1:#f7d9de;--bg2:#fcebed;--card:#fff;--text:#3e3135;--sub:#8d7a80;--accent:#b86f80;--shadow:0 10px 30px rgba(91,58,66,.10);--radius:24px}
+    :root{--bg:#fff7f3;--card:#fff;--text:#33292c;--sub:#88777c;--accent:#e68ca0;--accent2:#f5bcc8;--line:#f1e6e8;--shadow:0 8px 24px rgba(79,52,59,.10)}
     *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text)}
-    .wrap{width:min(760px,100%);margin:0 auto;padding:24px 16px 64px;min-height:100vh}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-    .back{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#6d5960;font-weight:800;background:rgba(255,255,255,.75);padding:10px 13px;border-radius:16px}
-    h1{font-size:29px;margin:8px 0 6px;letter-spacing:-.5px}
-    .intro{margin:0;color:var(--sub);line-height:1.6;font-size:14px}
-    .chips{display:flex;gap:8px;overflow-x:auto;padding:16px 0 6px;scrollbar-width:none}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:linear-gradient(180deg,#fff8f5 0%,#fdecef 100%);color:var(--text)}
+    .wrap{width:min(860px,100%);margin:0 auto;padding:20px 14px 64px;min-height:100vh}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .back{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#66575b;font-weight:850;background:#fff;padding:10px 13px;border-radius:16px;box-shadow:var(--shadow)}
+    .hero{background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);border-radius:28px;padding:22px 18px;box-shadow:var(--shadow)}
+    .eyebrow{font-size:13px;font-weight:900;color:#b66d7e;margin-bottom:4px}
+    h1{font-size:31px;line-height:1.18;margin:0 0 8px;letter-spacing:-.8px}
+    .intro{margin:0;color:var(--sub);font-size:14px;line-height:1.55}
+    .chips{display:flex;gap:8px;overflow-x:auto;padding:15px 1px 3px;scrollbar-width:none;position:sticky;top:0;z-index:5;background:linear-gradient(180deg,rgba(255,248,245,.96),rgba(255,248,245,.88),transparent)}
     .chips::-webkit-scrollbar{display:none}
-    .chip{flex:0 0 auto;text-decoration:none;color:#604d53;background:rgba(255,255,255,.82);padding:9px 12px;border-radius:999px;font-size:13px;font-weight:800}
-    .section{scroll-margin-top:12px;margin-top:28px}
-    .section h2{font-size:20px;margin:0 0 12px}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .item{background:rgba(255,255,255,.95);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:175px}
-    .emoji{font-size:30px;margin-bottom:8px}
-    .name{font-size:17px;font-weight:900;line-height:1.35;margin-bottom:7px}
-    .note{font-size:13px;color:var(--sub);line-height:1.55;flex:1}
-    .buy{margin-top:14px;text-align:center;text-decoration:none;background:var(--accent);color:white;font-weight:850;padding:11px 12px;border-radius:15px}
-    .small{font-size:12px;color:#9a858c;line-height:1.6;margin-top:14px}
-    footer{text-align:center;color:#9d8990;font-size:12px;line-height:1.7;padding-top:30px}
-    @media(max-width:520px){.grid{grid-template-columns:1fr}.wrap{padding-top:18px}h1{font-size:26px}}
+    .chip{flex:0 0 auto;text-decoration:none;color:#5f5054;background:#fff;padding:10px 13px;border-radius:999px;font-size:13px;font-weight:850;box-shadow:0 4px 12px rgba(79,52,59,.08)}
+    .section{scroll-margin-top:68px;margin-top:30px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:0 2px 12px}
+    .section h2{font-size:21px;margin:0;letter-spacing:-.3px}
+    .section-sub{font-size:12px;color:var(--sub)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .item{display:block;text-decoration:none;color:inherit;background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.95);transition:transform .12s ease}
+    .item:active{transform:scale(.985)}
+    .thumb{aspect-ratio:1.12/1;display:grid;place-items:center;position:relative;overflow:hidden;background:linear-gradient(145deg,#f8e4e8,#fff7f0)}
+    .thumb .big{font-size:58px;filter:drop-shadow(0 6px 7px rgba(77,54,59,.08))}
+    .thumb .tag{position:absolute;left:10px;top:10px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);padding:5px 8px;border-radius:999px;font-size:11px;font-weight:850;color:#7f666d}
+    .body{padding:12px 12px 13px}
+    .name{font-size:15px;font-weight:950;line-height:1.35;margin-bottom:5px}
+    .note{font-size:12.5px;color:var(--sub);line-height:1.48;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:37px}
+    .go{margin-top:9px;font-size:12px;font-weight:900;color:#c46f82}
+    footer{text-align:center;color:#9c878e;font-size:11.5px;line-height:1.7;padding-top:34px}
+    @media(max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding-top:16px}h1{font-size:28px}.thumb .big{font-size:50px}}
+    @media(max-width:360px){.grid{gap:9px}.body{padding:10px}.name{font-size:14px}.note{font-size:12px}}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <div class="top"><a class="back" href="/links/">← 링크홈</a></div>
-    <h1>쿠팡 추천템 🛒</h1>
-    <p class="intro">내가 실제로 오래 쓰거나, 집에서 자주 손이 가는 것들 위주로 모아뒀어요. 카테고리 눌러서 편하게 보면 돼요.</p>
+    <div class="top"><a class="back" href="/links/">⌂ 링크홈으로</a></div>
+    <section class="hero">
+      <div class="eyebrow">최짱의 찐사용 추천</div>
+      <h1>쿠팡 추천템 🛒</h1>
+      <p class="intro">내가 써보고 좋았던 것만 모아뒀어요 😊<br>카드 아무 데나 누르면 바로 상품으로 가요.</p>
+    </section>
 
     <nav class="chips" aria-label="카테고리">
       <a class="chip" href="#kids">아이들 추천템</a>
@@ -45,59 +57,59 @@
       <a class="chip" href="#beauty">향기·헤어</a>
     </nav>
 
+
     <section class="section" id="kids">
-      <h2>아이들 추천템 👟✏️</h2>
+      <div class="section-head"><h2>아이들 추천템 👟✏️</h2><span class="section-sub">학교 준비 · 사이즈 체크</span></div>
       <div class="grid">
-        <article class="item"><div class="emoji">✏️</div><div class="name">소리 안 나는 천 필통 1</div><div class="note">초1 준비할 때 학교에서 소리 안 나는 천 재질 필통을 가져오라고 하는 경우가 있어서 골라둔 것.</div><a class="buy" href="https://link.coupang.com/a/hvCP4XXy9s" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">✏️</div><div class="name">소리 안 나는 천 필통 2</div><div class="note">필통은 취향도 있어서 두 개 정도 비교해보려고 같이 추천.</div><a class="buy" href="https://link.coupang.com/a/hvCTgHm7dQ" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">📏</div><div class="name">아이 발 사이즈 측정기</div><div class="note">아이들은 발이 금방 커서 실내화나 운동화 살 때 집에서 미리 재보기 좋음.</div><a class="buy" href="https://link.coupang.com/a/hvDSJx5AWW" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
+        <a class="item" href="https://link.coupang.com/a/hvCP4XXy9s" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">초1 준비</span><span class="big">✏️</span></div><div class="body"><div class="name">소리 안 나는 천 필통 1</div><div class="note">학교에서 천 재질 필통 준비할 때 보기 좋은 후보.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvCTgHm7dQ" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">초1 준비</span><span class="big">🧸</span></div><div class="body"><div class="name">소리 안 나는 천 필통 2</div><div class="note">필통은 취향 있으니까 두 개 같이 비교해보기.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDSJx5AWW" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">아이템</span><span class="big">📏</span></div><div class="body"><div class="name">아이 발 사이즈 측정기</div><div class="note">실내화나 운동화 사기 전에 집에서 바로 재보기 좋음.</div><div class="go">바로 보기 ↗</div></div></a>
       </div>
     </section>
 
     <section class="section" id="snack">
-      <h2>아이들 간식 🍡</h2>
+      <div class="section-head"><h2>아이들 간식 🍡</h2><span class="section-sub">집에 두고 자주 먹는 것</span></div>
       <div class="grid">
-        <article class="item"><div class="emoji">🍡</div><div class="name">꿀떡</div><div class="note">아이들 간식으로 편하게 두고 먹기 좋은 꿀떡.</div><a class="buy" href="https://link.coupang.com/a/hvDkSd2Ggm" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🧇</div><div class="name">와플기계에 구워먹는 간식</div><div class="note">이건 와플기계에 구워먹으면 짱맛 ㅋㅋ</div><a class="buy" href="https://link.coupang.com/a/hvDnJZfVdI" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🍪</div><div class="name">아이들 간식 추천 1</div><div class="note">집에 두고 먹기 좋아서 간식 목록에 같이 넣은 제품.</div><a class="buy" href="https://link.coupang.com/a/hvDhIEp3On" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🍪</div><div class="name">아이들 간식 추천 2</div><div class="note">아이들 간식으로 같이 골라둔 제품.</div><a class="buy" href="https://link.coupang.com/a/hvDjAgPYFE" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
+        <a class="item" href="https://link.coupang.com/a/hvDkSd2Ggm" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">간식</span><span class="big">🍡</span></div><div class="body"><div class="name">꿀떡</div><div class="note">아이들 간식으로 편하게 두고 먹기 좋음.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDnJZfVdI" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">간식</span><span class="big">🧇</span></div><div class="body"><div class="name">와플기계에 구워먹는 간식</div><div class="note">이건 와플기계에 구워먹으면 짱맛 ㅋㅋ</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDhIEp3On" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">간식</span><span class="big">🍪</span></div><div class="body"><div class="name">아이들 간식 추천 1</div><div class="note">집에 두고 먹기 좋아서 같이 골라둔 것.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDjAgPYFE" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">간식</span><span class="big">🥨</span></div><div class="body"><div class="name">아이들 간식 추천 2</div><div class="note">아이들 간식으로 같이 골라둔 제품.</div><div class="go">바로 보기 ↗</div></div></a>
       </div>
     </section>
 
     <section class="section" id="home">
-      <h2>엄마 살림 추천템 🏠</h2>
+      <div class="section-head"><h2>엄마 살림 추천템 🏠</h2><span class="section-sub">손 자주 가는 실사용템</span></div>
       <div class="grid">
-        <article class="item"><div class="emoji">🧹</div><div class="name">핸드청소기</div><div class="note">5년 넘게 썼는데 이번에 망가져서 다시 사려고 함 ㅋㅋ 작고 바로바로 쓰기 편해서 손이 진짜 자주 감.</div><a class="buy" href="https://link.coupang.com/a/hvCEe0nYEC" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🥬</div><div class="name">파채 기계</div><div class="note">고기 먹을 때 파를 많이 먹어서 파채 만들 때 쓰기 편함.</div><a class="buy" href="https://link.coupang.com/a/hvCLrd53cG" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
+        <a class="item" href="https://link.coupang.com/a/hvCEe0nYEC" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">5년+ 사용</span><span class="big">🧹</span></div><div class="body"><div class="name">핸드청소기</div><div class="note">5년 넘게 쓰다 망가져서 다시 살 정도 ㅋㅋ 작고 바로 쓰기 편함.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvCLrd53cG" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">주방</span><span class="big">🥬</span></div><div class="body"><div class="name">파채 기계</div><div class="note">고기 먹을 때 파를 많이 먹어서 파채 만들 때 편함.</div><div class="go">바로 보기 ↗</div></div></a>
       </div>
     </section>
 
     <section class="section" id="laundry">
-      <h2>세탁·청소 🧺</h2>
+      <div class="section-head"><h2>세탁·청소 🧺</h2><span class="section-sub">냄새 · 얼룩 · 텀블러까지</span></div>
       <div class="grid">
-        <article class="item"><div class="emoji">🧴</div><div class="name">땀냄새 잡는 세탁세제</div><div class="note">땀냄새 원인균 자체를 잡아주는 타입이라 써보고 만족했던 세탁세제.</div><a class="buy" href="https://link.coupang.com/a/hvCX2M2N2G" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">✨</div><div class="name">세탁 부스터</div><div class="note">위 세제랑 같이 쓰면 효과 업. 땀냄새 신경 쓰일 때 같이 쓰는 조합.</div><a class="buy" href="https://link.coupang.com/a/hvC1dkuXjU" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🫧</div><div class="name">레인보우샵 세척템 1</div><div class="note">빨래 때가 안 지거나 뭐 묻었을 때, 텀블러 세척할 때까지 두루 쓰는 살림템.</div><a class="buy" href="https://link.coupang.com/a/hvC5nbQm3E" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🫧</div><div class="name">레인보우샵 세척템 2</div><div class="note">과탄산소다·구연산 계열은 사두면 세탁이랑 주방 세척에 은근 자주 씀.</div><a class="buy" href="https://link.coupang.com/a/hvDbF0EuA0" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🫧</div><div class="name">레인보우샵 세척템 3</div><div class="note">빨래 얼룩이나 텀블러 세척할 때 같이 돌려 쓰기 좋은 기본 세척템.</div><a class="buy" href="https://link.coupang.com/a/hvDcOWW04G" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
+        <a class="item" href="https://link.coupang.com/a/hvCX2M2N2G" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">세탁</span><span class="big">🧴</span></div><div class="body"><div class="name">땀냄새 잡는 세탁세제</div><div class="note">땀냄새 원인균을 잡는 타입이라 써보고 만족했던 세제.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvC1dkuXjU" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">같이 쓰기</span><span class="big">✨</span></div><div class="body"><div class="name">세탁 부스터</div><div class="note">세제랑 같이 쓰면 효과 업. 땀냄새 신경 쓰일 때 같이 씀.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvC5nbQm3E" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">세척</span><span class="big">🫧</span></div><div class="body"><div class="name">레인보우샵 세척템 1</div><div class="note">빨래 얼룩이나 텀블러 세척할 때 두루 쓰는 살림템.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDbF0EuA0" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">세척</span><span class="big">🧼</span></div><div class="body"><div class="name">레인보우샵 세척템 2</div><div class="note">사두면 세탁이랑 주방 세척에 은근 자주 씀.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDcOWW04G" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">세척</span><span class="big">🪣</span></div><div class="body"><div class="name">레인보우샵 세척템 3</div><div class="note">빨래 얼룩이나 텀블러 세척할 때 같이 돌려 쓰기 좋음.</div><div class="go">바로 보기 ↗</div></div></a>
       </div>
     </section>
 
     <section class="section" id="food">
-      <h2>먹는 거·식탁템 🍚</h2>
+      <div class="section-head"><h2>먹는 거·식탁템 🍚</h2><span class="section-sub">밥상에 자주 올라오는 것</span></div>
       <div class="grid">
-        <article class="item"><div class="emoji">🍙</div><div class="name">곱창김</div><div class="note">밥 먹을 때 꺼내두기 좋은 김. 파채랑 같이 식탁템 쪽에 넣어둠 ㅋㅋ</div><a class="buy" href="https://link.coupang.com/a/hvDOYFUCt2" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
+        <a class="item" href="https://link.coupang.com/a/hvDOYFUCt2" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">식탁</span><span class="big">🍙</span></div><div class="body"><div class="name">곱창김</div><div class="note">밥 먹을 때 꺼내두기 좋은 김. 자주 손이 감 ㅋㅋ</div><div class="go">바로 보기 ↗</div></div></a>
       </div>
     </section>
 
     <section class="section" id="beauty">
-      <h2>향기·헤어 🌿</h2>
+      <div class="section-head"><h2>향기·헤어 🌿</h2><span class="section-sub">향 좋고 손 가는 것</span></div>
       <div class="grid">
-        <article class="item"><div class="emoji">💇</div><div class="name">헤어에센스</div><div class="note">향도 좋고 머릿결이 부들부들해서 마음에 든 제품.</div><a class="buy" href="https://link.coupang.com/a/hvDGkMFnDE" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🌸</div><div class="name">향기템</div><div class="note">향이 너무 좋아서 내가 좋아하는 향기템 중 하나.</div><a class="buy" href="https://link.coupang.com/a/hvDIXiR8XR" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
-        <article class="item"><div class="emoji">🧴</div><div class="name">레이비 바디로션·워시</div><div class="note">바디로션이랑 워시는 레이비 쪽을 같이 쓰는 편.</div><a class="buy" href="https://link.coupang.com/a/hvDK7DXQGW" target="_blank" rel="nofollow sponsored noopener">쿠팡에서 보기</a></article>
+        <a class="item" href="https://link.coupang.com/a/hvDGkMFnDE" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">헤어</span><span class="big">💇</span></div><div class="body"><div class="name">헤어에센스</div><div class="note">향도 좋고 머릿결이 부들부들해서 좋음.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDIXiR8XR" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">향기</span><span class="big">🌸</span></div><div class="body"><div class="name">향기템</div><div class="note">향 너무 좋아서 내가 좋아하는 향기템 중 하나.</div><div class="go">바로 보기 ↗</div></div></a>
+        <a class="item" href="https://link.coupang.com/a/hvDK7DXQGW" target="_blank" rel="nofollow sponsored noopener"><div class="thumb"><span class="tag">바디</span><span class="big">🧴</span></div><div class="body"><div class="name">레이비 바디로션·워시</div><div class="note">바디로션이랑 워시는 레이비 쪽을 같이 쓰는 편.</div><div class="go">바로 보기 ↗</div></div></a>
       </div>
-      <p class="small">※ 제품명이 확실하지 않았던 링크 몇 개는 잘못 붙이지 않으려고 이번 1차 목록에서는 뺐어요. 다음에 제품명만 확인되면 이어서 추가하면 됩니다.</p>
     </section>
 
     <footer>이 페이지에는 쿠팡 파트너스 제휴 링크가 포함되어 있으며, 구매 시 일정액의 수수료를 제공받을 수 있습니다.<br>© 최짱</footer>
