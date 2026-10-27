@@ -5,19 +5,37 @@
  try {const saved=JSON.parse(localStorage.getItem(KEY));if(Number.isSafeInteger(saved?.stars)&&saved.stars>=0)stars=saved.stars;}catch{canSave=false;}
  let mode='count',limit=20,n=1,a=0,b=0,solved=false,touched=new Set(),built=0,removed=0,merged=false;
 
- let nextTimer=null, audio=null, sound=true, vibration=false, drag=null;
+ let nextTimer=null, audio=null, appleSound=null, sound=true, vibration=false, drag=null;
  const decks=new Map();
  try {const prefs=JSON.parse(localStorage.getItem(KEY+'-preferences'));sound=prefs?.sound!==false;vibration=prefs?.vibration===true;}catch{}
  const haptics=typeof navigator.vibrate==='function';
  function savePreferences(){try{localStorage.setItem(KEY+'-preferences',JSON.stringify({sound,vibration}));}catch{}}
- function pop(el){
+ function pop(el,kind='bead'){
   if(el){el.classList.remove('popped');void el.offsetWidth;el.classList.add('popped');}
   if(vibration&&haptics){try{navigator.vibrate(18);}catch{}}
   if(!sound)return;
   try{
    const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;
    audio=audio||new Audio();
-   const play=()=>{const t=audio.currentTime,osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';osc.frequency.setValueAtTime(480,t);osc.frequency.exponentialRampToValueAtTime(85,t+.085);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.22,t+.005);gain.gain.exponentialRampToValueAtTime(.0001,t+.105);osc.connect(gain);gain.connect(audio.destination);osc.start(t);osc.stop(t+.11);};
+   const play=()=>{
+    if(!sound)return;
+    const t=audio.currentTime;
+    if(kind==='apple'){
+     // Match preview 05: a low, soft 115ms puff, cached after the first tap.
+     if(!appleSound){
+      const rate=audio.sampleRate;
+      appleSound=audio.createBuffer(1,Math.ceil(rate*.115),rate);
+      const data=appleSound.getChannelData(0),k=Math.log(70/190)/.09;
+      for(let i=0;i<data.length;i++){
+       const d=i/rate,phase=2*Math.PI*(190*(Math.exp(k*Math.min(d,.09))-1)/k+Math.max(0,d-.09)*70);
+       const amp=d<.006?.0001*Math.pow(.16/.0001,d/.006):.16*Math.pow(.0001/.16,(Math.min(d,.11)-.006)/.104);
+       data[i]=amp*(.8*Math.sin(phase)+.2*Math.sin(phase*.51));
+      }
+     }
+     const source=audio.createBufferSource();source.buffer=appleSound;source.connect(audio.destination);source.onended=()=>source.disconnect();source.start(t);return;
+    }
+    const osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';osc.frequency.setValueAtTime(480,t);osc.frequency.exponentialRampToValueAtTime(85,t+.085);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.22,t+.005);gain.gain.exponentialRampToValueAtTime(.0001,t+.105);osc.connect(gain);gain.connect(audio.destination);osc.start(t);osc.stop(t+.11);
+   };
    if(audio.state==='suspended')audio.resume().then(play).catch(()=>{});else play();
   }catch{}
  }
@@ -75,7 +93,7 @@
    caption.textContent=`바구니 · ${built}개`;$('number').textContent=`${built} / ${target}`;
   }
   function addApple(){if(solved||built>=target){message('목표만큼 다 모았어요. 더 담지 않아도 괜찮아요!');return;}
-   built++;pop(basket);apple.setAttribute('aria-pressed','false');draw();
+   built++;pop(basket,'apple');apple.setAttribute('aria-pressed','false');draw();
    message(`${built}개 담았어요! ${target-built}개 더 모아 볼까요?`);
    if(built===target)reward(target>=10?`10개 묶음 ${Math.floor(target/10)}개${target%10?`와 낱개 ${target%10}개`:''}, 모두 ${target}개예요!`:`사과 ${target}개가 한 묶음이 되었어요!`);
   }
