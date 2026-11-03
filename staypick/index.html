@@ -13,9 +13,9 @@
 <body>
 <header class="top"><div class="mark">STAY PICK</div><p>머물고 싶은 곳을, 번호로 간편하게</p></header>
 <main class="wrap">
-<label class="search" for="q"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="q" type="search" placeholder="숙소 번호 001 · 이름 · 지역 검색" autocomplete="off" aria-label="숙소 검색"></label>
+<label class="search" for="q"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="q" type="search" placeholder="숙소 번호 001 · 지역 검색" autocomplete="off" aria-label="숙소 검색"></label>
 <div class="hint">인스타 피드에 표시된 번호를 입력해 보세요. 예: <strong>001</strong></div>
-<div><span class="pill">번호 검색</span><span class="pill">호텔명 검색</span><span class="pill">지역 검색</span></div>
+<div><span class="pill">번호 검색</span><span class="pill">특징 검색</span><span class="pill">지역 검색</span></div>
 <div class="sub"><span id="count"></span><button class="reset" type="button" id="reset">전체 보기</button></div>
 <div id="results" aria-live="polite"></div>
 <div class="footer">이 페이지에는 쿠팡 파트너스 제휴 링크가 포함되어 있습니다. 링크를 통해 예약·구매 시 운영자가 일정액의 수수료를 제공받을 수 있습니다.<br>요금·객실 정원·예약 가능 여부는 날짜와 객실 유형에 따라 달라질 수 있으며, 최종 조건은 연결된 예약 화면에서 확인해 주세요.</div>
@@ -25,9 +25,9 @@
 // 신규 숙소 추가 시 아래 배열 끝에 번호, 이름, 지역, 쿠팡 링크를 추가합니다.
 // 이미 게시한 번호는 바꾸지 않습니다.
 const stays=[
- {id:1,name:"존크 호텔 하카타",en:"ZONK HOTEL Hakata",area:"일본 · 후쿠오카 · 하카타",url:"https://link.coupang.com/a/im0hR8oHKu"},
- {id:2,name:"미즈카 다이묘 7 - 무인 호텔",en:"mizuka Daimyo 7 - unmanned hotel",area:"일본 · 후쿠오카 · 다이묘",url:"https://link.coupang.com/a/im0ewTgZ3c"},
- {id:3,name:"유후인 온센 료칸 진노우치",en:"Yufuin Onsen Ryokan Jinnouchi",area:"일본 · 오이타 · 유후인",url:"https://link.coupang.com/a/imZ8Kj9pq8"}
+ {id:1,name:"후쿠오카 가족숙소",en:"넓은 객실 · 무료 음료 · 4인 가족",area:"일본 · 후쿠오카 · 하카타",url:"https://link.coupang.com/a/im0hR8oHKu"},
+ {id:2,name:"후쿠오카 단체숙소",en:"여럿이 함께 묵는 무인 숙소",area:"일본 · 후쿠오카 · 다이묘",url:"https://link.coupang.com/a/im0ewTgZ3c"},
+ {id:3,name:"유후인 온천 료칸",en:"소규모 일본식 온천 숙소",area:"일본 · 오이타 · 유후인",url:"https://link.coupang.com/a/imZ8Kj9pq8"}
 ];
 const input=document.getElementById("q"),root=document.getElementById("results"),count=document.getElementById("count");
 function render(){
@@ -45,7 +45,7 @@ function render(){
   const en=document.createElement("div");en.className="en";en.textContent=s.en;
   block.append(name,en);row.append(num,block);
   const area=document.createElement("div");area.className="area";area.textContent="📍 "+s.area;
-  const link=document.createElement("a");link.className="go";link.href=s.url;link.target="_blank";link.rel="noopener noreferrer sponsored";link.textContent="객실 요금 · 예약 가능 여부 확인 ↗";link.setAttribute("aria-label",s.name+" 쿠팡 예약 링크 열기");
+  const link=document.createElement("a");link.className="go";link.href=s.url;link.target="_blank";link.rel="noopener noreferrer sponsored";link.textContent="객실 요금 · 예약 가능 여부 확인 ↗";link.setAttribute("aria-label",String(s.id).padStart(3,"0")+"번 숙소 쿠팡 예약 링크 열기");
   card.append(row,area,link);root.append(card);
  }
 }
