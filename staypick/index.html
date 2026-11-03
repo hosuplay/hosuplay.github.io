@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#13372c">
+<meta name="description" content="STAY PICK 숙소 번호 검색 · 국내외 숙소 정보와 예약 링크">
+<title>STAY PICK | 숙소 찾기</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#19372f;background:#f7f6f2;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input,a{font:inherit}a{text-decoration:none;color:inherit}.top{background:#183c31;color:#fff;padding:34px 20px 29px;text-align:center}.mark{font-family:Georgia,serif;font-size:38px;letter-spacing:2px;font-weight:bold}.top p{font-size:13px;color:#d2e1d9;margin:8px 0 0}.wrap{max-width:720px;margin:auto;padding:22px 16px 96px}.search{background:white;display:flex;align-items:center;border-radius:15px;border:1px solid #d5ded7;box-shadow:0 4px 16px #203c3010;padding:0 15px;gap:9px}.search svg{flex:none;color:#547065}.search input{border:0;outline:0;width:100%;padding:18px 0;font-size:16px;background:transparent;color:#173d31}.search input::placeholder{color:#86978d}.sub{display:flex;justify-content:space-between;align-items:center;color:#607168;font-size:13px;margin:16px 2px 13px}.reset{border:0;background:none;color:#215844;text-decoration:underline;cursor:pointer;padding:8px}.entry{background:white;border:1px solid #e6e8e0;border-radius:17px;padding:18px;margin:12px 0;box-shadow:0 2px 8px #18382c08}.head{display:flex;align-items:center;gap:12px}.num{font-family:Georgia,serif;font-weight:bold;color:#193d31;font-size:19px;min-width:57px;text-align:center;border-radius:12px;background:#e7eee7;padding:13px 6px}.title{font-weight:750;font-size:17px;line-height:1.4}.en{font-size:12px;color:#7f8d86;margin-top:4px}.area{font-size:13px;color:#64776e;margin:12px 0}.go{display:flex;align-items:center;justify-content:center;gap:8px;background:#183c31;color:white;border-radius:11px;padding:14px;font-weight:650;font-size:14px;margin-top:14px;min-height:48px}.go:focus-visible,.reset:focus-visible,.search input:focus-visible{outline:3px solid #c7ae78;outline-offset:3px}.empty{text-align:center;margin:50px 0;color:#687970}.hint{font-size:13px;margin-top:10px;color:#6e7c73}.footer{margin-top:27px;font-size:12px;line-height:1.7;color:#65766b;border-top:1px solid #d9e0d7;padding-top:17px}.pill{display:inline-block;border:1px solid #b6cbc0;padding:5px 10px;border-radius:30px;font-size:12px;margin:5px 5px 2px 0;color:#315b4b;background:#edf2ed}@media(min-width:700px){.top{padding-top:50px;padding-bottom:38px}.wrap{padding-top:32px}.entry{padding:22px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="mark">STAY PICK</div><p>머물고 싶은 곳을, 번호로 간편하게</p></header>
+<main class="wrap">
+<label class="search" for="q"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="q" type="search" placeholder="숙소 번호 001 · 이름 · 지역 검색" autocomplete="off" aria-label="숙소 검색"></label>
+<div class="hint">인스타 피드에 표시된 번호를 입력해 보세요. 예: <strong>001</strong></div>
+<div><span class="pill">번호 검색</span><span class="pill">호텔명 검색</span><span class="pill">지역 검색</span></div>
+<div class="sub"><span id="count"></span><button class="reset" type="button" id="reset">전체 보기</button></div>
+<div id="results" aria-live="polite"></div>
+<div class="footer">이 페이지에는 쿠팡 파트너스 제휴 링크가 포함되어 있습니다. 링크를 통해 예약·구매 시 운영자가 일정액의 수수료를 제공받을 수 있습니다.<br>요금·객실 정원·예약 가능 여부는 날짜와 객실 유형에 따라 달라질 수 있으며, 최종 조건은 연결된 예약 화면에서 확인해 주세요.</div>
+</main>
+<script>
+"use strict";
+// 신규 숙소 추가 시 아래 배열 끝에 번호, 이름, 지역, 쿠팡 링크를 추가합니다.
+// 이미 게시한 번호는 바꾸지 않습니다.
+const stays=[
+ {id:1,name:"존크 호텔 하카타",en:"ZONK HOTEL Hakata",area:"일본 · 후쿠오카 · 하카타",url:"https://link.coupang.com/a/im0hR8oHKu"},
+ {id:2,name:"미즈카 다이묘 7 - 무인 호텔",en:"mizuka Daimyo 7 - unmanned hotel",area:"일본 · 후쿠오카 · 다이묘",url:"https://link.coupang.com/a/im0ewTgZ3c"},
+ {id:3,name:"유후인 온센 료칸 진노우치",en:"Yufuin Onsen Ryokan Jinnouchi",area:"일본 · 오이타 · 유후인",url:"https://link.coupang.com/a/imZ8Kj9pq8"}
+];
+const input=document.getElementById("q"),root=document.getElementById("results"),count=document.getElementById("count");
+function render(){
+ const q=input.value.trim().toLocaleLowerCase();
+ const found=stays.filter(s=>{const id=String(s.id).padStart(3,"0");return !q||id===q||String(s.id)===q||[s.name,s.en,s.area].some(v=>v.toLocaleLowerCase().includes(q))});
+ count.textContent="숙소 "+found.length+"곳"+(q?" 검색됨":" 등록");
+ root.replaceChildren();
+ if(!found.length){const div=document.createElement("p");div.className="empty";div.textContent="검색된 숙소가 없어요. 번호나 지역을 다시 입력해 주세요.";root.append(div);return}
+ for(const s of found){
+  const card=document.createElement("article");card.className="entry";
+  const row=document.createElement("div");row.className="head";
+  const num=document.createElement("div");num.className="num";num.textContent=String(s.id).padStart(3,"0");
+  const block=document.createElement("div");
+  const name=document.createElement("div");name.className="title";name.textContent=s.name;
+  const en=document.createElement("div");en.className="en";en.textContent=s.en;
+  block.append(name,en);row.append(num,block);
+  const area=document.createElement("div");area.className="area";area.textContent="📍 "+s.area;
+  const link=document.createElement("a");link.className="go";link.href=s.url;link.target="_blank";link.rel="noopener noreferrer sponsored";link.textContent="객실 요금 · 예약 가능 여부 확인 ↗";link.setAttribute("aria-label",s.name+" 쿠팡 예약 링크 열기");
+  card.append(row,area,link);root.append(card);
+ }
+}
+input.addEventListener("input",render);
+document.getElementById("reset").addEventListener("click",()=>{input.value="";render();input.focus()});
+const preset=new URLSearchParams(location.search).get("q");if(preset)input.value=preset.slice(0,80);
+render();
+</script>
+</body>
+</html>
