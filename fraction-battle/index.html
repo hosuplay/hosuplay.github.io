@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090d18"><title>분수 레벨업 아레나 | HOSU PLAY</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#090d18;color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif}main{max-width:570px;margin:auto;padding:22px 16px 80px}a{color:#a5b4fc;text-decoration:none}.eyebrow{font-size:12px;color:#69e8dd;letter-spacing:2.5px;font-weight:800;margin-top:25px}h1{font-size:32px;letter-spacing:-1.4px;margin:10px 0 6px}h2{font-size:21px;margin:5px 0 15px}p{color:#a4b1c7;line-height:1.5}.panel{background:#151e31;border:1px solid #2d3a55;border-radius:24px;padding:20px;margin:18px 0;box-shadow:0 10px 30px #0004}.muted{font-size:13px;color:#a4b1c7}.accent{color:#72e6d8}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.stack{display:grid;gap:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}button{font:inherit;touch-action:manipulation;cursor:pointer;border:1px solid #465676;border-radius:15px;min-height:52px;padding:13px 15px;color:white;background:#23304b;font-weight:800}button:disabled{opacity:.45;cursor:default}.primary{background:linear-gradient(120deg,#6b55ed,#268be2);border:0}.teal{background:#164c50;border-color:#347b7b}input{width:100%;padding:15px;background:#0c1323;color:white;border:1px solid #546582;border-radius:14px;font:inherit;font-size:18px}.frac{display:inline-flex;flex-direction:column;vertical-align:middle;align-items:center;line-height:1.05;font-size:1em}.frac span:first-child{border-bottom:2px solid;padding:0 7px 4px}.frac span:last-child{padding-top:4px}.problem{text-align:center;font-size:44px;font-weight:850;padding:16px 0 26px}.choice{font-size:23px;min-height:90px}.choice.correct{border-color:#72e6d8;background:#184c49}.choice.wrong{border-color:#ff7f91;background:#512637}.progress{height:10px;background:#283750;border-radius:99px;overflow:hidden;margin:12px 0}.progress>div{height:100%;background:linear-gradient(90deg,#6d58ef,#64e9dd);transition:width .2s}.note{background:#0e1728;border:1px solid #344663;border-radius:15px;padding:14px;margin:13px 0;line-height:1.7}.note strong{color:#83e7dd}.scratch{border:1px solid #40516d;border-radius:16px;overflow:hidden;background:#111b2c}.scratch canvas{display:block;width:100%;height:180px;touch-action:none;cursor:crosshair}.scratch-tools{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:9px;background:#1b2940}.scratch-tools button{min-height:38px;padding:7px 12px;font-size:13px}.rankrow{display:flex;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid #34415c}.rankrow:last-child{border:0}.big{font-size:30px;font-weight:900}.tiny{font-size:12px;color:#98a7c1}.status{color:#70e7da;font-weight:800;min-height:24px}.hidden{display:none}.pill{display:inline-block;background:#283553;border-radius:99px;padding:7px 11px;font-size:12px;color:#c7d5ee}
+*{box-sizing:border-box}body{margin:0;background:#090d18;color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif}main{max-width:570px;margin:auto;padding:22px 16px 80px}a{color:#a5b4fc;text-decoration:none}.eyebrow{font-size:12px;color:#69e8dd;letter-spacing:2.5px;font-weight:800;margin-top:25px}h1{font-size:32px;letter-spacing:-1.4px;margin:10px 0 6px}h2{font-size:21px;margin:5px 0 15px}p{color:#a4b1c7;line-height:1.5}.panel{background:#151e31;border:1px solid #2d3a55;border-radius:24px;padding:20px;margin:18px 0;box-shadow:0 10px 30px #0004}.muted{font-size:13px;color:#a4b1c7}.accent{color:#72e6d8}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.stack{display:grid;gap:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}button{font:inherit;touch-action:manipulation;cursor:pointer;border:1px solid #465676;border-radius:15px;min-height:52px;padding:13px 15px;color:white;background:#23304b;font-weight:800}button:disabled{opacity:.45;cursor:default}.primary{background:linear-gradient(120deg,#6b55ed,#268be2);border:0}.teal{background:#164c50;border-color:#347b7b}input{width:100%;padding:15px;background:#0c1323;color:white;border:1px solid #546582;border-radius:14px;font:inherit;font-size:18px}.frac{display:inline-flex;flex-direction:column;vertical-align:middle;align-items:center;line-height:1.05;font-size:1em}.frac span:first-child{border-bottom:2px solid;padding:0 7px 4px}.frac span:last-child{padding-top:4px}.problem{text-align:center;font-size:44px;font-weight:850;padding:16px 0 26px}.choice{font-size:23px;min-height:90px}.choice.correct{border-color:#72e6d8;background:#184c49}.choice.wrong{border-color:#ff7f91;background:#512637}.progress{height:10px;background:#283750;border-radius:99px;overflow:hidden;margin:12px 0}.progress>div{height:100%;background:linear-gradient(90deg,#6d58ef,#64e9dd);transition:width .2s}.note{background:#0e1728;border:1px solid #344663;border-radius:15px;padding:14px;margin:13px 0;line-height:1.7}.note strong{color:#83e7dd}.scratch{border:1px solid #40516d;border-radius:16px;overflow:hidden;background:#111b2c}.scratch canvas{display:block;width:100%;height:180px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair}.scratch-tools{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:9px;background:#1b2940}.scratch-tools button{min-height:38px;padding:7px 12px;font-size:13px}.rankrow{display:flex;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid #34415c}.rankrow:last-child{border:0}.big{font-size:30px;font-weight:900}.tiny{font-size:12px;color:#98a7c1}.status{color:#70e7da;font-weight:800;min-height:24px}.hidden{display:none}.pill{display:inline-block;background:#283553;border-radius:99px;padding:7px 11px;font-size:12px;color:#c7d5ee}
 </style></head><body><main><a href="/">← 호수플레이 홈</a><div class="eyebrow">HOSU PLAY · MATH ARENA</div><h1>⚡ 분수 레벨업 아레나</h1><p>20문제마다 레벨업! 틀린 문제는 복습으로 정복하자.</p><div id="app"></div></main>
 <script>
 "use strict";
@@ -42,6 +42,100 @@ function finish(){const s=session,elapsed=Math.max(1,Math.round((Date.now()-s.st
 screen('<div class="panel" style="text-align:center"><div style="font-size:60px">🏆</div><h2>'+(s.kind==='review'?'복습 완료!':'도전 완료!')+'</h2><div class="big">'+s.score+'점</div><p>'+s.list.length+'문제 중 '+(s.list.length-s.missed)+'개 정답 · '+elapsed+'초</p><p class="accent">현재 LEVEL '+player.level+'</p>'+(reward?'<div class="note">🎊 오답 전체 정복! 보너스 레벨 +1</div>':s.kind==='review'&&s.missed?'<div class="note">복습에서 틀린 문제가 있어. 다시 모두 맞히면 보상을 받을 수 있어!</div>':'')+'<div class="stack"><button class="primary" id="home">내 게임 화면으로</button><button id="book">오답노트 보기</button></div></div>');document.getElementById('home').onclick=lobby;document.getElementById('book').onclick=wrongBook}
 function wrongBook(){const entries=player.wrong.map(x=>POOL.find(q=>q.id===x.id)).filter(Boolean);screen('<div class="panel"><h2>📘 '+esc(player.name)+'의 오답노트</h2><p>틀린 문제 '+entries.length+'개 · 풀이과정 복습</p>'+(entries.length?entries.slice(0,40).map((q,i)=>'<div class="note"><div><b>'+(i+1)+'. '+showVal(q.ask)+'</b> → '+showVal(q.correct)+'</div><div style="margin-top:10px">'+explain(q)+'</div></div>').join(''):'<p>아직 틀린 문제가 없어. 멋져! ✨</p>')+'<div class="stack"><button class="primary" id="review">오답 다시 풀기</button><button id="back">돌아가기</button></div></div>');document.getElementById('review').onclick=()=>start('review');document.getElementById('back').onclick=lobby}
 function ranking(){const ranks=read(RANK,[]).slice().sort((a,b)=>b.score-a.score||a.time-b.time).slice(0,10);screen('<div class="panel"><h2>🏆 이 기기의 랭킹 TOP 10</h2><p class="tiny">닉네임 · 점수 · 기록시간. 온라인 전체 랭킹은 아직 지원하지 않아.</p>'+(ranks.length?ranks.map((r,i)=>'<div class="rankrow"><div>'+(i<3?['🥇','🥈','🥉'][i]:(i+1)+'위')+' <b>'+esc(r.name)+'</b><div class="tiny">'+esc(r.date)+'</div></div><div style="text-align:right"><b>'+r.score+'점</b><div class="tiny">'+r.time+'초</div></div></div>').join(''):'<p>아직 기록이 없어!</p>')+'<button id="back" class="primary" style="width:100%;margin-top:15px">돌아가기</button></div>');document.getElementById('back').onclick=()=>player?lobby():welcome}
-function initPad(){const c=document.getElementById('pad'),ctx=c.getContext('2d');let active=false,last=null;const resize=()=>{const rect=c.getBoundingClientRect(),ratio=Math.min(window.devicePixelRatio||1,2),snapshot=document.createElement('canvas');snapshot.width=c.width;snapshot.height=c.height;if(c.width&&c.height)snapshot.getContext('2d').drawImage(c,0,0);c.width=Math.round(rect.width*ratio);c.height=Math.round(rect.height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#d4e9ff';ctx.lineWidth=3;if(snapshot.width)ctx.drawImage(snapshot,0,0,rect.width,rect.height)};resize();const pos=e=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};const down=e=>{active=true;last=pos(e);try{c.setPointerCapture(e.pointerId)}catch(err){}ctx.beginPath();ctx.arc(last.x,last.y,1.5,0,Math.PI*2);ctx.fillStyle='#d4e9ff';ctx.fill();e.preventDefault()};const move=e=>{if(!active)return;const p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;e.preventDefault()};const up=()=>{active=false;last=null};c.addEventListener('pointerdown',down);c.addEventListener('pointermove',move);c.addEventListener('pointerup',up);c.addEventListener('pointercancel',up);document.getElementById('clearpad').onclick=()=>ctx.clearRect(0,0,c.width,c.height);window.addEventListener('resize',resize);drawCleanup=()=>window.removeEventListener('resize',resize)}
+function initPad(){
+  const c=document.getElementById('pad'),ctx=c.getContext('2d');
+  let pointerId=null,touchId=null,last=null,initialized=false;
+
+  function resize(){
+    const rect=c.getBoundingClientRect();
+    const ratio=Math.min(window.devicePixelRatio||1,2);
+    const width=Math.round(rect.width*ratio),height=Math.round(rect.height*ratio);
+    if(!width||!height||(initialized&&c.width===width&&c.height===height))return;
+    const snapshot=document.createElement('canvas');
+    snapshot.width=c.width;
+    snapshot.height=c.height;
+    snapshot.getContext('2d').drawImage(c,0,0);
+    c.width=width;
+    c.height=height;
+    initialized=true;
+    ctx.setTransform(width/rect.width,0,0,height/rect.height,0,0);
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    ctx.strokeStyle=ctx.fillStyle='#d4e9ff';
+    ctx.lineWidth=3;
+    ctx.drawImage(snapshot,0,0,rect.width,rect.height);
+  }
+
+  const pos=point=>{
+    const rect=c.getBoundingClientRect();
+    return {x:point.clientX-rect.left,y:point.clientY-rect.top};
+  };
+  function start(point){
+    last=pos(point);
+    ctx.beginPath();
+    ctx.arc(last.x,last.y,1.5,0,Math.PI*2);
+    ctx.fill();
+  }
+  function move(point){
+    const next=pos(point);
+    ctx.beginPath();
+    ctx.moveTo(last.x,last.y);
+    ctx.lineTo(next.x,next.y);
+    ctx.stroke();
+    last=next;
+  }
+
+  // Cancel Safari's native gestures for touches that begin on the canvas.
+  const touchOptions={passive:false};
+  const cancelGesture=e=>{if(e.cancelable)e.preventDefault()};
+  c.addEventListener('touchstart',e=>{
+    cancelGesture(e);
+    if(touchId!==null||pointerId!==null)return;
+    const touch=e.changedTouches[0];
+    touchId=touch.identifier;
+    start(touch);
+  },touchOptions);
+  c.addEventListener('touchmove',e=>{
+    cancelGesture(e);
+    if(touchId===null)return;
+    const touch=Array.from(e.changedTouches).find(t=>t.identifier===touchId);
+    if(touch)move(touch);
+  },touchOptions);
+  function endTouch(e){
+    if(touchId===null||!Array.from(e.changedTouches).some(t=>t.identifier===touchId))return;
+    touchId=null;
+    last=null;
+  }
+  c.addEventListener('touchend',endTouch);
+  c.addEventListener('touchcancel',endTouch);
+
+  // Touch Events own finger input so each stroke is drawn only once.
+  c.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='touch'||e.button!==0||pointerId!==null||touchId!==null)return;
+    pointerId=e.pointerId;
+    try{c.setPointerCapture(pointerId)}catch(e){}
+    start(e);
+  });
+  c.addEventListener('pointermove',e=>{
+    if(e.pointerId===pointerId)move(e);
+  });
+  function endPointer(e){
+    if(e.pointerId!==pointerId)return;
+    pointerId=null;
+    last=null;
+  }
+  c.addEventListener('pointerup',endPointer);
+  c.addEventListener('pointercancel',endPointer);
+  c.addEventListener('lostpointercapture',endPointer);
+  c.addEventListener('pointerleave',e=>{
+    if(!c.hasPointerCapture(e.pointerId))endPointer(e);
+  });
+  c.addEventListener('contextmenu',cancelGesture);
+
+  resize();
+  document.getElementById('clearpad').onclick=()=>ctx.clearRect(0,0,c.width,c.height);
+  window.addEventListener('resize',resize);
+  drawCleanup=()=>window.removeEventListener('resize',resize);
+}
 welcome();
 </script></body></html>
