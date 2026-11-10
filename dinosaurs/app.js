@@ -26,7 +26,7 @@
     clearTimer();stopVoice();
     screenNames.forEach(name=>{$(name).hidden=name!==id;});
     if(id!=='puzzleScreen')++puzzleToken;
-    window.scrollTo({top:0,behavior:'instant'});
+    window.scrollTo(0,0);
   }
   function showModes(){showScreen('modeScreen');}
   function startQuiz(selectedMode){
@@ -120,6 +120,7 @@
   async function startPuzzle(size){
     const token=++puzzleToken;
     $('puzzleDifficulty').hidden=true;$('puzzleGame').hidden=false;
+    $('puzzleTray').hidden=false;
     $('puzzleName').textContent='그림을 확인하고 있어요…';$('puzzleCount').textContent='';
     $('puzzleMessage').textContent='공룡 그림을 불러오고 있어요…';
     $('puzzleBoard').replaceChildren();$('puzzleTray').replaceChildren();
