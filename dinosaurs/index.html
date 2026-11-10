@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>공룡 탐험 | 호수플레이</title>
+  <meta name="description" content="공룡 이름, 살았던 시대, 먹이를 맞혀 보고 그림 퍼즐도 풀어 보세요.">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="./styles.css?v=1">
+  <script defer src="./data.js?v=1"></script>
+  <script defer src="./quiz-core.js?v=1"></script>
+  <script defer src="./app.js?v=1"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="brand">
+      <a class="home-link" href="/" aria-label="호수플레이 메인으로 돌아가기">← 호수플레이</a>
+      <span class="brand-tag">HOSU PLAY</span>
+    </header>
+
+    <section id="modeScreen" class="panel">
+      <h1>🦕 공룡 탐험</h1>
+      <p class="lead">어떤 공룡을 만날까? 좋아하는 놀이를 골라 봐!</p>
+      <div class="mode-list">
+        <button type="button" class="mode-button" data-start="name">
+          <span class="mode-emoji" aria-hidden="true">🦖</span><span><strong>공룡 이름 맞히기</strong><small>사진과 특징을 보고 이름을 골라요.</small></span>
+        </button>
+        <button type="button" class="mode-button" data-start="period">
+          <span class="mode-emoji" aria-hidden="true">⏳</span><span><strong>살았던 시대 맞히기</strong><small>트라이아스기, 쥐라기, 백악기 중 골라요.</small></span>
+        </button>
+        <button type="button" class="mode-button" data-start="diet">
+          <span class="mode-emoji" aria-hidden="true">🌿</span><span><strong>먹이 맞히기</strong><small>공룡이 무엇을 먹었는지 맞혀요.</small></span>
+        </button>
+        <button type="button" class="mode-button" id="openPuzzle">
+          <span class="mode-emoji" aria-hidden="true">🧩</span><span><strong>공룡 그림 퍼즐</strong><small>9조각 또는 16조각 퍼즐이에요.</small></span>
+        </button>
+      </div>
+      <p class="asset-note">현재 확인된 12종으로 먼저 검사 중이에요. 워크의 최종 30종 이미지는 별도 연결이 필요해요.</p>
+    </section>
+
+    <section id="quizScreen" class="panel" hidden>
+      <div class="screen-head"><button class="text-button" type="button" data-back>← 놀이 선택</button><span id="quizModeTitle" class="screen-title"></span></div>
+      <div class="status"><span id="questionNumber">1 / 10</span><span>⭐ <strong id="score">0</strong>점</span></div>
+      <div class="question-box">
+        <h2 id="questionPrompt"></h2>
+        <figure class="photo-box" id="photoBox">
+          <img id="dinoPhoto" alt="" width="768" height="512" decoding="async" hidden>
+          <figcaption id="photoFallback" class="photo-placeholder">공룡의 특징을 읽고 맞혀 봐!</figcaption>
+        </figure>
+        <p id="dinoClue" class="clue"></p>
+        <div id="answerList" class="answer-list"></div>
+        <p id="quizFeedback" class="feedback" role="status" aria-live="polite"></p>
+      </div>
+      <p class="tip">정답을 맞히면 자동으로 다음 문제로 넘어가요. 첫 시도에 맞히면 1점이에요.</p>
+    </section>
+
+    <section id="finishScreen" class="panel finish" hidden>
+      <h1>🏆 공룡 퀴즈 끝!</h1>
+      <p id="finalScore" class="large-score"></p>
+      <p id="finishMessage">멋지게 탐험했어!</p>
+      <button class="primary-button" id="retryQuiz" type="button">🔁 같은 퀴즈 다시 하기</button>
+      <button class="secondary-button" type="button" data-back>다른 놀이 고르기</button>
+    </section>
+
+    <section id="puzzleScreen" class="panel" hidden>
+      <div class="screen-head"><button class="text-button" type="button" data-back>← 놀이 선택</button><span class="screen-title">공룡 그림 퍼즐</span></div>
+      <div id="puzzleDifficulty" class="difficulty">
+        <h2>어떤 퍼즐을 할까?</h2>
+        <button type="button" class="primary-button" data-pieces="3">쉬움 · 9조각</button>
+        <button type="button" class="secondary-button" data-pieces="4">어려움 · 16조각</button>
+      </div>
+      <div id="puzzleGame" hidden>
+        <div class="puzzle-status"><span id="puzzleName"></span><span id="puzzleCount"></span></div>
+        <div id="puzzleBoard" class="puzzle-board" aria-label="퍼즐 판"></div>
+        <p id="puzzleMessage" class="feedback" role="status" aria-live="polite">조각을 눌러 빈칸에 놓아 봐!</p>
+        <div id="puzzleTray" class="puzzle-tray" aria-label="퍼즐 조각"></div>
+        <button type="button" class="secondary-button" id="togglePicture">👀 완성 그림 보기</button>
+        <img id="puzzleReference" class="puzzle-reference" alt="퍼즐 완성 그림" hidden>
+        <div id="puzzleComplete" class="puzzle-complete" hidden>
+          <h2>🎉 퍼즐 완성!</h2>
+          <button type="button" class="primary-button" id="retryPuzzle">다음 공룡 퍼즐</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
