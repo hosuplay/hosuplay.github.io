@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fff8e8">
+<meta name="description" content="공룡 30종을 만나요! 힌트로 이름 맞히기, 시대와 먹이 퀴즈, 9조각·16조각 공룡 퍼즐.">
+<title>호수 플레이 · 공룡 놀이</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/dinosaurs/dinosaurs.css?v=1">
+<script defer src="/dinosaurs/dinosaur-data.js?v=1"></script>
+<script defer src="/dinosaurs/dinosaur-quiz.js?v=2"></script>
+</head>
+<body>
+<main>
+<section id="dinosaurMenu" class="screen active" aria-labelledby="menuTitle">
+<div class="hero">
+<p class="eyebrow">HOSU PLAY · 공룡 탐험</p>
+<h1 id="menuTitle" tabindex="-1">어떤 공룡 놀이를 할까요?</h1>
+<p>아주 오래전, 지구에 살았던 공룡 30종을 만나요.</p>
+<img class="dinosaur-hero" src="/dinosaurs/images/triceratops.webp" alt="세 개의 뿔을 가진 트리케라톱스 복원 그림" width="768" height="768" fetchpriority="high">
+</div>
+<div class="dinosaur-modes">
+<button class="mode-card dinosaur-mode" data-mode="hint"><span class="mode-icon" aria-hidden="true">💡</span><span><strong>힌트로 이름 맞히기</strong><small>힌트를 하나씩 듣고 공룡 이름을 골라요.</small></span><span aria-hidden="true">›</span></button>
+<button class="mode-card dinosaur-mode" data-mode="facts"><span class="mode-icon" aria-hidden="true">🌿</span><span><strong>시대 · 먹이 퀴즈</strong><small>언제 살았을까? 무엇을 먹었을까?</small></span><span aria-hidden="true">›</span></button>
+<a class="mode-card dinosaur-mode" href="/puzzle/?category=dinosaur"><span class="mode-icon" aria-hidden="true">🧩</span><span><strong>공룡 퍼즐</strong><small>9조각 · 16조각으로 공룡 그림을 완성해요.</small></span><span aria-hidden="true">›</span></a>
+<button id="openGuide" class="mode-card dinosaur-mode"><span class="mode-icon" aria-hidden="true">📖</span><span><strong>공룡 30종 도감</strong><small>이름과 특징을 천천히 살펴봐요.</small></span><span aria-hidden="true">›</span></button>
+</div>
+<p class="quiz-small reconstruction">화석을 참고해 만든 AI 복원 그림이에요. 실제 색과 일부 모습은 알려져 있지 않아요.</p>
+<a class="back-button home-link" href="/">🏠 플레이룸으로 돌아가기</a>
+</section>
+
+<section id="dinosaurQuiz" class="screen" aria-labelledby="quizTitle">
+<h1 id="quizTitle" class="page-title" tabindex="-1"></h1>
+<div class="status"><span id="questionCount"></span><span>⭐ <span id="score">0</span>점</span></div>
+<p id="roundGuide" class="quiz-small"></p>
+<div class="photo-card">
+<button id="question" class="question-title" aria-label="문제 듣기"></button>
+<figure id="artFrame" hidden><img id="quizArt" width="768" height="768" alt=""><figcaption id="artCaption"></figcaption></figure>
+<div id="hints" aria-live="polite"></div>
+<button id="hintButton" class="hint-button">💡 힌트 하나 보기 · 듣기</button>
+<p id="points" class="score-info"></p>
+<div id="answers" class="answers" aria-label="정답 보기"></div>
+<div id="result" class="result" role="status" aria-live="polite"></div>
+<p id="explanation"></p>
+<p id="autoNextStatus" class="quiz-small" role="status"></p>
+</div>
+<button class="back-button menu-back">← 공룡 놀이 고르기</button>
+</section>
+
+<section id="dinosaurFinish" class="screen" aria-labelledby="finishTitle">
+<div class="finish-wrap"><div class="trophy" aria-hidden="true">🦕🏆</div>
+<h1 id="finishTitle" class="finish-title" tabindex="-1">공룡 탐험 완성!</h1>
+<p id="finalScore" class="final-score"></p><p id="finalMessage"></p>
+<button id="retry" class="finish-button retry">🔄 다시 풀기</button>
+<button class="finish-button list menu-back">🦖 다른 공룡 놀이</button>
+<a class="finish-button list home-link" href="/puzzle/?category=dinosaur">🧩 공룡 퍼즐 하기</a>
+</div></section>
+
+<section id="dinosaurGuide" class="screen" aria-labelledby="guideTitle">
+<h1 id="guideTitle" class="page-title" tabindex="-1">📖 공룡 30종 도감</h1>
+<p class="quiz-small">카드를 펼쳐 특징과 자료 출처를 살펴보세요.</p>
+<label for="guideFilter">살았던 시대</label>
+<select id="guideFilter"><option value="">모든 시대 · 30종</option><option value="트라이아스기">트라이아스기</option><option value="쥐라기">쥐라기</option><option value="백악기">백악기</option></select>
+<p id="guideCount" role="status"></p><div id="guideCards"></div>
+<p class="quiz-small">그림은 AI 복원도이며, 색과 일부 신체 표현은 추정이에요. 먹이는 대표적인 분류를 사용했어요.</p>
+<button class="back-button menu-back">← 공룡 놀이 고르기</button>
+</section>
+</main>
+<noscript>공룡 놀이를 하려면 브라우저의 자바스크립트를 켜 주세요.</noscript>
+</body></html>

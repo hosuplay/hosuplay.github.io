@@ -45,3 +45,10 @@ function placePuzzlePiece(slot){
 }
 function nextPuzzle(){puzzleEl('Tray').hidden=false;startPuzzle(puzzleSize)}
 function togglePuzzleReference(){const img=puzzleEl('Reference');img.hidden=!img.hidden;puzzleEl('Toggle').textContent=img.hidden?'👀 완성 그림 보기':'🙈 완성 그림 숨기기';}
+
+function leavePuzzleForQuiz(){
+ ++puzzleToken;
+ if(puzzleCategory==='dinosaur'){location.href='/dinosaurs/';return;}
+ if(puzzleCategory==='insect'){location.href='/insects/';return;}
+ showModes();
+}

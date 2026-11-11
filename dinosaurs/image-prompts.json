@@ -1,0 +1,126 @@
+{
+  "generator": "Built-in image_gen",
+  "date": "2026-11-10",
+  "images": [
+    {
+      "id": "tyrannosaurus",
+      "prompt": "Photorealistic Tyrannosaurus rex full body, two-fingered hands, natural floodplain, no text."
+    },
+    {
+      "id": "triceratops",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Triceratops; two long brow horns and one short nose horn, broad solid neck frill"
+    },
+    {
+      "id": "stegosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Stegosaurus; two staggered rows of upright dorsal plates and four tail spikes, tiny head"
+    },
+    {
+      "id": "brachiosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Brachiosaurus; very tall upright neck, front legs longer than hind legs, compact head, full neck visible"
+    },
+    {
+      "id": "diplodocus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Diplodocus; very long slender horizontal neck and whip-like tail, entire tail visible"
+    },
+    {
+      "id": "apatosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Apatosaurus; robust thick neck, massive torso and long tapering tail"
+    },
+    {
+      "id": "ankylosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Ankylosaurus; low broad armored body, bony osteoderms, distinctive large tail club"
+    },
+    {
+      "id": "parasaurolophus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Parasaurolophus; long backward-curving tubular cranial crest, duck bill"
+    },
+    {
+      "id": "velociraptor",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Velociraptor; small feathered dromaeosaur, feathered arms, long stiff tail, raised sickle toe claws, not giant Jurassic Park raptor"
+    },
+    {
+      "id": "spinosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Spinosaurus; long crocodilian snout, tall dorsal sail, short hind limbs, deep paddle-like tail, standing at shallow riverbank"
+    },
+    {
+      "id": "allosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Allosaurus; large bipedal predator, small paired lacrimal horns above eyes, three-fingered forelimbs"
+    },
+    {
+      "id": "carnotaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Carnotaurus; two stout brow horns, short deep skull, extremely tiny forearms, muscular legs"
+    },
+    {
+      "id": "dilophosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Dilophosaurus; two thin parallel rounded cranial crests, slender large bipedal theropod, NO neck frill, NO venom"
+    },
+    {
+      "id": "ceratosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Ceratosaurus; single blade-like nasal horn, small brow ridges, large theropod"
+    },
+    {
+      "id": "baryonyx",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Baryonyx; long narrow crocodile-like snout and very large curved thumb claws, no dorsal sail, river setting"
+    },
+    {
+      "id": "deinonychus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Deinonychus; feathered robust dromaeosaur with prominent raised sickle toe claws and stiff tail"
+    },
+    {
+      "id": "iguanodon",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Iguanodon; bulky ornithopod, thumb spikes held out, broad beak, walking on four limbs"
+    },
+    {
+      "id": "pachycephalosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Pachycephalosaurus; distinctive thick domed skull with small bony knobs around rear, bipedal"
+    },
+    {
+      "id": "styracosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Styracosaurus; long single nasal horn, six long spikes radiating from neck frill, no long brow horns"
+    },
+    {
+      "id": "protoceratops",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Protoceratops; small stocky quadruped, parrot beak, broad neck frill with no large facial horns, sandy habitat"
+    },
+    {
+      "id": "psittacosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Psittacosaurus; small bipedal ceratopsian, parrot-like beak, cheek horns, no large frill, tail bristles"
+    },
+    {
+      "id": "corythosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Corythosaurus; tall semicircular helmet-shaped crest on skull, duckbill hadrosaur"
+    },
+    {
+      "id": "edmontosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Edmontosaurus; large crestless duckbill hadrosaur, wide flattened beak, no prominent crest"
+    },
+    {
+      "id": "maiasaura",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Maiasaura; broad duckbill, low small solid crest in front of eyes, robust hadrosaur, alone near empty nest"
+    },
+    {
+      "id": "kentrosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Kentrosaurus; small stegosaur, plates on front half of back transitioning to paired long spikes on rear back and tail, shoulder spikes"
+    },
+    {
+      "id": "amargasaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Amargasaurus; medium short-necked sauropod, paired rows of very long neural spines on neck with modest soft tissue, no fantasy armor"
+    },
+    {
+      "id": "argentinosaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Argentinosaurus; colossal titanosaur sauropod, long neck and massive columnar legs, full body visible"
+    },
+    {
+      "id": "plateosaurus",
+      "prompt": "Scientific educational realistic Plateosaurus engelhardti, strictly bipedal with short forearms lifted, long neck and horizontal tail, whole body, Triassic fern and conifer environment, no text."
+    },
+    {
+      "id": "coelophysis",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Coelophysis; slender small early theropod with long narrow head, long neck and tail, lightly built legs"
+    },
+    {
+      "id": "herrerasaurus",
+      "prompt": "Use case: scientific-educational. One square museum-quality photorealistic paleoart reconstruction for a children's dinosaur quiz and jigsaw. Natural realistic anatomy and textures, calm nonthreatening pose, closed mouth, full body INCLUDING all tail, head, legs and neck within frame with 12 percent margin. Side three-quarter view. Single dinosaur fills 70 percent of frame. Natural prehistoric fern/conifer landscape, warm soft daylight, foreground stones and plants make puzzle pieces recognizable. No text, border, logo, watermark, humans or other animals. Not cartoon or toy. Subject: Herrerasaurus; early medium bipedal predator, deep elongated skull, strong hind limbs, grasping three dominant fingered hands"
+    }
+  ]
+}

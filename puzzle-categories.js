@@ -1,7 +1,7 @@
 const HOSU_PUZZLE_CATEGORIES = Object.freeze({
  animal:{label:'동물',ready:true,images:()=>photoAnimals},
  insect:{label:'곤충',ready:true,images:()=>insectAnimals.map(q=>({...q,src:'/insects/insects/atlas.png',atlas:q}))},
- dinosaur:{label:'공룡',ready:false,images:()=>[]}
+ dinosaur:{label:'공룡',ready:true,images:()=>dinosaurAnimals}
 });
 let puzzleCategory=null;
 function puzzleCategoryData(){return HOSU_PUZZLE_CATEGORIES[puzzleCategory];}

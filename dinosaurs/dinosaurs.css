@@ -1,0 +1,682 @@
+
+* { box-sizing: border-box; }
+
+:root{
+  --cream:#fff8e8;
+  --white:#ffffff;
+  --green:#e9f7df;
+  --green2:#cfeec0;
+  --yellow:#ffe88d;
+  --blue:#e7f4ff;
+  --pink:#ffe1e1;
+  --text:#292929;
+  --gray:#777;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  background:var(--cream);
+  color:var(--text);
+}
+
+button{
+  font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:active:not(:disabled){
+  transform:scale(.98);
+}
+
+.screen{
+  display:none;
+  width:min(560px,100%);
+  min-height:100vh;
+  margin:auto;
+  padding:22px 18px 55px;
+}
+
+.screen.active{
+  display:block;
+}
+
+/* =========================
+   첫 화면
+========================= */
+
+.hero{
+  text-align:center;
+}
+
+.hero h1{
+  font-size:38px;
+  margin:8px 0 4px;
+}
+
+.hero-sub{
+  color:#666;
+  font-size:17px;
+  margin-bottom:15px;
+}
+
+/* 직접 만든 동물 가족사진 */
+.family-art{
+  position:relative;
+  width:100%;
+  height:300px;
+  margin:10px auto 22px;
+  border-radius:30px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 20% 10%,#fffbd7 0 12%,transparent 13%),
+    linear-gradient(#ccefff 0 65%,#dff2b8 65%);
+  box-shadow:0 10px 30px rgba(0,0,0,.09);
+}
+
+.sun{
+  position:absolute;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:#ffd963;
+  right:30px;
+  top:25px;
+}
+
+.cloud{
+  position:absolute;
+  background:white;
+  width:75px;
+  height:28px;
+  border-radius:30px;
+  opacity:.9;
+}
+
+.cloud:before,
+.cloud:after{
+  content:"";
+  position:absolute;
+  background:white;
+  border-radius:50%;
+}
+
+.cloud:before{
+  width:35px;
+  height:35px;
+  top:-18px;
+  left:12px;
+}
+
+.cloud:after{
+  width:42px;
+  height:42px;
+  top:-24px;
+  right:8px;
+}
+
+.cloud.one{ left:25px; top:40px; }
+.cloud.two{ right:85px; top:90px; transform:scale(.7); }
+
+.animal{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.12));
+}
+
+/* 사자 */
+.lion{
+  left:205px;
+  bottom:34px;
+  width:115px;
+  height:115px;
+  border-radius:50%;
+  background:#b96a35;
+}
+.lion:after{
+  content:"🦁";
+  font-size:83px;
+}
+
+/* 코끼리 */
+.elephant{
+  left:52px;
+  bottom:28px;
+}
+.elephant:after{
+  content:"🐘";
+  font-size:105px;
+}
+
+/* 기린 */
+.giraffe{
+  right:35px;
+  bottom:45px;
+}
+.giraffe:after{
+  content:"🦒";
+  font-size:112px;
+}
+
+/* 토끼 */
+.rabbit{
+  left:150px;
+  bottom:17px;
+}
+.rabbit:after{
+  content:"🐰";
+  font-size:72px;
+}
+
+/* 원숭이 */
+.monkey{
+  right:145px;
+  bottom:18px;
+}
+.monkey:after{
+  content:"🐵";
+  font-size:70px;
+}
+
+/* 스컹크 */
+.skunk{
+  left:17px;
+  bottom:8px;
+}
+.skunk:after{
+  content:"🦨";
+  font-size:63px;
+}
+
+/* 뱀 */
+.snake{
+  right:10px;
+  bottom:8px;
+}
+.snake:after{
+  content:"🐍";
+  font-size:66px;
+}
+
+.family-label{
+  position:absolute;
+  top:17px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(8px);
+  padding:8px 15px;
+  border-radius:30px;
+  font-size:14px;
+  font-weight:800;
+}
+
+.big-start{
+  width:100%;
+  border:0;
+  padding:19px;
+  border-radius:22px;
+  background:#ffd94f;
+  font-size:22px;
+  font-weight:950;
+  cursor:pointer;
+  box-shadow:0 7px 0 #e7bc25;
+}
+
+.home-note{
+  font-size:14px;
+  color:#888;
+  margin-top:14px;
+}
+
+
+/* =========================
+   게임 선택
+========================= */
+
+.page-title{
+  text-align:center;
+  font-size:30px;
+  margin:10px 0 4px;
+}
+
+.page-desc{
+  text-align:center;
+  color:#777;
+  margin-bottom:20px;
+}
+
+.mode-grid{
+  display:grid;
+  gap:14px;
+}
+
+.mode-card{
+  background:white;
+  border-radius:23px;
+  padding:18px;
+  box-shadow:0 6px 20px rgba(0,0,0,.07);
+  text-align:left;
+}
+
+.mode-top{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.mode-icon{
+  font-size:43px;
+  width:60px;
+  text-align:center;
+}
+
+.mode-title{
+  font-size:21px;
+  font-weight:950;
+}
+
+.mode-desc{
+  font-size:14px;
+  color:#777;
+  margin-top:4px;
+}
+
+.mode-button{
+  margin-top:14px;
+  width:100%;
+  border:0;
+  padding:14px;
+  border-radius:16px;
+  font-size:17px;
+  font-weight:900;
+  cursor:pointer;
+  background:#dff3ce;
+}
+
+.mode-button.pending{
+  background:#eee;
+  color:#999;
+  cursor:default;
+}
+
+.back-button{
+  width:100%;
+  margin-top:18px;
+  border:0;
+  background:white;
+  padding:14px;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+
+/* =========================
+   퀴즈 화면
+========================= */
+
+.quiz-header{
+  text-align:center;
+}
+
+.quiz-main-title{
+  border:0;
+  background:transparent;
+  font-size:30px;
+  font-weight:950;
+  cursor:pointer;
+}
+
+.quiz-small{
+  color:#777;
+  margin:5px 0 15px;
+}
+
+.status{
+  display:flex;
+  justify-content:space-between;
+  background:white;
+  border-radius:18px;
+  padding:12px 15px;
+  box-shadow:0 5px 18px rgba(0,0,0,.06);
+  margin-bottom:14px;
+  font-weight:800;
+}
+
+.quiz-card{
+  background:white;
+  padding:22px 18px;
+  border-radius:27px;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.question-title{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  padding:15px;
+  background:var(--blue);
+  font-size:22px;
+  font-weight:950;
+  cursor:pointer;
+}
+
+.base-clue{
+  background:var(--green);
+  padding:17px;
+  border-radius:17px;
+  margin:15px 0;
+  font-size:19px;
+  line-height:1.5;
+  font-weight:850;
+  cursor:pointer;
+}
+
+.hint{
+  background:#fff3c3;
+  padding:13px;
+  border-radius:15px;
+  margin:8px 0;
+  font-size:17px;
+  font-weight:800;
+  line-height:1.45;
+  cursor:pointer;
+}
+
+.hint-button{
+  width:100%;
+  border:0;
+  background:var(--yellow);
+  border-radius:17px;
+  padding:15px;
+  font-size:18px;
+  font-weight:950;
+  cursor:pointer;
+  margin:8px 0 10px;
+}
+
+.score-info{
+  color:#777;
+  font-size:14px;
+  font-weight:800;
+  margin:10px 0 14px;
+}
+
+.answers{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.answer{
+  border:3px solid transparent;
+  background:#f5f5f5;
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.answer-name{
+  width:100%;
+  border:0;
+  background:transparent;
+  padding:15px 5px 7px;
+  font-size:20px;
+  font-weight:950;
+  cursor:pointer;
+}
+
+.answer-sound{
+  width:100%;
+  border:0;
+  background:transparent;
+  padding:4px 0 10px;
+  font-size:19px;
+  cursor:pointer;
+}
+
+.answer.correct{
+  background:#dff6df;
+  border-color:#63bd68;
+}
+
+.answer.wrong{
+  background:#ffe0e0;
+  border-color:#ef7474;
+}
+
+.result{
+  min-height:42px;
+  padding-top:15px;
+  font-size:20px;
+  font-weight:950;
+}
+
+.next-button{
+  display:block;
+  width:100%;
+  margin-top:10px;
+  border:0;
+  border-radius:18px;
+  padding:17px;
+  font-size:19px;
+  font-weight:950;
+  background:#ddd;
+  color:#999;
+  cursor:not-allowed;
+}
+
+.next-button.active{
+  background:#ffd94f;
+  color:#292929;
+  cursor:pointer;
+}
+
+
+/* =========================
+   피니시
+========================= */
+
+.finish-wrap{
+  text-align:center;
+  background:white;
+  border-radius:30px;
+  padding:35px 20px;
+  margin-top:50px;
+  box-shadow:0 10px 30px rgba(0,0,0,.09);
+}
+
+.trophy{
+  font-size:85px;
+}
+
+.finish-title{
+  font-size:32px;
+  margin:5px 0;
+}
+
+.final-score{
+  font-size:27px;
+  font-weight:950;
+  margin:20px 0 5px;
+}
+
+.finish-message{
+  color:#666;
+  font-size:18px;
+  margin-bottom:25px;
+}
+
+.finish-button{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  padding:16px;
+  margin:6px 0;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.retry{ background:#dff4cf; }
+.list{ background:#e6f3ff; }
+.home{ background:#f0f0f0; }
+
+
+/* =========================
+   폭죽
+========================= */
+
+#confetti{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:9999;
+}
+
+.confetti-piece{
+  position:absolute;
+  top:-20px;
+  width:10px;
+  height:16px;
+  border-radius:3px;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-20px) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(110vh) rotate(900deg);
+    opacity:.9;
+  }
+}
+
+@media(max-width:430px){
+  .family-art{height:265px;}
+  .lion{left:37%;width:95px;height:95px;}
+  .lion:after{font-size:70px;}
+  .elephant:after,.giraffe:after{font-size:88px;}
+  .rabbit:after,.monkey:after{font-size:61px;}
+  .hero h1{font-size:33px;}
+}
+
+/* 모바일에서는 동물마다 독립된 칸을 사용해 겹침을 방지합니다. */
+@media(max-width:559px){
+  .family-art{
+    display:grid;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    grid-template-rows:90px 78px;
+    align-content:end;
+    align-items:center;
+    justify-items:center;
+    height:270px;
+    padding:75px 10px 15px;
+  }
+  .family-art .animal{
+    position:relative;
+    inset:auto;
+    width:100%;
+    height:100%;
+    min-width:0;
+    grid-column:span 4;
+  }
+  .family-art .animal:after{
+    font-size:clamp(48px,15vw,76px);
+    line-height:1;
+  }
+  .family-art .lion{
+    width:auto;
+    height:auto;
+    background:transparent;
+  }
+  .family-art .rabbit,
+  .family-art .monkey,
+  .family-art .skunk,
+  .family-art .snake{
+    grid-column:span 3;
+  }
+  .family-art .rabbit:after,
+  .family-art .monkey:after,
+  .family-art .skunk:after,
+  .family-art .snake:after{
+    font-size:clamp(42px,12vw,62px);
+  }
+  .family-label{
+    width:max-content;
+    max-width:calc(100% - 24px);
+  }
+  .mode-top > div{min-width:0;}
+  .mode-icon{flex-shrink:0;}
+  .answers{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .answer-name{overflow-wrap:anywhere;}
+}
+/* 첫 화면 대표 사진: 원본 전체를 유지하고 화면 높이에 맞춰 축소 */
+#homeScreen .family-photo{
+  display:block;
+  width:100%;
+  height:auto;
+  max-width:524px;
+  max-height:min(350px,calc(100svh - 280px));
+  object-fit:contain;
+  margin:10px auto 22px;
+}
+/* 사진의 원본 비율을 유지하고 가림 영역만 넓힙니다. */
+.photo-frame{position:relative;aspect-ratio:1;width:100%;max-width:440px;margin:14px auto;background:repeating-linear-gradient(135deg,#edf3e7 0 12px,#e5eddd 12px 24px);border-radius:20px;overflow:hidden;}
+.photo-frame img{display:block;width:100%;height:100%;object-fit:contain;}
+.photo-frame img[hidden]{display:none;}
+.photo-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;pointer-events:none;}
+.photo-card{background:white;border-radius:24px;padding:18px;}
+.photo-card .answers{grid-template-columns:repeat(2,minmax(0,1fr));}
+.photo-card .answer-name{overflow-wrap:anywhere;}
+.photo-card button:disabled{cursor:default;}
+.photo-stage{text-align:center;color:#47613c;font-weight:700;}
+.photo-caption{text-align:center;font-size:12px;color:#777;margin:8px 0 16px;}
+#photoHint[hidden],#photoRetryImage[hidden]{display:none;}
+@media(prefers-reduced-motion:reduce){.confetti-piece{animation:none;}}
+#silhouetteRetry[hidden]{display:none;}
+
+/* Dinosaur pages reuse the established cream, rounded-card HOSU visual language. */
+[hidden]{display:none!important}
+button,a,select{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #236d4b;outline-offset:4px}
+.screen{min-height:100svh}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.08em;color:#477044}
+#menuTitle{font-size:27px;line-height:1.35;word-break:keep-all}
+.hero>p{line-height:1.6}
+.dinosaur-hero{display:block;width:100%;height:auto;max-height:290px;object-fit:cover;object-position:center 53%;border-radius:28px;margin:18px auto 22px}
+.dinosaur-modes{display:grid;gap:12px}
+.dinosaur-mode{display:flex;align-items:center;gap:13px;width:100%;padding:20px;text-align:left;color:inherit;text-decoration:none;cursor:pointer;border:2px solid #e5ead8;background:white}
+.dinosaur-mode .mode-icon{font-size:34px;flex:0 0 44px}
+.dinosaur-mode>span:nth-child(2){flex:1;min-width:0}
+.dinosaur-mode strong{display:block;font-size:20px}
+.dinosaur-mode small{display:block;margin-top:6px;font-size:14px;line-height:1.5;color:#60665b;word-break:keep-all}
+.dinosaur-mode:hover{border-color:#96b877;background:#f7fbea}
+.home-link{display:block;text-align:center;text-decoration:none}
+.reconstruction{line-height:1.7;margin:22px 0}
+#question{width:100%;border:0;background:#f5f8ed;padding:16px;border-radius:18px;font:inherit;font-size:21px;line-height:1.5;font-weight:800}
+#artFrame{margin:16px 0}#quizArt{display:block;width:100%;height:auto;border-radius:18px}
+#artCaption{font-size:14px;color:#67705d;margin-top:6px}
+#hints .hint{display:block;width:100%;border:0;border-radius:12px;padding:13px;margin:9px 0;text-align:left;font:inherit;line-height:1.5;background:#fff4ce}
+.answer-name{white-space:normal;overflow-wrap:anywhere;min-height:56px}
+.answer-sound{min-width:48px;min-height:48px}
+#result{font-size:21px;line-height:1.5}#explanation{line-height:1.7;color:#4e5e43}
+.next-button:disabled{opacity:.5;cursor:default}
+#guideFilter{width:100%;padding:14px;margin:8px 0 6px;border:2px solid #dce6ce;border-radius:14px;background:white;font:inherit}
+#guideCards{display:grid;gap:15px}
+.dino-entry{background:white;border:2px solid #e5ead8;border-radius:22px;overflow:hidden}
+.dino-entry summary{cursor:pointer;list-style:none;padding:14px}.dino-entry summary::-webkit-details-marker{display:none}
+.dino-entry summary::after{content:"특징 펼치기 ＋";display:block;text-align:center;font-size:14px;color:#536b44;margin:10px 0 0}
+.dino-entry[open] summary::after{content:"특징 접기 −"}
+.dino-entry img{width:100%;height:auto;display:block;border-radius:14px}
+.dino-entry strong{display:block;font-size:22px;margin:12px 0 8px}
+.dino-entry .tag{display:inline-block;background:#eef5df;border-radius:9px;padding:5px 10px;margin-right:5px;font-size:14px}
+.dino-details{padding:0 18px 20px;line-height:1.7}.dino-details button{padding:11px;border:0;border-radius:12px;background:#ffedab;font:inherit}.dino-details a{display:inline-block;margin-top:12px;color:#305e30}
+@media(max-width:360px){.screen{padding:18px 12px 35px}.dinosaur-mode{padding:16px 12px;gap:9px}.dinosaur-mode strong{font-size:18px}#menuTitle{font-size:24px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
