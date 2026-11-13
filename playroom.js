@@ -2,9 +2,9 @@ const HOSU_MENU = Object.freeze([{"key": "animal", "label": "동물 퀴즈", "hr
 const roomMenu = document.getElementById('roomMenu');
 const illustratedGames = roomMenu?.hasAttribute('data-illustrated-games');
 const learningPieces = {
-  math: {label: '수학놀이', art: ''},
-  puzzle: {key: 'hangul', href: '/hangul-test/', label: '한글놀이', art: '<span class="letter-block">가</span><span class="letter-block">나</span><span class="letter-block">다</span>'},
-  language: {key: 'english', href: '/english/', label: '영어놀이', art: '<span class="letter-block">A</span><span class="letter-block">B</span><span class="letter-block">C</span>'},
+  math: {label: '수학놀이'},
+  puzzle: {key: 'hangul', href: '/hangul-test/', label: '한글놀이', art: '/playroom-sejong.webp'},
+  language: {key: 'english', href: '/english/', label: '영어놀이', art: '/playroom-liberty.webp'},
 };
 HOSU_MENU.forEach(original => {
   if (!roomMenu) return;
@@ -24,7 +24,27 @@ HOSU_MENU.forEach(original => {
   }
   if (learning) {
     target.classList.add('learning-piece');
-    target.innerHTML = `<span class="piece-art" aria-hidden="true">${item.art}</span><span class="piece-label" aria-hidden="true">${item.label}</span>`;
+    if (item.art) {
+      const artwork = document.createElement('span');
+      artwork.className = 'piece-art';
+      artwork.setAttribute('aria-hidden', 'true');
+      const mascot = new Image();
+      mascot.alt = '';
+      mascot.src = item.art;
+      artwork.append(mascot);
+      if (item.key === 'hangul') {
+        const inscription = document.createElement('span');
+        inscription.className = 'piece-inscription';
+        inscription.textContent = '나랏말ᄊᆞ미';
+        artwork.append(inscription);
+      }
+      target.append(artwork);
+    }
+    const label = document.createElement('span');
+    label.className = 'piece-label';
+    label.setAttribute('aria-hidden', 'true');
+    label.textContent = item.label;
+    target.append(label);
   }
   roomMenu.append(target);
 });
