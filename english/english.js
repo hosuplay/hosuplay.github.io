@@ -24,6 +24,7 @@
   let choices;
   let round = 0;
   let solved = false;
+  let advanceTimer;
   let owner;
   const progress = {alphabet:new Set(), phonics:new Set(), listen:new Set(), blend:new Set()};
 
@@ -49,7 +50,7 @@
   function play(key) {
     stopAudio();
     const current = playback;
-    player.src = 'audio/' + key + '.wav';
+    player.src = 'audio/' + key + '.wav?v=3';
     player.play().catch(() => {
       if (current === playback) audioError.textContent = '소리를 재생하지 못했어요. 듣기 버튼을 다시 눌러 보세요.';
     });
@@ -65,6 +66,7 @@
   }
 
   function newQuestion() {
+    clearTimeout(advanceTimer);
     solved = false;
     if (mode === 'listen') {
       target = shuffle(letters.filter(letter => letter !== target))[0];
@@ -132,6 +134,7 @@
 
   function navigate() {
     stopAudio();
+    clearTimeout(advanceTimer);
     feedback.textContent = '';
     const hash = location.hash.slice(1);
     mode = Object.hasOwn(titles, hash) ? hash : undefined;
@@ -180,6 +183,8 @@
         wordButton.hidden = false;
         play(target);
       }
+      const next = activity.querySelector('[data-next]');
+      advanceTimer = setTimeout(() => next.click(), 1650);
     }
   });
 

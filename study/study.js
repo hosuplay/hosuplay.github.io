@@ -1,11 +1,13 @@
 (() => {
   const key = 'hosu-study-v1';
   const subjects = {math:'수학', hangul:'한글', english:'영어'};
+  const rooms = ['거실','침실','장난감방'];
   const items = [
-    ['rug','무지개 러그','🌈',2,'/study/art/rug.webp'], ['plant','새싹 화분','🪴',2,'/study/art/plant.webp'],
-    ['lamp','달빛 조명','🌙',3,'/study/art/lamp.webp'], ['sofa','포근한 소파','🛋️',3,'/study/art/sofa.webp'],
-    ['dragon','세종대왕 피규어','👑',10,'/playroom-sejong.webp'],
-    ['unicorn','자유의 여신상 피규어','🗽',10,'/playroom-liberty.webp'],
+    ['rug','무지개 러그','🌈',2,'/study/art/rug.webp','가구'], ['plant','새싹 화분','🪴',2,'/study/art/plant.webp','소품'],
+    ['lamp','달빛 조명','🌙',3,'/study/art/lamp.webp','소품'], ['sofa','포근한 소파','🛋️',3,'/study/art/sofa.webp','가구'],
+    ['dragon','세종대왕 피규어','👑',10,'/playroom-sejong.webp','기존 피규어'],
+    ['unicorn','자유의 여신상 피규어','🗽',10,'/playroom-liberty.webp','기존 피규어'],
+    ...(window.HosuCatalog || []),
   ];
   const empty = () => ({active:null, profiles:[]});
   let memory = empty();
@@ -120,6 +122,7 @@
     let choosing = true;
     let confirmed = null;
     let message = '';
+    let shopGroup = '가구';
     function render() {
       const data = read();
       const profile = current(data);
@@ -178,8 +181,25 @@
         return;
       }
       host.append(make('h2','내 방'));
+      const roomIndex = profile.roomIndex || 0;
+      const roomTabs = document.createElement('nav');
+      roomTabs.className = 'room-tabs';
+      roomTabs.setAttribute('aria-label','방 선택');
+      rooms.forEach((name,index) => {
+        const tab = button(name, () => update(state => {
+          const owner = current(state);
+          if (owner?.id !== profile.id) return false;
+          owner.roomIndex = index;
+          return true;
+        }));
+        tab.setAttribute('aria-pressed',String(roomIndex === index));
+        roomTabs.append(tab);
+      });
+      host.append(roomTabs);
+      const visibleItems = profile.placed.filter(id => (profile.itemRooms?.[id] || 0) === roomIndex);
       const scene = document.createElement('div');
       scene.className = 'study-room';
+      scene.dataset.room = roomIndex;
       scene.setAttribute('role','group');
       scene.setAttribute('aria-label','별 방');
       const savePosition = (id, position) => update(state => {
@@ -188,12 +208,13 @@
         (owner.positions ||= {})[id] = position;
         return true;
       });
-      for (const [id,name,icon,,art] of items.filter(([id]) => profile.placed.includes(id))) {
+      for (const [id,name,icon,,art] of items.filter(([id]) => visibleItems.includes(id))) {
         const prop = make('button',icon);
         prop.type = 'button';
         prop.title = name;
         prop.setAttribute('aria-label',name + ' 위치 옮기기');
         prop.className = 'room-item item-' + id;
+        prop.dataset.category = items.find(item => item[0] === id)[5];
         if (art) prop.replaceChildren(figure(art));
         function positionAt(x, y) {
           prop.style.left = x + '%';
@@ -241,8 +262,8 @@
         };
       }
       host.append(scene);
-      renderPet(host, scene, profile);
-      if (profile.placed.length) host.append(make('p','가구를 끌어서 원하는 곳에 놓아요.'));
+      if (roomIndex === 0) renderPet(host, scene, profile);
+      if (visibleItems.length) host.append(make('p','가구를 끌어서 원하는 곳에 놓아요.'));
       host.append(make('h2','내 창고'));
       const storage = document.createElement('div');
       storage.className = 'study-storage';
@@ -252,7 +273,10 @@
           if (owner?.id !== profile.id || !owner.owned.includes(id)) return false;
           const placed = owner.placed.includes(id);
           if (placed) owner.placed = owner.placed.filter(item => item !== id);
-          else owner.placed.push(id);
+          else {
+            owner.placed.push(id);
+            (owner.itemRooms ||= {})[id] = roomIndex;
+          }
           message = name + (placed ? ' · 창고에 보관했어요.' : ' · 방에 놓았어요.');
           return true;
         });
@@ -260,16 +284,28 @@
       for (const [id,name] of items.filter(([id]) => profile.owned.includes(id))) {
         const placed = profile.placed.includes(id);
         const row = document.createElement('div');
-        row.append(make('span',name), button(placed ? '창고에 보관' : '방에 놓기', () => togglePlacement(id,name)));
+        const itemRoom = profile.itemRooms?.[id] || 0;
+        row.append(make('span',name + (placed ? ' · ' + rooms[itemRoom] : '')));
+        row.append(button(placed ? '창고에 보관' : '이 방에 놓기', () => togglePlacement(id,name)));
         storage.append(row);
       }
       if (!profile.owned.length) storage.append(make('p','상점에서 산 가구가 여기에 모여요.'));
       host.append(storage);
-      if (!profile.placed.length) host.append(make('p','상점에서 첫 가구를 골라 방을 꾸며요.'));
+      if (!visibleItems.length) host.append(make('p','상점에서 첫 가구를 골라 방을 꾸며요.'));
       host.append(make('h2','별 상점'));
+      const groups = document.createElement('nav');
+      groups.className = 'shop-groups';
+      groups.setAttribute('aria-label','상점 분류');
+      const selection = items.filter(([id,,,,,group]) => group !== '기존 피규어' || profile.owned.includes(id));
+      for (const group of new Set(selection.map(item => item[5]))) {
+        const tab = button(group, () => { shopGroup = group; render(); host.querySelector('.shop-groups [aria-pressed=true]')?.focus(); });
+        tab.setAttribute('aria-pressed',String(shopGroup === group));
+        groups.append(tab);
+      }
+      host.append(groups);
       const shop = document.createElement('div');
       shop.className = 'study-shop';
-      for (const [id,name,icon,price,art] of items) {
+      for (const [id,name,icon,price,art] of selection.filter(item => item[5] === shopGroup)) {
         const card = document.createElement('article');
         card.dataset.price = price;
         if (art) card.append(figure(art));
@@ -282,6 +318,7 @@
             owner.stars -= price;
             owner.owned.push(id);
             owner.placed.push(id);
+            (owner.itemRooms ||= {})[id] = roomIndex;
             message = name + ' · 방에 놓았어요!';
             return true;
           });

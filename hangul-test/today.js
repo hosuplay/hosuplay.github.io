@@ -9,13 +9,9 @@
   ];
   let index = 0;
   let owner;
+  let advance;
   function speak(text) {
-    if (!window.speechSynthesis) return;
-    speechSynthesis.cancel();
-    const voice = new SpeechSynthesisUtterance(text);
-    voice.lang = 'ko-KR';
-    voice.rate = .78;
-    speechSynthesis.speak(voice);
+    playHangul(text, panel.querySelector('[role="status"]'));
   }
   function add(tag,text) {
     const node = document.createElement(tag);
@@ -35,6 +31,7 @@
     render();
   }
   function render() {
+    clearTimeout(advance);
     panel.replaceChildren();
     const step = steps[index];
     if (!step) {
@@ -57,6 +54,7 @@
       controls.forEach(control => control.disabled = true);
       speak(step.sound);
       next.disabled = false;
+      advance = setTimeout(() => next.click(), 1550);
     }));
     const feedback = add('p','');
     feedback.setAttribute('role','status');

@@ -85,3 +85,20 @@
   .room-puppy[data-mood]:not([data-mood=""]) { animation: puppy-bounce .36s ease-out; }
   @keyframes puppy-bounce { 50% { translate: 0 -5px; } }
 }
+
+.study-room-page main { max-width: 880px; }
+.study-room-page [data-study] { max-width: none; }
+.room-tabs, .shop-groups { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+[data-study] button[aria-pressed="true"] { background: #815899; border-color: #704584; color: white; font-weight: 800; }
+.study-room[data-room="1"] { background-image: url('/study/art/bedroom.webp'); }
+.study-room[data-room="2"] { background-image: url('/study/art/playroom.webp'); }
+.room-item[data-category] { width: 19%; left: 39%; bottom: 17%; z-index: 2; }
+.room-item[data-category="액자"] { width: 15%; left: 53%; bottom: 61%; z-index: 1; }
+.room-item[data-category="장난감·피규어"] { width: 15%; left: 66%; bottom: 10%; z-index: 3; }
+.room-item.item-rug { width:31%; left:32%; bottom:6%; z-index:1; }
+.room-item.item-plant { width:15%; left:7%; bottom:21%; }
+.room-item.item-lamp { width:17%; left:auto; right:11%; bottom:25%; }
+.room-item.item-sofa { width:37%; left:32%; bottom:26%; }
+.room-item.item-dragon { width:15%; left:auto; right:6%; bottom:12%; }
+.room-item.item-unicorn { width:13%; left:21%; bottom:13%; }
+.study-shop article[data-price="6"] { background: #ecf5ff; }
