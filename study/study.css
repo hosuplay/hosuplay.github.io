@@ -70,3 +70,18 @@
 [data-study] button.room-item:active { cursor: grabbing; z-index: 4; }
 .room-item img { pointer-events: none; user-select: none; }
 .study-storage > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid #ead8e4; }
+
+.study-pet { margin: 16px 0; padding: 12px; border: 1px solid #ead8e4; border-radius: 16px; background: #fff0e3; }
+.study-pet h2 { margin: 0 0 4px; }
+.study-pet p { margin: 4px 0 8px; }
+.study-pet > img { float: right; width: 76px; height: 76px; object-fit: contain; }
+.study-pet::after { content: ""; display: block; clear: both; }
+.pet-controls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.pet-controls button { justify-content: center; }
+.pet-house { position: absolute; left: 4%; bottom: 5%; font-size: clamp(26px,8vw,58px); line-height: 1; z-index: 2; }
+.room-puppy { position: absolute; width: 14%; height: auto; left: 19%; bottom: 7%; z-index: 3; pointer-events: none; filter: drop-shadow(0 3px 3px #6c435746); }
+.room-puppy[data-mood="rested"] { left: 8%; bottom: 6%; width: 10%; transform: rotate(-8deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .room-puppy[data-mood]:not([data-mood=""]) { animation: puppy-bounce .36s ease-out; }
+  @keyframes puppy-bounce { 50% { translate: 0 -5px; } }
+}

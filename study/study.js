@@ -52,6 +52,65 @@
     element.onclick = action;
     return element;
   }
+  const puppyPrice = 20;
+  const careActions = [
+    ['🍚 밥 주기','배불러요!', 'fed'],
+    ['🏠 집에서 쉬기','강아지 집에서 낮잠을 자요.', 'rested'],
+    ['🫧 씻기','거품 목욕을 하고 뽀송해졌어요!', 'washed'],
+    ['🩹 약 주기','돌봐 줘서 고마워요!', 'treated'],
+  ];
+  function renderPet(host, scene, profile) {
+    const section = document.createElement('section');
+    section.className = 'study-pet';
+    section.append(make('h2','반려동물'));
+    if (!profile.pet) {
+      section.append(figure('/study/art/puppy.webp'), make('p','별을 모아 강아지 친구를 데려와요.'));
+      const adopt = button('⭐ 20 · 강아지 데려오기', () => {
+        update(state => {
+          const owner = current(state);
+          if (owner?.id !== profile.id || owner.pet || owner.stars < puppyPrice) return false;
+          owner.stars -= puppyPrice;
+          owner.pet = {care:{}, mood:'우리 집에 왔어요!'};
+          return true;
+        });
+        host.querySelector('.study-pet button')?.focus();
+      });
+      adopt.disabled = profile.stars < puppyPrice;
+      section.append(adopt);
+      host.append(section);
+      return;
+    }
+    const home = make('span','🏠');
+    home.className = 'pet-house';
+    home.setAttribute('aria-label','강아지 집');
+    const puppy = figure('/study/art/puppy.webp');
+    puppy.alt = '강아지';
+    puppy.className = 'room-puppy';
+    scene.append(home, puppy);
+    const mood = make('p',profile.pet.mood);
+    mood.setAttribute('role','status');
+    section.append(mood);
+    const controls = document.createElement('div');
+    controls.className = 'pet-controls';
+    for (const [label, reaction, action] of careActions) {
+      const control = button(label, () => {
+        update(state => {
+          const owner = current(state);
+          if (owner?.id !== profile.id || !owner.pet) return false;
+          owner.pet.care[action] = (owner.pet.care[action] || 0) + 1;
+          owner.pet.mood = reaction;
+          owner.pet.lastAction = action;
+          return true;
+        });
+        host.querySelector('[data-care="' + action + '"]')?.focus();
+      });
+      control.dataset.care = action;
+      controls.append(control);
+    }
+    puppy.dataset.mood = profile.pet.lastAction || '';
+    section.append(controls);
+    host.append(section);
+  }
   let confirmedProfile;
   function mount() {
     const host = document.querySelector('[data-study]');
@@ -182,6 +241,7 @@
         };
       }
       host.append(scene);
+      renderPet(host, scene, profile);
       if (profile.placed.length) host.append(make('p','가구를 끌어서 원하는 곳에 놓아요.'));
       host.append(make('h2','내 창고'));
       const storage = document.createElement('div');
