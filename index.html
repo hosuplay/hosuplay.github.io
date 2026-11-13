@@ -685,7 +685,7 @@ button:active:not(:disabled){
 #silhouetteRetry[hidden]{display:none;}
 </style>
 <link rel="stylesheet" href="puzzle.css?v=5">
-<link rel="stylesheet" href="playroom.css?v=8">
+<link rel="stylesheet" href="playroom.css?v=9">
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/hosuplay-icon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/hosuplay-icon-180.png">
@@ -701,8 +701,13 @@ button:active:not(:disabled){
 <section id="roomScreen" class="screen active" aria-labelledby="roomTitle">
 <h1 id="roomTitle" class="sr-only">호수플레이 — 놀이 고르기</h1>
 <div class="approved-main">
-<img class="approved-main-image" src="/puzzle-menu-approved.webp" width="1024" height="1536" fetchpriority="high" decoding="async" alt="호수플레이. 동물 퀴즈, 수학 공부, 곤충 퀴즈, 퍼즐 게임, 공룡 퀴즈, 한글·영어 준비중으로 이루어진 6조각 퍼즐판">
-<nav id="roomMenu" class="approved-hotspots" aria-label="놀이 고르기"></nav>
+<img class="approved-main-image" src="/playroom-learning.webp" width="1024" height="1536" fetchpriority="high" decoding="async" alt="">
+<nav id="roomMenu" class="approved-hotspots" data-illustrated-games aria-label="동물 놀이 고르기"></nav>
+<nav class="learning-menu" aria-label="학습 놀이 고르기">
+  <a href="/math/"><span aria-hidden="true">123</span>수학놀이</a>
+  <a href="/hangul-test/"><span aria-hidden="true">가나다</span>한글놀이</a>
+  <a href="/english/"><span aria-hidden="true">ABC</span>영어놀이</a>
+</nav>
 </div>
 </section>
 <section id="homeScreen" class="screen">
@@ -823,7 +828,7 @@ button:active:not(:disabled){
 
       <button class="mode-button" onclick="startSoundQuiz()">시작하기</button>
     </div>
-<div class="mode-card"><div class="mode-top"><div class="mode-icon">🧩</div><div><div class="mode-title">동물 그림 퍼즐</div><div class="mode-desc">조각을 하나씩 옮겨 동물 그림을 완성해요.</div></div></div><button class="mode-button" onclick="openPuzzle()">시작하기</button></div>
+<div class="mode-card"><div class="mode-top"><div class="mode-icon">🧩</div><div><div class="mode-title">동물 그림 퍼즐</div><div class="mode-desc">조각을 하나씩 옮겨 동물 그림을 완성해요.</div></div></div><form action="/puzzle/"><input type="hidden" name="category" value="animal"><button class="mode-button">시작하기</button></form></div>
   </div>
 
   <button class="back-button" onclick="showHome()">
@@ -3204,6 +3209,6 @@ function speak(text){
 <script src="/puzzle-categories.js?v=3"></script>
 <script src="puzzle.js?v=20261110"></script>
 <script src="puzzle-touch.js?v=1"></script>
-<script src="playroom.js?v=8"></script>
+<script src="playroom.js?v=9"></script>
 </body>
 </html>

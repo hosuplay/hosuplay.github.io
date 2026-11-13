@@ -13,6 +13,33 @@ button.approved-target:active:not(:disabled){transform:none}
 .room-home-link{display:block;text-align:center;margin:20px 0;color:#556948;font-size:14px}
 @media(max-width:600px){#roomScreen{padding:0}.approved-main{width:100%;max-width:100%;border-radius:0;box-shadow:none}}
 
-/* Cover the old dinosaur-only status badge without replacing the approved menu art. */
 .approved-main{container-type:inline-size}
-.approved-target[data-menu="dinosaur"]::before{content:"시작!";position:absolute;left:38.6%;top:70.35%;width:10.7%;height:3.55%;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#f6edff;color:#66319d;font-size:2.7cqw;font-weight:900;line-height:1;box-shadow:0 2px 2px #825aaa30}
+.learning-menu {
+  position: absolute;
+  inset: 23.05% 5.9% 5.25% 50.7%;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 1.2cqw;
+  padding: 0.8cqw;
+  background: #faf1db;
+  border-radius: 3.6cqw;
+}
+.learning-menu a {
+  display: grid;
+  place-content: center;
+  gap: 0.8cqw;
+  border: 2px solid #fff9;
+  border-radius: 3cqw;
+  background: #caebff;
+  color: #253b4d;
+  text-align: center;
+  text-decoration: none;
+  font-size: clamp(16px, 4.6cqw, 29px);
+  font-weight: 900;
+  line-height: 1.2;
+  touch-action: manipulation;
+}
+.learning-menu a:nth-child(2) { background: #ffdec5; color: #57382e; }
+.learning-menu a:nth-child(3) { background: #ffedab; color: #573d20; }
+.learning-menu a span { font-size: 1.24em; }
+.learning-menu a:focus-visible { outline: 3px solid #145a89; outline-offset: -5px; }

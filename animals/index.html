@@ -822,7 +822,7 @@ button:active:not(:disabled){
 
       <button class="mode-button" onclick="startSoundQuiz()">시작하기</button>
     </div>
-<div class="mode-card"><div class="mode-top"><div class="mode-icon">🧩</div><div><div class="mode-title">동물 그림 퍼즐</div><div class="mode-desc">조각을 하나씩 옮겨 동물 그림을 완성해요.</div></div></div><button class="mode-button" onclick="openPuzzle()">시작하기</button></div>
+<div class="mode-card"><div class="mode-top"><div class="mode-icon">🧩</div><div><div class="mode-title">동물 그림 퍼즐</div><div class="mode-desc">조각을 하나씩 옮겨 동물 그림을 완성해요.</div></div></div><form action="/puzzle/"><input type="hidden" name="category" value="animal"><button class="mode-button">시작하기</button></form></div>
   </div>
 
   <button class="back-button" onclick="showHome()">

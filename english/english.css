@@ -1,0 +1,33 @@
+:root { color-scheme: light; font-family: system-ui, "Apple SD Gothic Neo", sans-serif; color: #442c20; background: #fffaf0; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1180px; margin: auto; padding: 0 12px 24px; }
+[hidden] { display: none !important; }
+.home-link { display: inline-flex; align-items: center; min-height: 44px; color: #56381f; font-weight: 750; }
+#menu { background: #fff; border-radius: 18px; overflow: hidden; }
+.banner { width: 100%; height: auto; display: block; }
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0 1%; gap: 2px; }
+.cards a { display: grid; place-items: center; border-radius: 16px; touch-action: manipulation; }
+.cards img { display: block; width: 100%; height: auto; }
+.art-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+.art-footer img { width: 25%; height: auto; }
+#lesson { max-width: 720px; margin: auto; padding: clamp(12px, 4vw, 28px); border-radius: 22px; border: 2px solid #e6d6bd; background: #fffdf8; }
+h2 { margin: 8px 0 12px; }
+p { line-height: 1.5; }
+button, select { font: inherit; }
+button { min-height: 48px; padding: 8px 13px; border: 2px solid #d9bb83; border-radius: 13px; background: #fff0c6; color: inherit; font-weight: 750; cursor: pointer; touch-action: manipulation; }
+button[aria-pressed="true"] { background: #ffe098; border-color: #9b5906; }
+button:disabled { opacity: .64; cursor: default; }
+:focus-visible { outline: 3px solid #196080; outline-offset: 2px; }
+.toolbar, .choices, .pieces { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+.letters { display: grid; grid-template-columns: repeat(auto-fit, minmax(62px, 1fr)); gap: 7px; }
+.letters button { padding: 6px 2px; font-size: 1.16rem; }
+.example { background: #edf7ff; border-radius: 16px; padding: 12px; margin: 12px 0; }
+.example strong, .pieces button { font-size: 1.6rem; }
+.choices > div { display: grid; gap: 6px; flex: 1 1 80px; }
+.choices button:first-child { font-size: 1.3rem; }
+#feedback { min-height: 1.5em; font-weight: 800; color: #3e6125; }
+#audio-error { color: #a12622; }
+#audio-error:empty { display: none; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 650px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
