@@ -2,8 +2,8 @@
   const key = 'hosu-study-v1';
   const subjects = {math:'수학', hangul:'한글', english:'영어'};
   const items = [
-    ['rug','무지개 러그','🌈',2], ['plant','새싹 화분','🪴',2],
-    ['lamp','달빛 조명','🌙',3], ['sofa','포근한 소파','🛋️',3],
+    ['rug','무지개 러그','🌈',2,'/study/art/rug.webp'], ['plant','새싹 화분','🪴',2,'/study/art/plant.webp'],
+    ['lamp','달빛 조명','🌙',3,'/study/art/lamp.webp'], ['sofa','포근한 소파','🛋️',3,'/study/art/sofa.webp'],
     ['dragon','세종대왕 피규어','👑',10,'/playroom-sejong.webp'],
     ['unicorn','자유의 여신상 피규어','🗽',10,'/playroom-liberty.webp'],
   ];
@@ -121,43 +121,112 @@
       host.append(make('h2','내 방'));
       const scene = document.createElement('div');
       scene.className = 'study-room';
-      if (!profile.placed.length) scene.append(make('p','가구를 놓으면 여기에 보여요.'));
+      scene.setAttribute('role','group');
+      scene.setAttribute('aria-label','별 방');
+      const savePosition = (id, position) => update(state => {
+        const owner = current(state);
+        if (owner?.id !== profile.id || !owner.placed.includes(id)) return false;
+        (owner.positions ||= {})[id] = position;
+        return true;
+      });
       for (const [id,name,icon,,art] of items.filter(([id]) => profile.placed.includes(id))) {
-        const prop = make('span',icon);
+        const prop = make('button',icon);
+        prop.type = 'button';
         prop.title = name;
-        prop.setAttribute('aria-label',name);
+        prop.setAttribute('aria-label',name + ' 위치 옮기기');
         prop.className = 'room-item item-' + id;
         if (art) prop.replaceChildren(figure(art));
+        function positionAt(x, y) {
+          prop.style.left = x + '%';
+          prop.style.top = y + '%';
+          prop.style.right = 'auto';
+          prop.style.bottom = 'auto';
+        }
+        const position = profile.positions?.[id];
+        if (position) positionAt(position.x, position.y);
         scene.append(prop);
+        function place(left, top) {
+          const x = Math.max(0, Math.min(left, scene.clientWidth - prop.offsetWidth));
+          const y = Math.max(0, Math.min(top, scene.clientHeight - prop.offsetHeight));
+          const position = {x:100*x/scene.clientWidth, y:100*y/scene.clientHeight};
+          positionAt(position.x, position.y);
+          return position;
+        }
+        let drag;
+        prop.onpointerdown = event => {
+          if (!event.isPrimary || event.button !== 0) return;
+          drag = {id:event.pointerId, x:event.clientX, y:event.clientY, left:prop.offsetLeft, top:prop.offsetTop};
+          prop.setPointerCapture(event.pointerId);
+        };
+        prop.onpointermove = event => {
+          if (event.pointerId !== drag?.id) return;
+          drag.position = place(drag.left + event.clientX - drag.x, drag.top + event.clientY - drag.y);
+        };
+        prop.onpointerup = event => {
+          if (event.pointerId !== drag?.id) return;
+          const position = drag.position;
+          drag = null;
+          if (position) savePosition(id, position);
+        };
+        prop.onpointercancel = () => {
+          if (!drag) return;
+          place(drag.left, drag.top);
+          drag = null;
+        };
+        prop.onkeydown = event => {
+          const delta = {ArrowLeft:[-8,0], ArrowRight:[8,0], ArrowUp:[0,-8], ArrowDown:[0,8]}[event.key];
+          if (!delta) return;
+          event.preventDefault();
+          savePosition(id, place(prop.offsetLeft + delta[0], prop.offsetTop + delta[1]));
+          host.querySelector('.item-' + id)?.focus();
+        };
       }
-      host.append(scene, make('h2','별 상점'));
+      host.append(scene);
+      if (profile.placed.length) host.append(make('p','가구를 끌어서 원하는 곳에 놓아요.'));
+      host.append(make('h2','내 창고'));
+      const storage = document.createElement('div');
+      storage.className = 'study-storage';
+      function togglePlacement(id, name) {
+        update(state => {
+          const owner = current(state);
+          if (owner?.id !== profile.id || !owner.owned.includes(id)) return false;
+          const placed = owner.placed.includes(id);
+          if (placed) owner.placed = owner.placed.filter(item => item !== id);
+          else owner.placed.push(id);
+          message = name + (placed ? ' · 창고에 보관했어요.' : ' · 방에 놓았어요.');
+          return true;
+        });
+      }
+      for (const [id,name] of items.filter(([id]) => profile.owned.includes(id))) {
+        const placed = profile.placed.includes(id);
+        const row = document.createElement('div');
+        row.append(make('span',name), button(placed ? '창고에 보관' : '방에 놓기', () => togglePlacement(id,name)));
+        storage.append(row);
+      }
+      if (!profile.owned.length) storage.append(make('p','상점에서 산 가구가 여기에 모여요.'));
+      host.append(storage);
+      if (!profile.placed.length) host.append(make('p','상점에서 첫 가구를 골라 방을 꾸며요.'));
+      host.append(make('h2','별 상점'));
       const shop = document.createElement('div');
       shop.className = 'study-shop';
       for (const [id,name,icon,price,art] of items) {
         const card = document.createElement('article');
+        card.dataset.price = price;
         if (art) card.append(figure(art));
         card.append(make('strong', (art ? '' : icon + ' ') + name));
         const owned = profile.owned.includes(id);
-        const placed = profile.placed.includes(id);
-        const action = button(owned ? (placed ? '보관하기' : '방에 놓기') : '⭐ ' + price + ' · 사기', () => {
+        const action = button(owned ? '구매했어요' : '⭐ ' + price + ' · 사기', () => {
           update(state => {
             const owner = current(state);
-            if (owner?.id !== profile.id) return false;
-            if (owner.owned.includes(id)) {
-              if (owner.placed.includes(id)) owner.placed = owner.placed.filter(item => item !== id);
-              else owner.placed.push(id);
-              message = name + ' 배치를 바꿨어요.';
-            } else {
-              if (owner.stars < price) return false;
-              owner.stars -= price;
-              owner.owned.push(id);
-              owner.placed.push(id);
-              message = name + '을(를) 방에 놓았어요!';
-            }
+            if (owner?.id !== profile.id || owner.owned.includes(id) || owner.stars < price) return false;
+            owner.stars -= price;
+            owner.owned.push(id);
+            owner.placed.push(id);
+            message = name + ' · 방에 놓았어요!';
             return true;
           });
         });
-        action.disabled = !owned && profile.stars < price;
+        action.disabled = owned || profile.stars < price;
         card.append(action);
         shop.append(card);
       }

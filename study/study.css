@@ -4,21 +4,69 @@
 [data-study] button { border: 1px solid #c79b59; border-radius: 10px; background: #ffe8ad; cursor: pointer; touch-action: manipulation; }
 [data-study] button:disabled { opacity: .52; cursor: default; }
 [data-study] input { max-width: 100%; border: 1px solid #c79b59; border-radius: 8px; }
-.study-room-page { background: #fff2e7; color: #473227; font: 1rem/1.5 system-ui,sans-serif; margin: 0; }
-.study-room-page main { max-width: 690px; padding: 15px; margin: auto; }
-.study-room-page a { color: #543b26; }
-.study-room-page nav a { display: inline-block; padding: 8px; }
-.study-room { position: relative; height: clamp(190px,55vw,300px); overflow: hidden; border: 2px solid #cda683; border-radius: 14px; background: linear-gradient(#fcdfd3 0 66%,#bf8860 66% 68%,#efcba2 68%); text-align: center; }
-.study-room p { margin: 30px 10px; }
-.room-item { position: absolute; font-size: clamp(30px,9vw,66px); line-height: 1; }
-.item-rug { left: 37%; bottom: 4%; }
-.item-plant { left: 6%; bottom: 23%; }
-.item-lamp { right: 13%; top: 10%; }
-.item-sofa { left: 38%; bottom: 25%; }
-.item-dragon { right: 8%; bottom: 17%; }
-.item-unicorn { left: 21%; bottom: 13%; }
-.study-shop { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 8px; }
-.study-shop article { display: grid; align-content: space-between; padding: 8px; border: 1px solid #ebd6b8; border-radius: 10px; }
+.study-room-page {
+  margin: 0;
+  background: linear-gradient(160deg,#fff2e4,#f2eaff 65%,#fff5e8);
+  color: #523746;
+  font: 1rem/1.5 system-ui,sans-serif;
+}
+.study-room-page main { max-width: 720px; padding: 16px; margin: auto; }
+.study-room-page h1 { margin: 12px 0 2px; letter-spacing: -.05em; }
+.study-room-page a { color: #65446c; }
+.study-room-page nav a {
+  display: inline-block;
+  margin: 4px 2px;
+  padding: 10px;
+  border-radius: 999px;
+  background: #fff9;
+}
+.study-room-page [data-study] { background: #fffaf6; border-color: #ead8e4; box-shadow: 0 8px 30px #84566d16; }
+.study-room {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 3px solid #fff;
+  border-radius: 18px;
+  background: #f6dddb url('/study/art/room.webp') center / cover;
+  box-shadow: 0 3px 10px #6a425a26;
+}
+.room-item { position: absolute; line-height: 0; }
+.room-item .study-figure { display: block; width: 100%; height: auto; filter: drop-shadow(0 4px 3px #6c435746); }
+.item-rug { width: 31%; left: 32%; bottom: 6%; z-index: 1; }
+.item-plant { width: 15%; left: 7%; bottom: 21%; z-index: 2; }
+.item-lamp { width: 17%; right: 11%; bottom: 25%; z-index: 2; }
+.item-sofa { width: 37%; left: 32%; bottom: 26%; z-index: 2; }
+.item-dragon { width: 15%; right: 6%; bottom: 12%; z-index: 3; }
+.item-unicorn { width: 13%; left: 21%; bottom: 13%; z-index: 3; }
+.study-shop { display: grid; grid-template-columns: repeat(auto-fit,minmax(125px,1fr)); gap: 10px; }
+.study-shop article {
+  display: grid;
+  grid-template-rows: 96px 1fr auto;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid #ead8e4;
+  border-radius: 16px;
+  text-align: center;
+  background: #fff1e6;
+}
+.study-shop article[data-price="3"] { background: #f3edff; }
+.study-shop article[data-price="10"] { background: radial-gradient(ellipse at top,#fff5c3,#fce7ed 75%); border-color: #e3bf80; }
+.study-shop article button { justify-content: center; width: calc(100% - 6px); }
+.study-shop .study-figure { display: block; width: 100%; height: 94px; object-fit: contain; margin: auto; }
 
-.study-figure { display: block; width: min(100%, 88px); height: 78px; margin: auto; object-fit: contain; }
-.room-item .study-figure { width: clamp(42px, 13vw, 85px); }
+[data-study] button.room-item {
+  display: block;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+[data-study] button.room-item:active { cursor: grabbing; z-index: 4; }
+.room-item img { pointer-events: none; user-select: none; }
+.study-storage > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid #ead8e4; }
