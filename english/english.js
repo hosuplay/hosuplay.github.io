@@ -24,6 +24,21 @@
   let choices;
   let round = 0;
   let solved = false;
+  let owner;
+  const progress = {alphabet:new Set(), phonics:new Set(), listen:new Set(), blend:new Set()};
+
+  function studyStep(value) {
+    const active = window.HosuStudy?.active();
+    if (owner !== active) {
+      owner = active;
+      Object.values(progress).forEach(set => set.clear());
+    }
+    const set = progress[mode];
+    set.add(value);
+    if (set.size < 5) return false;
+    set.clear();
+    return window.HosuStudy?.award('english');
+  }
 
   function stopAudio() {
     playback++;
@@ -141,6 +156,7 @@
       selected = letter;
       showLetter();
       play((mode === 'alphabet' ? 'name-' : 'sound-') + letter);
+      feedback.textContent = studyStep(letter) ? '다섯 글자를 들었어요! ⭐ 별 하나' : '';
     }
     if (kind || button.hasAttribute('data-next')) {
       stopAudio();
@@ -158,6 +174,7 @@
       }
       solved = true;
       feedback.textContent = '정답! ' + (mode === 'listen' ? target.toUpperCase() : target);
+      if (studyStep(target)) feedback.textContent += ' · ⭐ 별 하나!';
       const wordButton = byId('whole-word');
       if (wordButton) {
         wordButton.hidden = false;

@@ -67,7 +67,7 @@
  }
 
  function showStars(){$('stars').textContent=`⭐ ${stars}`;if(!canSave)$('saveNote').textContent='이번 놀이에서는 별을 화면에만 모아요. 저장 없이도 놀 수 있어요.';}
- function reward(text){if(solved)return;solved=true;if(decks.has(deckKey()))decks.get(deckKey()).current=null;stars++;try{if(canSave)localStorage.setItem(KEY,JSON.stringify({stars}));}catch{canSave=false;}showStars();$('feedback').className='success';$('feedback').textContent=`${text} ⭐ 별 하나!`;$('next').hidden=false;nextTimer=setTimeout(newRound,1500);}
+ function reward(text){if(solved)return;solved=true;if(decks.has(deckKey()))decks.get(deckKey()).current=null;stars++;window.HosuStudy?.award('math');try{if(canSave)localStorage.setItem(KEY,JSON.stringify({stars}));}catch{canSave=false;}showStars();$('feedback').className='success';$('feedback').textContent=`${text} ⭐ 별 하나!`;$('next').hidden=false;nextTimer=setTimeout(newRound,1500);}
  function button(text,fn,parent,cls=''){const el=document.createElement('button');el.type='button';el.textContent=text;el.className=cls;el.onclick=fn;parent.append(el);return el;}
  function tray(count,label,color,fn,start=0){const el=document.createElement('div');el.className=`tray ${color||''}`;const caption=document.createElement('span');caption.className='tray-label';caption.textContent=label;el.append(caption);for(let i=0;i<count;i++){const idx=i+start;const bead=button('',()=>{if(!solved)pop(bead);fn(idx,bead);},el,'bead');bead.setAttribute('aria-label',`${label}, ${i+1}번째 구슬`);bead.setAttribute('aria-pressed','false');} $('board').append(el);return el;}
  function message(text){$('feedback').className='';$('feedback').textContent=text;}

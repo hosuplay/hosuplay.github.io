@@ -34,6 +34,15 @@ const dateKey=()=>{const d=new Date();return `${d.getFullYear()}-${d.getMonth()+
 let data;try{data=JSON.parse(localStorage.getItem(STORAGE));}catch{};
 if(!data||!Array.isArray(data.wrong))data={date:dateKey(),solved:0,correct:0,streak:0,best:0,wrong:[]};
 let mode='add',problem=null,attempts=0,resolved=false,recent=[],timer=null,deadline=0,score=0,challengeStreak=0,active=false,review=false;
+let practiceCount=0;
+let practiceOwner;
+function studyPractice() {
+ const owner=window.HosuStudy?.active();
+ if (owner!==practiceOwner) {practiceOwner=owner;practiceCount=0;}
+ if (++practiceCount<5) return ' · '+practiceCount+'/5';
+ practiceCount=0;
+ return window.HosuStudy?.award('math')?' · ⭐ 별 하나!':'';
+}
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify(data));}catch{$('storageNotice').hidden=false;}}
 function rollover(){if(data.date!==dateKey()){Object.assign(data,{date:dateKey(),solved:0,correct:0,streak:0});save();}}
 function stats(){rollover();$('stats').innerHTML=[['오늘 푼 문제',data.solved],['오늘 맞힌 문제',data.correct],['정답률',`${data.solved?Math.round(data.correct/data.solved*100):0}%`],['연속 정답',data.streak],['60초 최고 기록',data.best]].map(([l,v])=>`<div>${l}<strong>${v}</strong></div>`).join('');$('wrongCount').textContent=`(${data.wrong.length})`;}
@@ -55,9 +64,9 @@ function explanation(p){if(p.mode==='subtract')return `${p.a} − ${p.b} = ${p.a
 function remember(){if(!data.wrong.some(p=>MathEngine.key(p)===MathEngine.key(problem)))data.wrong.push({...problem});}
 function check(answer,rem){if(resolved||!problem||isChallenge()&&!active)return;if(isChallenge()&&Date.now()>=deadline){finish();return;}rollover();const correct=answer===problem.answer&&(problem.r===0||rem===problem.r);if(!correct){attempts++;data.streak=0;challengeStreak=0;remember();save();stats();if(attempts===1){$('feedback').className='bad';$('feedback').textContent='× 조금 달라요. 한 번 더 풀어 보세요.';if(!isChallenge()){$('answer').focus();$('answer').select();}return;}}
  resolved=true;data.solved++;if(correct){data.correct++;data.streak++;data.wrong=data.wrong.filter(p=>MathEngine.key(p)!==MathEngine.key(problem));if(isChallenge()){score++;challengeStreak++;}}
- save();stats();$('feedback').className=correct?'good':'bad';$('feedback').textContent=correct?'○ 정답이에요!':`× 정답은 ${problem.answer}${problem.r?`, 나머지 ${problem.r}`:''}이에요. ${explanation(problem)}`;$('answer').disabled=true;$('remainder').disabled=true;$('checkButton').disabled=true;$('choices').querySelectorAll('button').forEach(b=>b.disabled=true);$('nextButton').hidden=false;if(isChallenge())tick();}
+ save();stats();$('feedback').className=correct?'good':'bad';$('feedback').textContent=correct?'○ 정답이에요!':`× 정답은 ${problem.answer}${problem.r?`, 나머지 ${problem.r}`:''}이에요. ${explanation(problem)}`;$('answer').disabled=true;$('remainder').disabled=true;$('checkButton').disabled=true;$('choices').querySelectorAll('button').forEach(b=>b.disabled=true);$('nextButton').hidden=false;if(isChallenge())tick();else if(correct&&!review)$('feedback').textContent+=studyPractice();}
 function tick(){if(!active)return;const left=Math.max(0,Math.ceil((deadline-Date.now())/1000));$('challengeInfo').textContent=`남은 시간 ${left}초 · 점수 ${score} · 연속 ${challengeStreak}`;if(!left)finish();}
-function finish(){stop();data.best=Math.max(data.best,score);save();stats();problem=null;$('question').textContent='도전 완료!';$('feedback').className='good';$('feedback').textContent=`${score}점 · 최고 기록 ${data.best}점`;$('challengeInfo').textContent='남은 시간 0초';$('choices').hidden=true;$('nextButton').hidden=true;$('startButton').hidden=false;$('startButton').textContent='다시 도전';$('settings').querySelectorAll('select').forEach(s=>s.disabled=false);}
+function finish(){const award=active&&score>0&&Date.now()>=deadline&&window.HosuStudy?.award('math');stop();data.best=Math.max(data.best,score);save();stats();problem=null;$('question').textContent='도전 완료!';$('feedback').className='good';$('feedback').textContent=`${score}점 · 최고 기록 ${data.best}점${award?' · ⭐ 별 하나!':''}`;$('challengeInfo').textContent='남은 시간 0초';$('choices').hidden=true;$('nextButton').hidden=true;$('startButton').hidden=false;$('startButton').textContent='다시 도전';$('settings').querySelectorAll('select').forEach(s=>s.disabled=false);}
 $('startButton').onclick=()=>{score=0;challengeStreak=0;active=true;deadline=Date.now()+60000;$('settings').querySelectorAll('select').forEach(s=>s.disabled=true);next();tick();timer=setInterval(tick,200);};
 $('answerForm').onsubmit=e=>{e.preventDefault();const a=$('answer').value.trim(),r=$('remainder').value.trim();if(!/^\d+$/.test(a)||!$('remainderLabel').hidden&&!/^\d+$/.test(r)){$('feedback').className='bad';$('feedback').textContent='숫자로 답을 입력하세요.';return;}check(Number(a),Number(r||0));};
 $('nextButton').onclick=next;document.addEventListener('keydown',e=>{if(e.key==='Enter'&&resolved&&!$('nextButton').hidden){e.preventDefault();next();}});
