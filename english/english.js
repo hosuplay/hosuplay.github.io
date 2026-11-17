@@ -142,6 +142,7 @@
     hm.selected = 0;
     hm.done = false;
     hm.drag = null;
+    activity.classList.remove('hm-done');
     activity.innerHTML = `
       <div class="toolbar" aria-label="숫자 범위">
         <button type="button" data-hm="1" aria-pressed="${hm.start === 1}">1~5</button>
