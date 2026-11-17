@@ -8,9 +8,22 @@
     ['pen', 'pet', 'peg'], ['pin', 'pan', 'bin'], ['sun', 'bun', 'bus'],
     ['pot', 'hop', 'hot'], ['van', 'can', 'pan'], ['net', 'wet', 'pet'],
   ];
-  const titles = {alphabet: '알파벳 놀이', phonics: '파닉스 소리', listen: '소리 찾기', blend: '소리 합치기', howmany: '🎈 How Many? 숫자 풍선 달기', todo: '🐸 What Can You Do?'};
-  const numberWords = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
-  const balloonColors = ['#e8833a', '#3f7fd4', '#3f9a5f', '#4aa3a8', '#c8577f'];
+  const wordPictures = {
+    cat: '🐱', bat: '🦇', cap: '🧢', bed: '🛏️', red: '🔴', leg: '🦵',
+    sit: '🪑', bit: '🍪', lid: '🥫', dog: '🐶', log: '🪵', cot: '🛌',
+    cup: '🥤', cut: '✂️', bug: '🐛', map: '🗺️', mat: '🧺', pen: '🖊️',
+    pet: '🐹', peg: '📌', pin: '📍', pan: '🍳', bin: '🗑️', sun: '☀️',
+    bun: '🥐', bus: '🚌', pot: '🍲', hop: '🐰', hot: '🔥', van: '🚐',
+    net: '🥅', wet: '💧',
+  };
+  const titles = {alphabet: '알파벳 놀이', phonics: '파닉스 소리', listen: '소리 찾기', blend: '소리 합치기', howmany: '🍎 How Many? 사과 세기', todo: '🐸 What Can You Do?'};
+  const numberWords = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+    'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+  const tensWords = ['ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety', 'one hundred'];
+  const hundredsWords = ['one hundred', 'two hundred', 'three hundred', 'four hundred', 'five hundred',
+    'six hundred', 'seven hundred', 'eight hundred', 'nine hundred', 'one thousand'];
+  const appleCards = {1: {max: 10, step: 1}, 2: {max: 20, step: 1}, 10: {max: 100, step: 10}, 100: {max: 1000, step: 100}};
+  const levelLabels = {1: '1~10', 2: '1~20', 10: '10씩', 100: '100씩'};
   const actions = [['frog', '🐸', 'jump'], ['dog', '🐶', 'run'], ['duck', '🦆', 'swim'], ['bird', '🐦', 'fly'], ['pig', '🐷', 'dance'], ['bug', '🐛', 'crawl']];
   const byId = id => document.getElementById(id);
   const menu = byId('menu');
@@ -20,12 +33,14 @@
   const audioError = byId('audio-error');
   const player = new Audio();
   let playback = 0;
+  let repeatTimer;
   let mode;
   let selected = 'a';
   let quizKind = 'sound';
   let target;
   let choices;
   let round = 0;
+  let blendStep = 0;
   let solved = false;
   let advanceTimer;
   let owner;
@@ -46,18 +61,36 @@
 
   function stopAudio() {
     playback++;
+    clearTimeout(repeatTimer);
+    player.onended = null;
     player.pause();
     try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch {}
     audioError.textContent = '';
   }
 
-  function play(key) {
+  /* 글자 소리 음원은 조금 천천히, 또박또박 두 번 들려줍니다. */
+  function play(key, times = 2) {
     stopAudio();
     const current = playback;
-    player.src = 'audio/' + key + '.wav?v=3';
-    player.play().catch(() => {
-      if (current === playback) audioError.textContent = '소리를 재생하지 못했어요. 듣기 버튼을 다시 눌러 보세요.';
-    });
+    let played = 0;
+    try { player.src = 'audio/' + key + '.wav?v=3'; } catch {}
+    const start = () => {
+      if (current !== playback) return;
+      played++;
+      try {
+        player.playbackRate = .78;
+        player.currentTime = 0;
+      } catch {}
+      player.play().catch(() => {
+        if (current === playback) audioError.textContent = '소리를 재생하지 못했어요. 듣기 버튼을 다시 눌러 보세요.';
+      });
+    };
+    player.onended = () => {
+      if (current !== playback || played >= times) return;
+      clearTimeout(repeatTimer);
+      repeatTimer = setTimeout(() => { if (current === playback) start(); }, 450);
+    };
+    start();
   }
 
   function speakEN(text) {
@@ -66,7 +99,7 @@
       const voice = speechSynthesis;
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'en-US';
-      utter.rate = .85;
+      utter.rate = .82;
       utter.pitch = 1.1;
       voice.speak(utter);
     } catch {
@@ -103,213 +136,123 @@
     }
   }
 
-  /* ── 🎈 How Many? : 숫자 풍선 하나씩 달기 ── */
-  const hmPets = [['cat', '🐱'], ['dog', '🐶'], ['frog', '🐸'], ['bug', '🐛'], ['pig', '🐷']];
-  const hmOrdinal = index => ['첫', '두', '세', '네', '다섯'][index] + ' 번째';
-  const hm = {start: 1, filled: [], selected: 0, done: false, drag: null, muteClick: false};
-  const hmNumbers = () => hmPets.map((_, i) => hm.start + i);
-  const hmColor = index => balloonColors[index % balloonColors.length];
-  const hmWord = number => numberWords[number][0].toUpperCase() + numberWords[number].slice(1);
-  const hmJosa = number => number === 6 || number === 10 ? '은' : '는';
+  /* ── 🍎 How Many? : 사과를 하나씩 눌러 세기 ── */
+  const ap = {level: 1, target: 3, picks: 0, done: false};
 
-  function hmBalloonHTML(number, index, filled) {
-    if (!filled) return `<span class="hm-balloon empty" aria-hidden="true"><i>${number}</i></span>`;
-    return `<span class="hm-balloon on" style="--balloon:${hmColor(index)}" aria-hidden="true">${number}</span>`;
+  function apCard() {
+    return appleCards[ap.level];
   }
 
-  function hmSlotHTML(index) {
-    const number = hmNumbers()[index];
-    const filled = hm.filled[index] === number;
-    const emoji = hmPets[index][1];
-    return `<button type="button" class="hm-slot${filled ? ' filled' : ''}" data-slot="${index}"
-      aria-label="${filled ? number + '번 풍선, ' : ''}${hmOrdinal(index)} 자리">
-      <span class="hm-line">${hmBalloonHTML(number, index, filled)}<span class="hm-string${filled ? ' taut' : ''}" aria-hidden="true"></span></span>
-      <span class="hm-pet" aria-hidden="true">${emoji}</span>
-    </button>`;
+  function apWord(value) {
+    if (value <= 20) return numberWords[value];
+    if (value <= 100) return tensWords[value / 10 - 1];
+    return hundredsWords[value / 100 - 1];
   }
 
-  function hmTrayHTML() {
-    return shuffle(hmNumbers()).map(number => `
-      <button type="button" class="hm-balloon tray" data-balloon="${number}" style="--balloon:${hmColor(number - hm.start)}"
-        aria-label="${number}번 풍선" aria-pressed="${hm.selected === number}">${number}</button>`).join('');
+  function apCapital(word) {
+    return word[0].toUpperCase() + word.slice(1);
   }
 
-  function hmNew(start = hm.start) {
+  function apAsk() {
+    return apCard().step === 1 ? `Count ${ap.target} apples!` : `Count to ${ap.target}!`;
+  }
+
+  function apNew(level = ap.level) {
     clearTimeout(advanceTimer);
     solved = false;
-    hm.start = start === 6 ? 6 : 1;
-    hm.filled = hmPets.map(() => 0);
-    hm.selected = 0;
-    hm.done = false;
-    hm.drag = null;
-    activity.classList.remove('hm-done');
+    ap.level = Object.hasOwn(appleCards, level) ? +level : 1;
+    const card = apCard();
+    const units = Math.round(card.max / card.step);
+    ap.target = (1 + Math.floor(Math.random() * units)) * card.step;
+    ap.picks = 0;
+    ap.done = false;
+    const apples = Array.from({length: Math.round(ap.target / card.step)}, (_, index) => `
+      <button type="button" class="ap-apple" data-apple="${index}" aria-label="${index + 1}번째 사과">
+        <img src="img/apple-whole.png" alt="" width="120" height="120">
+      </button>`).join('');
     activity.innerHTML = `
-      <div class="toolbar" aria-label="숫자 범위">
-        <button type="button" data-hm="1" aria-pressed="${hm.start === 1}">1~5</button>
-        <button type="button" data-hm="6" aria-pressed="${hm.start === 6}">6~10</button>
+      <div class="toolbar ap-levels" aria-label="세는 단계">
+        ${Object.keys(appleCards).map(level => `<button type="button" data-ap="${level}" aria-pressed="${ap.level === +level}">${levelLabels[level]}</button>`).join('')}
       </div>
-      <p class="hm-guide">풍선을 끌어다 동물 머리 위에 달아요. <b>${hm.start}</b>부터 차례로!</p>
-      <div class="hm-stage" data-hm-stage>
-        <div class="hm-slots">${hmPets.map((_, i) => hmSlotHTML(i)).join('')}</div>
+      <div class="ap-ask">
+        <p lang="en">${apAsk()}</p>
+        <button type="button" class="ap-say" data-ap-say aria-label="문제 다시 듣기">🔊</button>
       </div>
-      <p class="hm-tray-label">숫자 풍선을 하나씩 갖다 놓아 봐요</p>
-      <div class="hm-tray" role="group" aria-label="숫자 풍선">${hmTrayHTML()}</div>
-      <div class="hm-actions"><button type="button" data-hm-again>🔄 섞어서 다시</button></div>`;
+      <p class="ap-tally" data-ap-tally>0 / ${ap.target}</p>
+      <div class="ap-bowl">${apples}</div>
+      <div class="ap-actions"><button type="button" data-ap-again>🔄 다른 사과</button></div>`;
     feedback.textContent = '';
-    hmMarkNext();
+    speakEN(apAsk());
   }
 
-  function hmMarkNext() {
-    const nextIndex = hm.done ? -1 : hm.filled.findIndex(value => !value);
-    activity.querySelectorAll('.hm-slot').forEach(slot => {
-      slot.classList.toggle('next', +slot.dataset.slot === nextIndex);
-    });
+  function apPick(button) {
+    if (ap.done || !button || button.classList.contains('picked')) return;
+    const card = apCard();
+    ap.picks++;
+    button.classList.add('picked');
+    const image = button.querySelector('img');
+    if (image) image.src = 'img/apple-bite.png';
+    button.insertAdjacentHTML('beforeend', `<b class="ap-badge">${ap.picks * card.step}</b>`);
+    const total = ap.picks * card.step;
+    const tally = activity.querySelector('[data-ap-tally]');
+    if (tally) tally.textContent = `${total} / ${ap.target}`;
+    speakEN(`${apCapital(apWord(total))}!`);
+    if (total >= ap.target) apFinish();
   }
 
-  function hmPulse(element) {
-    if (!element) return;
-    element.classList.remove('bump');
-    void element.offsetWidth;
-    element.classList.add('bump');
-  }
-
-  function hmHighlight(slot) {
-    activity.querySelectorAll('.hm-slot').forEach(candidate => candidate.classList.toggle('over', candidate === slot));
-  }
-
-  function hmSlotAt(x, y) {
-    const slot = document.elementFromPoint(x, y)?.closest?.('.hm-slot');
-    return slot && activity.contains(slot) ? slot : null;
-  }
-
-  function hmPlace(number, index) {
-    if (hm.done || !number || index < 0) return;
-    const numbers = hmNumbers();
-    const slot = activity.querySelector(`.hm-slot[data-slot="${index}"]`);
-    if (hm.filled[index]) {
-      feedback.textContent = `여기는 이미 ${hm.filled[index]}번 풍선이 달려 있어요.`;
-      hmPulse(slot);
-      return;
-    }
-    if (numbers[index] !== number) {
-      feedback.textContent = `${number}${hmJosa(number)} ${hmOrdinal(numbers.indexOf(number))} 자리에 달아요. 다시 해 볼까요?`;
-      hmPulse(slot);
-      hmPulse(activity.querySelector(`.hm-tray .hm-balloon[data-balloon="${number}"]`));
-      return;
-    }
-    hm.filled[index] = number;
-    hm.selected = 0;
-    const wasFocused = slot === document.activeElement;
-    if (slot) slot.outerHTML = hmSlotHTML(index);
-    if (wasFocused) activity.querySelector(`.hm-slot[data-slot="${index}"]`)?.focus();
-    activity.querySelectorAll('.hm-tray .hm-balloon').forEach(balloon => {
-      if (+balloon.dataset.balloon === number) balloon.remove();
-      else balloon.setAttribute('aria-pressed', 'false');
-    });
-    feedback.textContent = `${hmWord(number)}! ${hmOrdinal(index)} 자리 🎈`;
-    speakEN(`${hmWord(number)}!`);
-    const starred = studyStep(String(number));
-    if (hm.filled.every((value, i) => value === numbers[i])) {
-      hmFinish(starred);
-      return;
-    }
-    if (starred) feedback.textContent += ' · ⭐ 별 하나!';
-    hmMarkNext();
-  }
-
-  function hmCount(numbers) {
-    stopAudio();
-    if (!window.speechSynthesis) return;
-    try {
-      numbers.forEach((number, index) => {
-        const utter = new SpeechSynthesisUtterance(numberWords[number] + (index === numbers.length - 1 ? '!' : ''));
-        utter.lang = 'en-US';
-        utter.rate = .82;
-        utter.pitch = 1.1;
-        utter.onstart = () => {
-          const slot = activity.querySelector(`.hm-slot[data-slot="${index}"]`);
-          if (!slot) return;
-          slot.classList.remove('hm-counting');
-          void slot.offsetWidth;
-          slot.classList.add('hm-counting');
-        };
-        speechSynthesis.speak(utter);
-      });
-    } catch {
-      audioError.textContent = '영어 소리 대신 크게 읽어 주세요.';
-    }
-  }
-
-  function hmFinish(starred) {
-    hm.done = true;
-    hmMarkNext();
-    activity.classList.add('hm-done');
-    const numbers = hmNumbers();
-    const stage = activity.querySelector('[data-hm-stage]');
-    stage?.classList.add('party');
-    if (stage) {
+  function apFinish() {
+    ap.done = true;
+    const bowl = activity.querySelector('.ap-bowl');
+    bowl?.classList.add('party');
+    if (bowl) {
       const burst = document.createElement('div');
-      burst.className = 'hm-confetti';
+      burst.className = 'confetti';
       burst.setAttribute('aria-hidden', 'true');
-      burst.innerHTML = Array.from({length: 14}, (_, i) => `<span style="--i:${i}">${['⭐', '✨', '🎈', '💛', '🎉', '💜'][i % 6]}</span>`).join('');
-      stage.append(burst);
+      burst.innerHTML = Array.from({length: 12}, (_, i) => `<span style="--i:${i}">${['⭐', '✨', '🍎', '💛', '🎉', '🍏'][i % 6]}</span>`).join('');
+      bowl.append(burst);
     }
-    const words = numbers.map(hmWord);
-    feedback.textContent = `${words.join(', ')}! 다섯 개 다 달았어요 🎉` + (starred ? ' · ⭐ 별 하나!' : '');
-    hmCount(numbers);
-    activity.querySelector('.hm-actions')?.insertAdjacentHTML('beforeend', hm.start === 1
-      ? '<button type="button" data-hm="6">6~10 풍선 달기 →</button>'
-      : '<button type="button" data-hm="1">1~5 한 번 더 →</button>');
+    const starred = window.HosuStudy?.award('english');
+    feedback.textContent = ap.level <= 2 ? `${ap.target} apples! 다 세었어요 🎉` : `${ap.target}! 다 세었어요 🎉`;
+    if (starred) feedback.textContent += ' · ⭐ 별 하나!';
+    speakEN(`Good job!`);
+    activity.querySelector('.ap-actions')?.insertAdjacentHTML('afterbegin', '<button type="button" data-ap-next>다음 사과 →</button>');
+    advanceTimer = setTimeout(() => { if (mode === 'howmany') apNew(); }, 3200);
   }
 
-  function hmDragStart(event) {
-    if (mode !== 'howmany' || hm.done) return;
-    const balloon = event.target.closest('.hm-tray .hm-balloon');
-    if (!balloon) return;
-    const rect = balloon.getBoundingClientRect();
-    hm.drag = {
-      number: +balloon.dataset.balloon, balloon, width: rect.width, height: rect.height,
-      startX: event.clientX, startY: event.clientY,
-      offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top,
-      moved: false, ghost: null
-    };
-    try { balloon.setPointerCapture(event.pointerId); } catch {}
+  /* ── 🔎 소리 찾기 : 보기 버튼만 남기고, 문제 소리를 두 번 들려줍니다 ── */
+  function askListen() {
+    play(quizKind + '-' + target);
   }
 
-  function hmDragMove(event) {
-    const drag = hm.drag;
-    if (!drag) return;
-    if (!drag.moved) {
-      if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) < 8) return;
-      drag.moved = true;
-      const ghost = drag.balloon.cloneNode(true);
-      ghost.className = 'hm-balloon tray hm-drag-ghost';
-      ghost.removeAttribute('data-balloon');
-      ghost.style.width = drag.width + 'px';
-      ghost.style.height = drag.height + 'px';
-      document.body.append(ghost);
-      drag.ghost = ghost;
-      drag.balloon.classList.add('dragging');
-    }
-    drag.ghost.style.left = (event.clientX - drag.offsetX) + 'px';
-    drag.ghost.style.top = (event.clientY - drag.offsetY) + 'px';
-    hmHighlight(hmSlotAt(event.clientX, event.clientY));
+  function renderListen() {
+    activity.innerHTML = `
+      <div class="toolbar" aria-label="문제 종류">
+        <button type="button" data-kind="sound" aria-pressed="${quizKind === 'sound'}">글자 소리 찾기</button>
+        <button type="button" data-kind="name" aria-pressed="${quizKind === 'name'}">글자 이름 찾기</button>
+      </div>
+      <p>문제를 듣고 알맞은 글자를 골라요.</p>
+      <div class="toolbar"><button type="button" data-listen-again>🔊 다시 듣기</button></div>
+      <div class="choices" aria-label="보기">${choices.map(choice => `
+        <button type="button" class="choice" data-answer="${choice}" lang="en">${choice.toUpperCase()} ${choice}</button>`).join('')}
+      </div>
+      <button type="button" data-next>다음 문제 →</button>`;
+    askListen();
   }
 
-  function hmDragEnd(event) {
-    const drag = hm.drag;
-    if (!drag) return;
-    hm.drag = null;
-    drag.ghost?.remove();
-    drag.balloon.classList.remove('dragging');
-    hmHighlight(null);
-    try { drag.balloon.releasePointerCapture(event.pointerId); } catch {}
-    if (!drag.moved) return;
-    hm.muteClick = true;
-    setTimeout(() => { hm.muteClick = false; }, 350);
-    const slot = hmSlotAt(event.clientX, event.clientY);
-    if (slot) hmPlace(drag.number, +slot.dataset.slot);
-    else feedback.textContent = '동물 머리 위 자리에 풍선을 놓아 봐요.';
+  /* ── 🔗 소리 합치기 : 글자를 왼쪽부터 눌러 소리를 이어 붙입니다 ── */
+  function renderBlend() {
+    const word = target;
+    const picture = wordPictures[word] || '🔤';
+    blendStep = 0;
+    activity.innerHTML = `
+      <p>글자를 왼쪽부터 차례로 눌러 소리를 이어 봐요.</p>
+      <div class="blend-row">${[...word].map((letter, index) => `
+        <button type="button" class="blend-letter" data-blend="${index}" lang="en">${letter}</button>`).join('')}</div>
+      <div class="blend-result" data-blend-result hidden>
+        <span aria-hidden="true">${picture}</span>
+        <strong lang="en">${word}!</strong>
+      </div>
+      <button type="button" data-next>다음 문제 →</button>`;
   }
 
   /* ── 🐸 What Can You Do? ── */
@@ -365,27 +308,6 @@
       </div>`;
   }
 
-  function renderQuestion() {
-    const listen = mode === 'listen';
-    const question = listen ? `
-      <div class="toolbar" aria-label="문제 종류">
-        <button data-kind="sound" aria-pressed="${quizKind === 'sound'}">글자 소리 찾기</button>
-        <button data-kind="name" aria-pressed="${quizKind === 'name'}">글자 이름 찾기</button>
-      </div>
-      <p>문제를 듣고 알맞은 글자를 골라요. 각 보기의 소리도 들을 수 있어요.</p>
-      <button data-audio="${quizKind}-${target}">🔊 문제 듣기</button>` : `
-      <p>왼쪽부터 소리를 듣고, 이어 읽은 단어를 골라요.</p>
-      <div class="pieces">${[...target].map((letter, index) => `<button data-audio="sound-${letter}" aria-label="${index + 1}번째 소리 ${letter}"><span lang="en">${letter}</span> 🔊</button>`).join('')}</div>
-      <button data-audio="${target}" id="whole-word" hidden>🔊 합친 단어 듣기</button>`;
-    activity.innerHTML = `${question}
-      <div class="choices" aria-label="보기">${choices.map(choice => `
-        <div>
-          <button data-answer="${choice}" lang="en">${listen ? choice.toUpperCase() + ' ' + choice : choice}</button>
-          <button data-audio="${listen ? quizKind + '-' : ''}${choice}" aria-label="${choice} 보기 듣기">🔊 듣기</button>
-        </div>`).join('')}</div>
-      <button data-next>다음 문제 →</button>`;
-  }
-
   function navigate() {
     stopAudio();
     clearTimeout(advanceTimer);
@@ -397,11 +319,12 @@
     if (!mode) return;
     byId('lesson-title').textContent = titles[mode];
     if (mode === 'alphabet' || mode === 'phonics') renderLetters();
-    else if (mode === 'howmany') hmNew();
+    else if (mode === 'howmany') apNew();
     else if (mode === 'todo') tdNew(false);
     else {
       newQuestion();
-      renderQuestion();
+      if (mode === 'listen') renderListen();
+      else renderBlend();
     }
     byId('lesson-title').focus();
   }
@@ -418,31 +341,48 @@
       feedback.textContent = studyStep(letter) ? '다섯 글자를 들었어요! ⭐ 별 하나' : '';
     }
     if (mode === 'howmany') {
-      if (button.dataset.hm) { hmNew(+button.dataset.hm); return; }
-      if (button.hasAttribute('data-hm-again')) { hmNew(hm.start); return; }
-      if (button.classList.contains('hm-slot')) {
-        const index = +button.dataset.slot;
-        if (hm.filled[index]) { speakEN(`${numberWords[hm.filled[index]]}!`); return; }
-        if (!hm.selected) {
-          feedback.textContent = '아래 숫자 풍선을 먼저 골라요.';
-          hmMarkNext();
+      if (button.dataset.ap) { apNew(+button.dataset.ap); return; }
+      if (button.hasAttribute('data-ap-again') || button.hasAttribute('data-ap-next')) { apNew(); return; }
+      if (button.hasAttribute('data-ap-say')) { speakEN(apAsk()); return; }
+      if (button.dataset.apple !== undefined) { apPick(button); return; }
+    }
+    if (mode === 'listen') {
+      if (button.hasAttribute('data-listen-again')) { askListen(); return; }
+      if (answer && !solved) {
+        if (answer !== target) {
+          feedback.textContent = '다시 들어 봐요!';
+          button.classList.add('wrong');
+          setTimeout(() => button.classList.remove('wrong'), 520);
+          askListen();
           return;
         }
-        hmPlace(hm.selected, index);
+        solved = true;
+        button.classList.add('right');
+        feedback.textContent = `정답! ${target.toUpperCase()} ${target}`;
+        if (studyStep(target)) feedback.textContent += ' · ⭐ 별 하나!';
+        const next = activity.querySelector('[data-next]');
+        advanceTimer = setTimeout(() => next?.click(), 1700);
         return;
       }
-      if (button.matches('.hm-tray .hm-balloon')) {
-        if (hm.muteClick) { hm.muteClick = false; return; }
-        const number = +button.dataset.balloon;
-        const nextIndex = hm.done ? -1 : hm.filled.findIndex(value => !value);
-        if (nextIndex >= 0 && hmNumbers()[nextIndex] === number) { hmPlace(number, nextIndex); return; }
-        hm.selected = hm.selected === number ? 0 : number;
-        activity.querySelectorAll('.hm-tray .hm-balloon').forEach(balloon => {
-          balloon.setAttribute('aria-pressed', String(+balloon.dataset.balloon === hm.selected));
-        });
-        feedback.textContent = hm.selected ? `${hm.selected}번 풍선을 들었어요. 어느 자리에 달까요?` : '';
-        return;
+    }
+    if (mode === 'blend' && button.dataset.blend !== undefined) {
+      const index = +button.dataset.blend;
+      if (index < blendStep) return;
+      if (index > blendStep) { feedback.textContent = '왼쪽 글자부터 차례로 눌러요.'; return; }
+      play('sound-' + target[index]);
+      button.classList.add('read');
+      blendStep++;
+      if (blendStep >= target.length) {
+        const result = activity.querySelector('[data-blend-result]');
+        if (result) result.hidden = false;
+        activity.querySelector('.blend-row')?.classList.add('done');
+        feedback.textContent = `${target}! 다 읽었어요`;
+        setTimeout(() => { if (mode === 'blend') speakEN(`${target}!`); }, 760);
+        if (studyStep(target)) feedback.textContent += ' · ⭐ 별 하나!';
+        const next = activity.querySelector('[data-next]');
+        advanceTimer = setTimeout(() => next?.click(), 2400);
       }
+      return;
     }
     if (button.dataset.td) {
       button.classList.add('acted');
@@ -475,21 +415,17 @@
     if (kind || button.hasAttribute('data-next')) {
       stopAudio();
       if (kind) quizKind = kind;
-      if (mode === 'blend') round = (round + 1) % rounds.length;
       if (mode === 'todo') tdNew(true);
       else {
+        if (mode === 'blend') round = (round + 1) % rounds.length;
         newQuestion();
-        renderQuestion();
+        if (mode === 'listen') renderListen();
+        else renderBlend();
       }
       feedback.textContent = '';
       activity.querySelector('button').focus();
     }
   });
-
-  activity.addEventListener('pointerdown', hmDragStart);
-  activity.addEventListener('pointermove', hmDragMove);
-  activity.addEventListener('pointerup', hmDragEnd);
-  activity.addEventListener('pointercancel', hmDragEnd);
 
   window.addEventListener('hashchange', navigate);
   window.addEventListener('pagehide', stopAudio);
