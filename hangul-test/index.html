@@ -1,25 +1,434 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#fff0e9"><title>호수플레이 | 토끼 한글 소리놀이터</title>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#fff0e9"><title>호수플레이 | 한글놀이터 · 소리부터 배우는 5단계</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(155deg,#fff1e9,#e7f5ff);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#514c56}button{font:inherit;cursor:pointer;border:0;color:inherit;touch-action:manipulation}main{max-width:510px;margin:auto;padding:18px 15px 65px}header{text-align:center}h1{font-size:26px;margin:9px 0 4px}.sub{font-size:14px;color:#847780;margin:5px}.tag{display:inline-block;padding:6px 12px;border-radius:50px;background:#fff;border:2px solid #ffe1d0;font-size:12px;font-weight:800}.hero{font-size:67px;margin:10px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:14px 0}.tabs button{padding:12px 2px;border-radius:18px;background:#fff;font-size:12px;font-weight:800;box-shadow:0 3px 0 #e4d7d0}.tabs .on{background:#ffe28b}.panel{background:#fffefa;border:3px solid #fff;border-radius:34px;padding:19px 15px 25px;box-shadow:0 8px 0 #ead7ce;text-align:center}h2{font-size:22px;margin:10px 0}h3{font-size:17px}.small{font-size:13px;line-height:1.55;color:#817780}.speech{background:#f2f8ff;border:2px dashed #c9e4f8;border-radius:22px;padding:14px;margin:14px 0}.mouth{display:inline-flex;width:125px;height:118px;border-radius:48% 48% 44% 44%;background:#ffe1c8;align-items:center;justify-content:center;border:4px solid #f5c9ac;margin:5px}.lips{background:#b75c70;width:57px;height:22px;border:5px solid #e99aa5;border-radius:50%}.lips.round{width:34px;height:37px;border-radius:50%}.lips.open{width:52px;height:58px;border-radius:48%}.lips.wide{width:70px;height:16px}.lips.closed{height:7px;width:54px}.letter{font-size:60px;font-weight:900;color:#5b7b9a}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:13px 0}.tile{min-height:74px;border-radius:21px;background:#e6f3ff;font-size:32px;font-weight:900;box-shadow:0 4px 0 #cde2f3}.tile:disabled{opacity:.55}.tile.picked{background:#ffe28b}.primary{background:#ffe18b;padding:15px 12px;border-radius:21px;font-size:16px;font-weight:850;width:100%;margin:7px 0;box-shadow:0 4px 0 #e9c76b}.soft{background:#e8f5ff}.line{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}.line button{border-radius:16px;padding:11px 13px;background:#f9e6ef;font-weight:800}.result{font-size:34px;font-weight:900;background:#fff3c8;border-radius:20px;padding:16px;margin:14px 0}.picture{font-size:75px;margin:10px}.status{min-height:55px;margin-top:14px;padding:11px;border-radius:18px;background:#fff2f0;font-weight:800;line-height:1.6}.progress{display:flex;align-items:center;gap:9px;justify-content:center;margin:14px 0}.track{height:12px;background:#fff;border-radius:20px;overflow:hidden;flex:1;max-width:210px}.fill{height:100%;background:#ffca69}.choice{border-radius:18px;background:#e9f4ff;padding:14px 4px;font-size:21px;font-weight:800}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.cards button{background:#eaf6ff;border-radius:20px;padding:15px 7px;font-size:20px;font-weight:850}.cards button span{display:block;font-size:39px;margin-bottom:7px}.note{border:1px solid #f0d9ce;border-radius:17px;padding:10px;margin:12px 0;text-align:left;font-size:12px;line-height:1.6;background:#fffaf5}a{color:#54789b}footer{text-align:center;font-size:12px;color:#877e85;margin-top:25px}.hidden{display:none}.step{font-size:12px;font-weight:800;color:#a47c69}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px}.toolbar button{background:#fff;border-radius:15px;padding:9px 13px;font-size:13px}.stars{font-weight:900;color:#b87b2f}button:focus-visible{outline:3px solid #6da8e8;outline-offset:3px}@media(max-width:365px){.tabs button{font-size:11px}.panel{padding:15px 10px}.tile{min-height:65px}}
-#today-hangul{margin:14px 0}#today-hangul button{margin:4px;min-height:48px;padding:10px 14px;border-radius:12px;background:#ffe6a2;font-weight:800}#today-hangul button:disabled{opacity:.48}</style><link rel="stylesheet" href="/study/study.css"><script defer src="/study/study.js"></script><script src="/hangul-test/audio.js"></script><script defer src="/hangul-test/today.js?v=2"></script></head><body><main><section data-study="hangul"></section><div data-study-content hidden tabindex="-1"><header><span class="tag">🌷 소리부터 배우는 한글</span><h1>🐰 토끼 한글놀이터</h1><p class="sub">입모양을 보고 · 소리를 듣고 · 글자를 만들어요</p></header><section class="panel" id="today-hangul" aria-label="오늘의 한글 놀이"></section><div class="progress"><span class="stars" id="stars">⭐ 0</span><div class="track"><div class="fill" id="fill" style="width:0%"></div></div><span id="count">0개 성공</span></div><nav class="tabs"><button data-tab="mouth" class="on">👄 소리</button><button data-tab="join">🧩 합치기</button><button data-tab="word">🖼️ 낱말</button><button data-tab="feed">🥕 냠냠</button></nav><div style="background:#fff8d9;border:3px solid #fff;border-radius:24px;padding:14px;text-align:center;margin:14px 0"><strong>🌷 새로 만든 1단원 · 모음 소리 탐험</strong><p style="font-size:13px">입모양 · 소리 듣기 · 구별하기 · 글자 연결 · 복습</p><a href="/hangul-test/vowels/" style="display:block;background:#ffda83;border-radius:17px;padding:14px;font-weight:850;text-decoration:none;color:#514b50">🐰 첫 수업 시작하기 →</a></div><section class="panel"><div class="hero" id="mascot">🐰</div><div id="area"></div><div class="status" id="status" role="status" aria-live="polite"></div></section><footer><a href="/">← 호수플레이 홈</a><p>테스트 놀이터 · 이 기기에 학습 별과 복습 목록 저장</p></footer></div></main>
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(155deg,#fff1e9,#e7f5ff);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#514c56}
+button{font:inherit;cursor:pointer;border:0;color:inherit;touch-action:manipulation}
+main{max-width:560px;margin:auto;padding:18px 15px 65px}
+header{text-align:center}
+h1{font-size:26px;margin:9px 0 4px}
+.sub{font-size:14px;color:#847780;margin:5px}
+.tag{display:inline-block;padding:6px 12px;border-radius:50px;background:#fff;border:2px solid #ffe1d0;font-size:12px;font-weight:800}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:14px 0}
+.tabs button{padding:11px 2px;border-radius:18px;background:#fff;font-size:12px;font-weight:800;box-shadow:0 3px 0 #e4d7d0}
+.tabs .on{background:#ffe28b}
+.panel{background:#fffefa;border:3px solid #fff;border-radius:34px;padding:19px 15px 25px;box-shadow:0 8px 0 #ead7ce;text-align:center}
+h2{font-size:22px;margin:10px 0}
+h3{font-size:17px}
+.small{font-size:13px;line-height:1.55;color:#817780}
+.speech{background:#f2f8ff;border:2px dashed #c9e4f8;border-radius:22px;padding:14px;margin:14px 0}
+.speech p{margin:6px 0}
+.letter{font-size:60px;font-weight:900;color:#5b7b9a}
+.grid{display:grid;gap:10px;margin:13px 0}
+.grid3{grid-template-columns:repeat(3,1fr)}
+.grid2{grid-template-columns:repeat(2,1fr)}
+.tile{min-height:74px;border-radius:21px;background:#e6f3ff;font-size:30px;font-weight:900;box-shadow:0 4px 0 #cde2f3;padding:6px}
+.tile small{display:block;font-size:11px;font-weight:700;color:#6d8aa4}
+.tile.picked,.tile.on{background:#ffe28b}
+.tile:disabled{opacity:.55}
+.primary{background:#ffe18b;padding:15px 12px;border-radius:21px;font-size:16px;font-weight:850;width:100%;margin:7px 0;box-shadow:0 4px 0 #e9c76b}
+.soft{background:#e8f5ff}
+.line{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
+.line button{border-radius:16px;padding:11px 13px;background:#f9e6ef;font-weight:800}
+.line button.on{background:#ffe28b;box-shadow:inset 0 0 0 3px #e9b84e}
+.result{font-size:34px;font-weight:900;background:#fff3c8;border-radius:20px;padding:16px;margin:14px 0}
+.picture{font-size:75px;margin:10px}
+.status{min-height:55px;margin-top:14px;padding:11px;border-radius:18px;background:#fff2f0;font-weight:800;line-height:1.6}
+.progress{display:flex;align-items:center;gap:9px;justify-content:center;margin:14px 0}
+.track{height:12px;background:#fff;border-radius:20px;overflow:hidden;flex:1;max-width:210px}
+.fill{height:100%;background:#ffca69;transition:width .25s}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.cards button{background:#eaf6ff;border-radius:20px;padding:15px 7px;font-size:20px;font-weight:850}
+.cards button span{display:block;font-size:39px;margin-bottom:7px}
+a{color:#54789b}
+footer{text-align:center;font-size:12px;color:#877e85;margin-top:25px}
+.step{font-size:12px;font-weight:800;color:#a47c69}
+.badge{display:inline-block;background:#dff3e4;color:#2e7d4f;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:850;margin:6px 0}
+button:focus-visible{outline:3px solid #6da8e8;outline-offset:3px}
+@media(max-width:390px){.tabs button{font-size:11px}.panel{padding:15px 10px}.tile{min-height:65px}}
+/* ── 입안 단면 그림 ── */
+.mouthart{width:100%;max-width:360px;height:auto;display:block;margin:auto}
+.mouthart .hot{fill:#ffd23f;opacity:.55;animation:hot 1.3s ease-in-out infinite}
+.mouthart .wind{stroke:#8fd0ff;stroke-width:5;fill:none;stroke-dasharray:9 13;stroke-linecap:round;animation:wind .9s linear infinite}
+@keyframes hot{50%{opacity:.12}}
+@keyframes wind{to{stroke-dashoffset:-22}}
+.artlabel{font:800 11px -apple-system,"Apple SD Gothic Neo",sans-serif;fill:#8a6a5c}
+.artlabel-line{stroke:#c9a99a;stroke-width:1.5}
+/* ── 천지인 모음 그림 ── */
+.cheonji{display:flex;justify-content:center;gap:14px;margin:12px 0;flex-wrap:wrap}
+.cheonji figure{margin:0;background:#f2f9ff;border-radius:18px;padding:8px 12px 6px;text-align:center}
+.cheonji svg{width:52px;height:64px;display:block;margin:auto}
+.cheonji figcaption{font-size:11px;font-weight:850;color:#6f88a0;margin-top:2px}
+.vowgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:13px 0}
+.vowgrid button{background:#eaf6ff;border-radius:16px;padding:7px 2px;box-shadow:0 3px 0 #cfe3f2}
+.vowgrid svg{width:100%;max-width:64px;height:auto;display:block;margin:auto}
+.vowgrid .vsound{font-size:12px;font-weight:850;color:#5b7b9a;display:block}
+.vowgrid button.picked{background:#ffe28b}
+/* ── 낱말 · 받침 ── */
+.bword{font-size:46px;font-weight:900;color:#5b7b9a}
+.bword b{color:#e2593f}
+#today-hangul{margin:14px 0}
+#today-hangul button{margin:4px;min-height:48px;padding:10px 14px;border-radius:12px;background:#ffe6a2;font-weight:800}
+#today-hangul button:disabled{opacity:.48}
+</style>
+<link rel="stylesheet" href="/study/study.css">
+<script defer src="/study/study.js"></script>
+<script src="/hangul-test/audio.js"></script>
+<script defer src="/hangul-test/today.js?v=3"></script>
+</head><body><main>
+<section data-study="hangul"></section>
+<div data-study-content hidden tabindex="-1">
+<header>
+<span class="tag">🌷 훈민정음 원리 · 소리한글</span>
+<h1>🐰 한글놀이터 5단계</h1>
+<p class="sub">입안 그림을 보고 · 소리를 이어 읽고 · 낱말을 읽어요</p>
+</header>
+<section class="panel" id="today-hangul" aria-label="오늘의 한글 놀이"></section>
+<div class="progress"><span class="stars" id="stars">⭐ 0</span><div class="track"><div class="fill" id="fill" style="width:0%"></div></div><span id="count">0개 단계 완료</span></div>
+<nav class="tabs" aria-label="학습 단계">
+<button data-tab="cons" class="on">👄 자음<br>탄생</button>
+<button data-tab="vowel">✨ 모음<br>비밀</button>
+<button data-tab="blend">🔗 소리<br>이어읽기</button>
+<button data-tab="word">🖼️ 낱말<br>읽기</button>
+<button data-tab="batchim">🚪 받침<br>첫걸음</button>
+</nav>
+<section class="panel">
+<div id="area"></div>
+<div class="status" id="status" role="status" aria-live="polite"></div>
+</section>
+<footer><a href="/">← 호수플레이 홈</a><p>이 기기에 학습 별과 진행을 저장해요</p></footer>
+</div>
+</main>
 <script>
 'use strict';
-const lessons=[
-{c:'ㅁ',v:'ㅏ',s:'마',word:'마차',pic:'🚃',guide:'입술을 가볍게 붙였다가 열면서 소리를 내요.',shape:'closed',tip:'ㅁ은 입술을 붙여 시작해요.'},
-{c:'ㄴ',v:'ㅏ',s:'나',word:'나비',pic:'🦋',guide:'혀끝을 윗잇몸에 가볍게 댔다가 떼요.',shape:'open',tip:'ㄴ은 혀끝의 위치가 중요해요.'},
-{c:'ㄱ',v:'ㅏ',s:'가',word:'가방',pic:'🎒',guide:'혀의 뒤쪽이 입천장 뒤쪽에 닿았다 떨어져요.',shape:'open',tip:'ㄱ은 입술보다 입안의 혀 움직임을 살펴봐요.'},
-{c:'ㅅ',v:'ㅏ',s:'사',word:'사과',pic:'🍎',guide:'이를 가까이 두고 좁은 틈으로 바람을 내보내요.',shape:'wide',tip:'ㅅ은 바람이 지나가는 소리예요.'},
-{c:'ㅁ',v:'ㅗ',s:'모',word:'모자',pic:'🧢',guide:'입술을 둥글게 모아 ㅗ 소리를 내요.',shape:'round',tip:'ㅗ는 입술을 동그랗게 모아요.'},
-{c:'ㄴ',v:'ㅜ',s:'누',word:'누나',pic:'👧',guide:'입술을 앞으로 오므려 ㅜ 소리를 내요.',shape:'round',tip:'ㅜ는 입술을 앞으로 내밀어요.'},
-{c:'ㅁ',v:'ㅣ',s:'미',word:'미소',pic:'😊',guide:'입술을 양옆으로 펴서 ㅣ 소리를 내요.',shape:'wide',tip:'ㅣ는 입술이 옆으로 펴져요.'},
-{c:'ㅂ',v:'ㅏ',s:'바',word:'바나나',pic:'🍌',guide:'두 입술을 붙였다가 떼면서 소리를 내요.',shape:'closed',tip:'ㅂ은 두 입술이 만났다가 떨어져요.'}
+const $=id=>document.getElementById(id);
+const area=$('area'),statusBox=$('status');
+const CHO='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+const JUNG='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
+function compose(a,b){
+  const c=CHO.indexOf(a),j=JUNG.indexOf(b);
+  const ci=c>-1?c:CHO.indexOf(b),ji=c>-1?j:JUNG.indexOf(a);
+  return ci<0||ji<0?'':String.fromCharCode(0xAC00+ci*588+ji*28);
+}
+function speak(t){playHangul(t,statusBox)}
+/* ── 1단계 · 자음 탄생 ── */
+const CONS=[
+{c:'ㄱ',shape:'velar',part:'목구멍',story:'혀 뒤쪽이 목구멍 쪽으로 살짝 말려서 소리를 막았다가 내보내요.',fam:['ㄱ','ㅋ'],famNote:'ㄱ에 획을 하나 더하면 바람이 센 ㅋ!'},
+{c:'ㄴ',shape:'alveolar',part:'윗잇몸',story:'혀끝이 윗잇몸에 착 닿았다가 떨어지면서 소리를 내요.',fam:['ㄴ','ㄷ','ㅌ'],famNote:'ㄴ에 획을 더하면 ㄷ! 하나 더 더하면 ㅌ!'},
+{c:'ㅁ',shape:'bilabial',part:'입술',story:'두 입술을 다물었다가 탁 하고 열어요. 네모처럼 각진 모양이에요.',fam:['ㅁ','ㅂ','ㅍ'],famNote:'ㅁ에 획을 더하면 ㅂ! 하나 더 더하면 ㅍ!'},
+{c:'ㅅ',shape:'sibilant',part:'앞니',story:'앞니 사이로 바람이 쉬~ 하고 빠져나가요. 꼬부라진 모양이 바람이에요.',fam:['ㅅ','ㅈ','ㅊ'],famNote:'ㅅ에 획을 더하면 ㅈ! 하나 더 더하면 ㅊ!'},
+{c:'ㅇ',shape:'glottal',part:'목구멍',story:'입 안 깊은 둥근 목구멍에서 소리가 울려요. 동그란 이 모양이 바로 목구멍!',fam:['ㅇ','ㅎ'],famNote:'ㅇ에 획을 더하면 바람 소리 ㅎ!'}
 ];
-const $=id=>document.getElementById(id),area=$('area'),status=$('status');let tab='mouth',idx=0,stage=0,selected=[],locked=false;const key='hosu-hangul-progress-v1';let saved={stars:0,success:[],review:[]};try{saved={...saved,...JSON.parse(localStorage.getItem(key)||'{}')}}catch(e){}function save(){try{localStorage.setItem(key,JSON.stringify(saved))}catch(e){}updateProgress()}function updateProgress(){$('stars').textContent='⭐ '+saved.stars;$('count').textContent=saved.success.length+'개 성공';$('fill').style.width=Math.min(100,saved.success.length/lessons.length*100)+'%'}function reward(){let k=idx+'-'+tab;if(!saved.success.includes(k)){saved.success.push(k);saved.stars++;}saved.review=saved.review.filter(x=>x!==idx);save()}function miss(){if(!saved.review.includes(idx))saved.review.push(idx);save()}let advanceTimer;function say(text){playHangul(text,status)}function advance(){advanceTimer=setTimeout(next,1650)}
-function next(){idx=(idx+1)%lessons.length;stage=0;render()}function render(){clearTimeout(advanceTimer);let d=lessons[idx];locked=false;selected=[];document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));$('mascot').textContent=tab==='feed'?'🐰🥕':'🐰';let number='<div class="step">놀이 '+(idx+1)+' / '+lessons.length+'</div>';if(tab==='mouth'){let vowel={ 'ㅏ':['입을 크게 벌리고 옆으로 펴요.','open'],'ㅗ':['입술을 둥글게 모아요.','round'],'ㅜ':['입술을 앞으로 오므려요.','round'],'ㅣ':['입술을 양옆으로 펴요.','wide']}[d.v];area.innerHTML=number+'<h2>입모양과 소리 탐험</h2><div class="line"><button data-kind="con">자음 '+d.c+'</button><button data-kind="vow">모음 '+d.v+'</button></div><div class="mouth" aria-label="단순화된 입모양 그림"><div class="lips '+(stage===0?d.shape:vowel[1])+'"></div></div><div class="letter">'+(stage===0?d.c:d.v)+'</div><div class="speech" id="guide">'+(stage===0?d.guide:vowel[0])+'</div><p class="small">입모양은 이해를 돕는 단순 그림이에요. 혀의 위치는 설명을 함께 읽어주세요.</p><button class="primary" data-syllable>🔊 완성 글자 '+d.s+' 듣기</button><button class="primary soft" data-next>다음 소리 →</button>';status.textContent='자음과 모음을 눌러 움직임을 비교해 봐요. 개별 자음의 정확한 음원은 아직 준비 중이에요.'}
-if(tab==='join'){let pool=[d.c,d.v,d.v==='ㅗ'?'ㅣ':'ㅗ'];area.innerHTML=number+'<h2>소리를 합쳐 글자를 만들자!</h2><p>자음부터, 다음은 모음!</p><div class="result" id="built">_ + _ = ?</div><div class="grid">'+pool.map((x,i)=>'<button class="tile" data-part="'+x+'" data-id="'+i+'">'+x+'</button>').join('')+'</div><button class="primary soft" data-syllable>🔊 '+d.s+' 듣기</button><button class="primary" data-next>다음 글자 →</button>';status.textContent='먼저 '+d.c+'을 찾아볼까요?'}
-if(tab==='word'){let options=[d,...lessons.filter((v,i)=>i!==idx).slice(0,3)];area.innerHTML=number+'<h2>그림과 낱말을 연결해요</h2><div class="picture">'+d.pic+'</div><p>그림에 맞는 낱말은 뭘까요?</p><div class="cards">'+options.sort((a,b)=>a.word.localeCompare(b.word,'ko')).map(v=>'<button data-answer="'+v.word+'">'+v.word+'</button>').join('')+'</div><button class="primary soft" data-say="'+d.word+'">🔊 낱말 듣기</button><button class="primary" data-next>다음 그림 →</button>';status.textContent='그림을 보고 낱말을 골라봐요.'}
-if(tab==='feed'){let options=[d,...lessons.filter((v,i)=>i!==idx).slice(0,3)];area.innerHTML=number+'<h2>아기토끼 간식 시간!</h2><p>낱말을 듣고 알맞은 그림을 골라주세요.</p><button class="primary" data-say="'+d.word+'">🔊 문제 듣기</button><div class="cards">'+options.sort((a,b)=>a.word.localeCompare(b.word,'ko')).map(v=>'<button data-food="'+v.word+'"><span>'+v.pic+'</span>'+v.word+'</button>').join('')+'</div><button class="primary soft" data-next>다음 간식 →</button>';status.textContent='정답이면 아기토끼가 냠냠!'}
-if(saved.review.length)area.insertAdjacentHTML('beforeend','<div class="note">📝 복습할 글자 '+saved.review.length+'개 · <button data-review style="padding:5px 9px;border-radius:10px;background:#ffe4a4">다시 풀기</button></div>');}
-document.addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;let d=lessons[idx];if(b.dataset.tab){tab=b.dataset.tab;stage=0;render();return}if(b.hasAttribute('data-next')){next();return}if(b.dataset.kind){stage=b.dataset.kind==='con'?0:1;render();if(stage===1)say({'ㅏ':'아','ㅗ':'오','ㅜ':'우','ㅣ':'이'}[d.v]);return}if(b.hasAttribute('data-review')){idx=saved.review[0];tab='join';render();return}if(b.hasAttribute('data-syllable')){say(d.s);status.textContent='🔊 '+d.s+' 글자 전체 소리를 들려줘요.';return}if(b.dataset.say){say(b.dataset.say);return}if(b.dataset.part){if(locked)return;let target=selected.length===0?d.c:d.v;if(b.dataset.part!==target){miss();status.textContent='앗! 다시 골라볼까요?';return}selected.push(target);b.disabled=true;b.classList.add('picked');$('built').textContent=selected.length===1?d.c+' + _ = ?':d.c+' + '+d.v+' = '+d.s;if(selected.length===2){locked=true;reward();status.textContent='짝짝! '+d.s+' 완성! ⭐';say(d.s);advance()}else status.textContent='좋아요! 이제 모음을 찾아요.';return}if(b.dataset.answer){if(locked)return;if(b.dataset.answer===d.word){locked=true;reward();status.textContent='정답! '+d.word+' ⭐';say(d.word);advance()}else{miss();status.textContent='한 번 더 살펴볼까요?'}return}if(b.dataset.food){if(locked)return;if(b.dataset.food===d.word){locked=true;reward();$('mascot').textContent='🐰😋';status.textContent='냠냠! '+d.word+' 정답! ⭐';say(d.word);advance()}else{miss();status.textContent='토끼가 다른 간식을 찾고 있어요.'}}});updateProgress();render();
+/* ── 입안 단면 SVG ── */
+function mouthSVG(shape){
+  const tongueLow='<path d="M74,140 Q120,116 180,124 Q235,132 256,122 Q250,148 205,153 Q130,163 74,144 Z" fill="#ef8fa3" stroke="#d67188" stroke-width="3"/>';
+  let hot='',extra='';
+  if(shape==='velar'){
+    hot='<circle class="hot" cx="248" cy="106" r="15"/>';
+  }else if(shape==='alveolar'){
+    hot='<circle class="hot" cx="115" cy="84" r="13"/>';
+  }else if(shape==='bilabial'){
+    extra='<ellipse cx="66" cy="97" rx="16" ry="20" fill="#d96d84" stroke="#b34f66" stroke-width="3"/><ellipse cx="66" cy="132" rx="16" ry="20" fill="#d96d84" stroke="#b34f66" stroke-width="3"/>';
+    hot='<circle class="hot" cx="62" cy="114" r="15"/>';
+  }else if(shape==='sibilant'){
+    extra='<path class="wind" d="M74,113 H250"/>';
+    hot='<circle class="hot" cx="98" cy="112" r="13"/>';
+  }else if(shape==='glottal'){
+    hot='<circle class="hot" cx="264" cy="112" r="17"/>';
+  }
+  let tongue=tongueLow;
+  if(shape==='velar')tongue+='<ellipse cx="216" cy="111" rx="32" ry="18" fill="#e97b93" transform="rotate(-20 216 111)"/>';
+  if(shape==='alveolar')tongue+='<ellipse cx="120" cy="100" rx="25" ry="15" fill="#e97b93" transform="rotate(20 120 100)"/>';
+  return '<svg class="mouthart" viewBox="0 0 320 226" role="img" aria-label="입안 단면 그림">'
+  +'<path d="M318,6 H124 Q70,6 70,56 V170 Q70,220 124,220 H318 Z" fill="#ffe3d0" stroke="#f3c3ab" stroke-width="4"/>'
+  +'<path d="M70,88 Q150,64 226,90 Q256,100 266,112 Q256,124 226,134 Q150,160 70,140 Z" fill="#9c4b5e"/>'
+  +tongue
+  +'<path d="M104,80 Q170,54 240,92" stroke="#e88ca8" stroke-width="9" fill="none" stroke-linecap="round"/>'
+  +'<path d="M106,82 Q132,70 164,74" stroke="#f7a8c0" stroke-width="7" fill="none" stroke-linecap="round"/>'
+  +'<rect x="84" y="84" width="24" height="15" rx="4" fill="#fff" stroke="#e2d4c8" stroke-width="2"/>'
+  +'<rect x="84" y="129" width="24" height="15" rx="4" fill="#fff" stroke="#e2d4c8" stroke-width="2"/>'
+  +'<ellipse cx="264" cy="112" rx="17" ry="21" fill="#7c4653" stroke="#5f3541" stroke-width="3"/>'
+  +extra+hot
+  +'<ellipse cx="66" cy="86" rx="14" ry="13" fill="#d96d84" stroke="#b34f66" stroke-width="3"/>'
+  +'<ellipse cx="66" cy="142" rx="14" ry="13" fill="#d96d84" stroke="#b34f66" stroke-width="3"/>'
+  +'<line class="artlabel-line" x1="34" y1="56" x2="58" y2="76"/><text class="artlabel" x="10" y="50">입술</text>'
+  +'<line class="artlabel-line" x1="66" y1="30" x2="92" y2="80"/><text class="artlabel" x="52" y="24">앞니</text>'
+  +'<line class="artlabel-line" x1="128" y1="28" x2="134" y2="70"/><text class="artlabel" x="106" y="22">윗잇몸</text>'
+  +'<line class="artlabel-line" x1="216" y1="24" x2="206" y2="60"/><text class="artlabel" x="196" y="18">입천장</text>'
+  +'<line class="artlabel-line" x1="150" y1="196" x2="152" y2="152"/><text class="artlabel" x="136" y="212">혀</text>'
+  +'<line class="artlabel-line" x1="292" y1="176" x2="272" y2="134"/><text class="artlabel" x="272" y="192">목구멍</text>'
+  +'</svg>';
+}
+/* ── 2단계 · 천지인 모음 ── */
+const VOWELS=[
+{v:'ㅏ',s:'아',strokes:[['M40,15 V95','#3f5e7d'],['M40,55 H70','#e2593f']],note:'사람(ㅣ) + 땅(ㅡ)'},
+{v:'ㅑ',s:'야',strokes:[['M40,15 V95','#3f5e7d'],['M40,35 H70','#e2593f'],['M40,72 H70','#e2593f']],note:'사람 + 땅 둘'},
+{v:'ㅓ',s:'어',strokes:[['M40,15 V95','#3f5e7d'],['M12,55 H40','#e2593f']],note:'땅 + 사람'},
+{v:'ㅕ',s:'여',strokes:[['M40,15 V95','#3f5e7d'],['M12,35 H40','#e2593f'],['M12,72 H40','#e2593f']],note:'땅 둘 + 사람'},
+{v:'ㅗ',s:'오',strokes:[['M40,40 V95','#3f5e7d'],['M12,40 H68','#e2593f']],note:'사람 위에 땅'},
+{v:'ㅛ',s:'요',strokes:[['M40,30 V95','#3f5e7d'],['M12,30 H68','#e2593f'],['M12,60 H68','#e2593f']],note:'땅 둘이 위에'},
+{v:'ㅜ',s:'우',strokes:[['M40,15 V70','#3f5e7d'],['M12,70 H68','#e2593f']],note:'사람 아래 땅'},
+{v:'ㅠ',s:'유',strokes:[['M40,15 V95','#3f5e7d'],['M12,42 H68','#e2593f'],['M12,70 H68','#e2593f']],note:'땅 둘이 아래'},
+{v:'ㅡ',s:'으',strokes:[['M12,55 H68','#e2593f']],note:'땅(ㅡ) 그대로'},
+{v:'ㅣ',s:'이',strokes:[['M40,15 V95','#3f5e7d']],note:'사람(ㅣ) 그대로'}
+];
+function strokeSVG(strokes){
+  return '<svg viewBox="0 0 80 110" aria-hidden="true">'
+  +strokes.map(s=>'<path d="'+s[0]+'" stroke="'+s[1]+'" stroke-width="9" stroke-linecap="round" fill="none"/>').join('')
+  +'</svg>';
+}
+const CHEONJI=[
+['<circle cx="40" cy="55" r="12" fill="#f2a93b"/>','하늘 · •'],
+['<path d="M12,55 H68" stroke="#5e8c4a" stroke-width="9" stroke-linecap="round" fill="none"/>','땅 · ㅡ'],
+['<path d="M40,15 V95" stroke="#4a6f96" stroke-width="9" stroke-linecap="round" fill="none"/>','사람 · ㅣ']
+];
+/* ── 3단계 · 소리 이어 읽기 ── */
+const BLEND_STAGES=[
+{name:'1단계 · 가나다라',cons:['ㄱ','ㄴ','ㄷ','ㄹ'],vows:['ㅏ','ㅣ']},
+{name:'2단계 · 마바사아',cons:['ㅁ','ㅂ','ㅅ','ㅇ'],vows:['ㅓ','ㅜ']},
+{name:'3단계 · 자차카타파하',cons:['ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],vows:['ㅗ','ㅡ']}
+];
+/* ── 4단계 · 낱말 읽기 ── */
+const WORDS=[
+{w:'나비',pic:'🦋'},{w:'모자',pic:'🧢'},{w:'사과',pic:'🍎'},{w:'바나나',pic:'🍌'},{w:'가방',pic:'🎒'},
+{w:'우유',pic:'🥛'},{w:'공',pic:'⚽'},{w:'달',pic:'🌙'},{w:'별',pic:'⭐'},{w:'집',pic:'🏠'}
+];
+/* ── 5단계 · 받침 ── */
+const BATCHIM=[
+{w:'공',pic:'⚽',b:'ㅇ',shape:'glottal',story:'입은 그대로 열고 목구멍에서 소리를 웅 웅 울려요.'},
+{w:'눈',pic:'❄️',b:'ㄴ',shape:'alveolar',story:'혀끝이 윗잇몸에 착 닿아서 소리가 닫혀요.'},
+{w:'달',pic:'🌙',b:'ㄹ',shape:'alveolar',story:'혀끝이 윗잇몸을 스르륵 스치듯 지나가요.'},
+{w:'밥',pic:'🍚',b:'ㅂ',shape:'bilabial',story:'두 입술이 사각 닫혀서 소리를 막아요.'},
+{w:'강',pic:'🌊',b:'ㅇ',shape:'glottal',story:'목구멍이 동그랗게 울려요.'},
+{w:'집',pic:'🏠',b:'ㅂ',shape:'bilabial',story:'끝에서 두 입술이 폭 닫혀요.'}
+];
+/* ── 진행 저장 ── */
+const key='hosu-hangul-v2';
+let saved={stars:0,done:{}};
+try{saved=Object.assign(saved,JSON.parse(localStorage.getItem(key)||'{}'))}catch(e){}
+if(!saved.done)saved.done={};
+function save(){try{localStorage.setItem(key,JSON.stringify(saved))}catch(e){}updateProgress()}
+function updateProgress(){
+  $('stars').textContent='⭐ '+saved.stars;
+  const done=Object.keys(saved.done).length;
+  $('count').textContent=done+'개 단계 완료';
+  $('fill').style.width=(done/5*100)+'%';
+}
+function completeStep(){
+  if(saved.done[tab])return;
+  saved.done[tab]=true;
+  saved.stars++;
+  save();
+  if(window.HosuStudy)HosuStudy.award('hangul');
+}
+function badge(){return saved.done[tab]?'<div class="badge">✅ 이 단계 완료!</div>':''}
+/* ── 탭 상태 ── */
+let tab='cons';
+let S={}; /* 단계별 임시 상태 */
+function setState(o){S=o||{}}
+/* ── 렌더 ── */
+function render(){
+  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  statusBox.textContent='';
+  setState(null);
+  if(tab==='cons')renderCons();
+  else if(tab==='vowel')renderVowel();
+  else if(tab==='blend')renderBlend();
+  else if(tab==='word')renderWord();
+  else renderBatchim();
+}
+/* 1단계 */
+function renderCons(){
+  setState({sel:0});
+  area.innerHTML='<div class="step">1단계 · 자음 탄생</div><h2>입안 그림으로 글자 탄생 보기</h2>'
+  +'<p class="small">대장 자음을 눌러 보세요. 혀·입술·목구멍이 닿는 곳이 노랗게 빛나요.</p>'
+  +'<div class="line">'+CONS.map((d,i)=>'<button data-con="'+i+'">'+d.c+'</button>').join('')+'</div>'
+  +'<div id="conview"></div>'+badge();
+  showCon(0);
+}
+function showCon(i){
+  S.sel=i;
+  S.visited=S.visited||new Set();
+  S.visited.add(i);
+  if(S.visited.size>=CONS.length)completeStep();
+  const d=CONS[i];
+  const view=$('conview');
+  view.innerHTML='<div class="letter" style="margin-top:14px">'+d.c+'</div>'
+  +mouthSVG(d.shape)
+  +'<div class="speech"><strong>'+d.c+' 이야기</strong><p>'+d.story+'</p><p class="small">닿는 곳: <strong>'+d.part+'</strong></p></div>'
+  +'<button class="primary soft" data-say="'+compose(d.c,'ㅏ')+'">🔊 '+d.c+' 소리 듣기 ('+compose(d.c,'ㅏ')+' 처럼)</button>'
+  +'<h3>획 더하기 놀이</h3><p class="small">'+d.famNote+'</p>'
+  +'<div class="line">'+d.fam.map((f,fi)=>'<button class="tile" data-say="'+compose(f,'ㅡ')+'" style="min-width:76px">'+f+'<small>획 '+(fi+1)+' · '+compose(f,'ㅡ')+'</small></button>').join('')+'</div>'
+  +'<p class="small">획을 누를 때마다 소리가 어떻게 달라지는지 들어 보세요. (소리한글처럼 ㅡ를 붙여 읽어요)</p>';
+  area.querySelectorAll('[data-con]').forEach((b,bi)=>b.classList.toggle('on',bi===i));
+}
+/* 2단계 */
+function renderVowel(){
+  area.innerHTML='<div class="step">2단계 · 모음 비밀</div><h2>하늘 · 땅 · 사람이 만나면</h2>'
+  +'<p class="small">모음은 점과 선으로 태어났어요. 하늘은 점(•), 땅은 가로선(ㅡ), 사람은 세로선(ㅣ)!</p>'
+  +'<div class="cheonji">'+CHEONJI.map(c=>'<figure><svg viewBox="0 0 80 110">'+c[0]+'</svg><figcaption>'+c[1]+'</figcaption></figure>').join('')+'</div>'
+  +'<p class="small">만들어진 모음을 눌러 소리를 들어 보세요. 빨간 선이 새로 더해진 획이에요.</p>'
+  +'<div class="vowgrid">'+VOWELS.map(d=>'<button data-say="'+d.s+'">'+strokeSVG(d.strokes)+'<span class="vsound">'+d.v+'</span></button>').join('')+'</div>'
+  +'<button class="primary" data-vquiz>🎯 소리 듣고 모음 고르기</button>'
+  +'<p class="small">모음만 더 연습하고 싶으면 <a href="/hangul-test/vowels/">모음 소리 탐험</a>으로 이어가요.</p>'
+  +badge();
+}
+function vowelQuiz(){
+  const targets=['ㅏ','ㅓ','ㅗ','ㅜ','ㅣ'];
+  setState({round:0});
+  q();
+  function q(){
+    const t=targets[S.round];
+    const info=VOWELS.find(v=>v.v===t);
+    const others=targets.filter(x=>x!==t).sort(()=>Math.random()-.5).slice(0,2);
+    const opts=[t,...others].sort(()=>Math.random()-.5);
+    area.innerHTML='<div class="step">2단계 · 모음 비밀</div><h2>소리를 듣고 모음을 골라요</h2>'
+    +'<div class="result">'+(S.round+1)+' / '+targets.length+'</div>'
+    +'<button class="primary soft" data-say="'+info.s+'">🔊 다시 듣기</button>'
+    +'<div class="grid grid3">'+opts.map(o=>'<button class="tile" data-vanswer="'+o+'">'+o+'</button>').join('')+'</div>';
+    statusBox.textContent='소리를 듣고 맞는 모음을 눌러요!';
+  }
+  S.vq=q;
+  S.vtargets=targets;
+}
+/* 3단계 */
+function renderBlend(){
+  setState({stage:0,pickedC:null,built:0});
+  blendView();
+}
+function blendView(){
+  const st=BLEND_STAGES[S.stage];
+  area.innerHTML='<div class="step">3단계 · 소리 이어 읽기</div><h2>소리를 이어서 읽어요</h2>'
+  +'<p class="small">'+st.name+' · 자음을 먼저 고르고, 모음을 고르면 소리가 이어져요!</p>'
+  +'<h3>자음</h3><div class="line">'+st.cons.map(c=>'<button data-bc="'+c+'">'+c+'</button>').join('')+'</div>'
+  +'<h3>모음</h3><div class="line">'+st.vows.map(v=>'<button data-bv="'+v+'">'+v+'</button>').join('')+'</div>'
+  +'<div class="result" id="blendview">_ + _ = ?</div>'
+  +'<p class="small">'+S.built+' / 6 만들었어요. 6개를 만들면 다음 단계 자음도 만나요!</p>'+badge();
+  statusBox.textContent='먼저 자음을 골라요!';
+}
+/* 4단계 */
+function renderWord(){
+  setState({mode:'match',right:0,seq:0});
+  wordQ();
+}
+function wordQ(){
+  const t=WORDS[Math.floor(Math.random()*WORDS.length)];
+  S.expect=t.w;
+  S.expectPic=t.pic;
+  const opts=WORDS.filter(w=>w.w!==t.w).sort(()=>Math.random()-.5).slice(0,3);
+  opts.push(t);opts.sort(()=>Math.random()-.5);
+  const match=S.mode==='match';
+  const head=match
+    ?'<div class="picture">'+t.pic+'</div><p>그림에 맞는 낱말은 뭘까요?</p>'
+    :'<div class="picture" style="font-size:56px">🐰🥕</div><p>소리를 듣고 토끼에게 알맞은 간식을 골라요!</p><button class="primary soft" data-say="'+t.w+'">🔊 문제 다시 듣기</button>';
+  area.innerHTML='<div class="step">4단계 · 낱말 읽기 & 토끼 간식</div><h2>'+(match?'그림 보고 낱말 읽기':'아기토끼 간식 주기')+'</h2>'
+  +'<div class="result">'+(S.right+1)+' / '+(match?3:2)+'</div>'+head
+  +'<div class="grid grid2">'+opts.map(o=>'<button class="tile" data-wanswer="'+o.w+'"'+(match?'':' style="font-size:20px"')+'>'+(match?o.w:'<span>'+o.pic+'</span>'+o.w)+'</button>').join('')+'</div>';
+  statusBox.textContent=match?'그림을 보고 낱말을 골라요.':'낱말 소리를 듣고 골라요!';
+  if(!match)speak(t.w);
+}
+/* 5단계 */
+function renderBatchim(){
+  setState({sel:0});
+  batchView(0);
+}
+function batchView(i){
+  S.sel=i;
+  const d=BATCHIM[i];
+  const shown=d.w.slice(0,-1)+'<b>'+d.b+'</b>';
+  area.innerHTML='<div class="step">5단계 · 받침 첫걸음</div><h2>받침이 만나면 입안이 달라져요</h2>'
+  +'<div class="bword">'+shown+' <span style="font-size:34px">'+d.pic+'</span></div>'
+  +mouthSVG(d.shape)
+  +'<div class="speech"><strong>받침 '+d.b+' 이야기</strong><p>'+d.story+'</p></div>'
+  +'<button class="primary soft" data-say="'+d.w+'">🔊 '+d.w+' 듣기</button>'
+  +'<div class="line">'+BATCHIM.map((x,xi)=>'<button data-bw="'+xi+'">'+x.w+'</button>').join('')+'</div>'
+  +'<button class="primary" data-bquiz>🎯 받침 소리 퀴즈</button>'+badge();
+  area.querySelectorAll('[data-bw]').forEach((b,bi)=>b.classList.toggle('on',bi===i));
+  statusBox.textContent='받침이 붙은 글자를 눌러 소리를 들어 보세요!';
+}
+function batchQuiz(){
+  const d=BATCHIM[Math.floor(Math.random()*BATCHIM.length)];
+  S.bqAnswer=d;
+  const opts=[
+    {t:'두 입술이 폭 닫혀요',shape:'bilabial'},
+    {t:'혀끝이 윗잇몸에 닿아요',shape:'alveolar'},
+    {t:'목구멍에서 웅 울려요',shape:'glottal'}
+  ];
+  const correct=opts.find(o=>o.shape===d.shape);
+  S.bqCorrect=correct.t;
+  const choices=[correct,...opts.filter(o=>o!==correct).slice(0,2)].sort(()=>Math.random()-.5);
+  area.innerHTML='<div class="step">5단계 · 받침 첫걸음</div><h2>이 받침은 어디서 닫힐까요?</h2>'
+  +'<div class="bword">'+d.w+' <span style="font-size:34px">'+d.pic+'</span></div>'
+  +'<button class="primary soft" data-say="'+d.w+'">🔊 '+d.w+' 듣기</button>'
+  +'<div class="grid">'+choices.map(c=>'<button class="tile" style="font-size:18px" data-bcanswer="'+c.t+'">'+c.t+'</button>').join('')+'</div>';
+  statusBox.textContent='받침 '+d.b+' · 소리가 어디서 닫히는지 골라요!';
+}
+/* ── 클릭 위임 (한 번만 등록) ── */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');
+  if(!b)return;
+  if(b.dataset.tab){tab=b.dataset.tab;render();return}
+  if(!area.contains(b))return;
+  if(b.dataset.say!==undefined&&b.dataset.say){speak(b.dataset.say);return}
+  if(b.dataset.con!==undefined&&b.dataset.con){showCon(+b.dataset.con);return}
+  if(b.hasAttribute('data-vquiz')){vowelQuiz();return}
+  if(b.dataset.vanswer){
+    const t=S.vtargets&&S.vtargets[S.round];
+    if(b.dataset.vanswer===t){
+      statusBox.textContent='정답! '+t+' ⭐';
+      S.round++;
+      if(S.round<S.vtargets.length)setTimeout(S.vq,900);
+      else{completeStep();render()}
+    }else statusBox.textContent='한 번 더 들어 볼까요?';
+    return;
+  }
+  if(b.dataset.bc){ /* 3단계 자음 */
+    S.pickedC=b.dataset.bc;
+    area.querySelectorAll('[data-bc]').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    statusBox.textContent=S.pickedC+' 을(를) 골랐어요! 이제 모음을 고르세요.';
+    return;
+  }
+  if(b.dataset.bv){ /* 3단계 모음 → 합체 */
+    if(!S.pickedC){statusBox.textContent='자음을 먼저 골라요!';return}
+    const syl=compose(S.pickedC,b.dataset.bv);
+    const view=$('blendview');
+    if(view)view.textContent=S.pickedC+' + '+b.dataset.bv+' → '+syl+' !';
+    speak(syl);
+    S.built=(S.built||0)+1;
+    if(S.built>=6){
+      completeStep();
+      statusBox.textContent=syl+' 완성! 다음 단계 자음 만나러 가요! ⭐';
+      setTimeout(()=>{S.stage=(S.stage+1)%BLEND_STAGES.length;S.pickedC=null;S.built=0;blendView()},1500);
+    }else{
+      statusBox.textContent=syl+' ! 또 만들어 볼까요?';
+      S.pickedC=null;
+      const p=area.querySelector('p.small:last-of-type');
+      if(p)p.textContent=S.built+' / 6 만들었어요. 6개를 만들면 다음 단계 자음도 만나요!';
+      setTimeout(()=>area.querySelectorAll('.line .on').forEach(x=>x.classList.remove('on')),900);
+    }
+    return;
+  }
+  if(b.dataset.wanswer){ /* 4단계 정답 */
+    if(b.dataset.wanswer!==S.expect){statusBox.textContent='한 번 더 살펴볼까요?';return}
+    S.right++;
+    statusBox.textContent='정답! '+b.dataset.wanswer+' ⭐';
+    if(S.mode==='match'&&S.right>=3){S.mode='feed';S.right=0;statusBox.textContent='이제 토끼에게 간식을 주러 가요!';setTimeout(wordQ,1200);return}
+    if(S.mode==='feed'&&S.right>=2){completeStep();statusBox.textContent='낱말 읽기 완료! ⭐';setTimeout(wordQ,1200);return}
+    setTimeout(wordQ,1000);
+    return;
+  }
+  if(b.dataset.bw!==undefined&&b.dataset.bw){batchView(+b.dataset.bw);return}
+  if(b.hasAttribute('data-bquiz')){batchQuiz();return}
+  if(b.dataset.bcanswer){
+    if(b.dataset.bcanswer!==S.bqCorrect){statusBox.textContent='다시 들여다봐요!';return}
+    statusBox.textContent='정답! '+S.bqAnswer.w+' ⭐';
+    S.bqRight=(S.bqRight||0)+1;
+    if(S.bqRight>=3)completeStep();
+    setTimeout(()=>batchView(S.sel),1300);
+    return;
+  }
+});
+updateProgress();
+render();
 </script></body></html>

@@ -8,7 +8,11 @@
     ['pen', 'pet', 'peg'], ['pin', 'pan', 'bin'], ['sun', 'bun', 'bus'],
     ['pot', 'hop', 'hot'], ['van', 'can', 'pan'], ['net', 'wet', 'pet'],
   ];
-  const titles = {alphabet: '알파벳 놀이', phonics: '파닉스 소리', listen: '소리 찾기', blend: '소리 합치기'};
+  const titles = {alphabet: '알파벳 놀이', phonics: '파닉스 소리', listen: '소리 찾기', blend: '소리 합치기', howmany: '🎈 How Many? 숫자 세기', todo: '🐸 What Can You Do?'};
+  const pets = [['cat', '🐱'], ['dog', '🐶'], ['frog', '🐸'], ['duck', '🦆'], ['pig', '🐷'], ['bug', '🐛']];
+  const numberWords = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+  const balloonColors = ['#e8833a', '#3f7fd4', '#3f9a5f', '#4aa3a8', '#c8577f'];
+  const actions = [['frog', '🐸', 'jump'], ['dog', '🐶', 'run'], ['duck', '🦆', 'swim'], ['bird', '🐦', 'fly'], ['pig', '🐷', 'dance'], ['bug', '🐛', 'crawl']];
   const byId = id => document.getElementById(id);
   const menu = byId('menu');
   const lesson = byId('lesson');
@@ -26,7 +30,7 @@
   let solved = false;
   let advanceTimer;
   let owner;
-  const progress = {alphabet:new Set(), phonics:new Set(), listen:new Set(), blend:new Set()};
+  const progress = {alphabet:new Set(), phonics:new Set(), listen:new Set(), blend:new Set(), howmany:new Set(), todo:new Set()};
 
   function studyStep(value) {
     const active = window.HosuStudy?.active();
@@ -44,6 +48,7 @@
   function stopAudio() {
     playback++;
     player.pause();
+    try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch {}
     audioError.textContent = '';
   }
 
@@ -54,6 +59,20 @@
     player.play().catch(() => {
       if (current === playback) audioError.textContent = '소리를 재생하지 못했어요. 듣기 버튼을 다시 눌러 보세요.';
     });
+  }
+
+  function speakEN(text) {
+    stopAudio();
+    try {
+      const voice = speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.rate = .85;
+      utter.pitch = 1.1;
+      voice.speak(utter);
+    } catch {
+      audioError.textContent = '이 브라우저에서는 영어 소리가 나지 않아요. 글자를 소리 내어 읽어 주세요.';
+    }
   }
 
   function shuffle(items) {
@@ -83,6 +102,58 @@
       [target] = rounds[round];
       choices = shuffle(rounds[round]);
     }
+  }
+
+  /* ── 🎈 How Many? ── */
+  const hm = {max: 5, count: 3, pet: pets[0]};
+  function hmNew() {
+    clearTimeout(advanceTimer);
+    solved = false;
+    hm.count = 1 + Math.floor(Math.random() * hm.max);
+    hm.pet = shuffle(pets)[0];
+    const [name, emoji] = hm.pet;
+    const balloons = Array.from({length: Math.min(hm.max, hm.count + 2)}, (_, i) => i + 1);
+    const choicesNow = shuffle(balloons);
+    activity.innerHTML = `
+      <div class="toolbar" aria-label="숫자 범위">
+        <button data-hm="5" aria-pressed="${hm.max === 5}">1~5 세기</button>
+        <button data-hm="10" aria-pressed="${hm.max === 10}">1~10 세기</button>
+      </div>
+      <p>동물을 하나씩 짚으면서 세 보고, 숫자 풍선을 눌러요.</p>
+      <div class="hm-scene">${Array.from({length: hm.count}, (_, i) => `
+        <span class="pet" style="animation-delay:${i * .12}s"><i class="pet-balloon" style="background:${balloonColors[i % balloonColors.length]}"></i>${emoji}</span>`).join('')}</div>
+      <button data-hm-audio="How many?">🔊 How many?</button>
+      <div class="hm-balloons" aria-label="숫자 풍선 고르기">${choicesNow.map((n, i) => `
+        <button class="balloon" data-hm-answer="${n}" style="background:${balloonColors[i % balloonColors.length]}">${n}</button>`).join('')}</div>
+      <button data-next>다음 동물 →</button>`;
+    hm.answer = hm.count;
+  }
+
+  /* ── 🐸 What Can You Do? ── */
+  function tdNew(quiz) {
+    clearTimeout(advanceTimer);
+    solved = false;
+    if (!quiz) {
+      activity.innerHTML = `
+        <p>동물 친구를 누르면 하는 일을 영어로 말해줘요. 따라 해 보세요!</p>
+        <div class="todo-grid">${actions.map(([name, emoji, verb]) => `
+          <button class="todo-card" data-td="${verb}" data-say="I can ${verb}!">
+            <span>${emoji}</span><strong lang="en">I can ${verb}!</strong><small>${{jump:'뛰어요', run:'달려요', swim:'헤엄쳐요', fly:'날아요', dance:'춤춰요', crawl:'기어요'}[verb]}</small>
+          </button>`).join('')}</div>
+        <button data-td-quiz>🎯 Who can swim? 퀴즈</button>`;
+      feedback.textContent = '';
+      return;
+    }
+    const trio = shuffle(actions).slice(0, 3);
+    target = shuffle(trio)[0];
+    choices = shuffle(trio);
+    activity.innerHTML = `
+      <p>문제를 듣고 할 줄 아는 동물을 골라요.</p>
+      <button data-td-audio="Who can ${target[2]}?">🔊 문제 듣기</button>
+      <div class="todo-grid todo-quiz">${choices.map(([name, emoji, verb]) => `
+        <button class="todo-card" data-td-answer="${name}|${verb}"><span>${emoji}</span></button>`).join('')}</div>
+      <button data-next>다음 문제 →</button>`;
+    speakEN(`Who can ${target[2]}?`);
   }
 
   function renderLetters() {
@@ -143,6 +214,8 @@
     if (!mode) return;
     byId('lesson-title').textContent = titles[mode];
     if (mode === 'alphabet' || mode === 'phonics') renderLetters();
+    else if (mode === 'howmany') hmNew();
+    else if (mode === 'todo') tdNew(false);
     else {
       newQuestion();
       renderQuestion();
@@ -161,30 +234,68 @@
       play((mode === 'alphabet' ? 'name-' : 'sound-') + letter);
       feedback.textContent = studyStep(letter) ? '다섯 글자를 들었어요! ⭐ 별 하나' : '';
     }
+    if (button.dataset.hm) {
+      hm.max = +button.dataset.hm;
+      hmNew();
+      return;
+    }
+    if (button.dataset.hmAudio) {
+      speakEN(button.dataset.hmAudio);
+      return;
+    }
+    if (button.dataset.hmAnswer && !solved) {
+      if (+button.dataset.hmAnswer !== hm.answer) {
+        feedback.textContent = '하나씩 짚으면서 다시 세어 봐요!';
+        return;
+      }
+      solved = true;
+      feedback.textContent = `정답! ${numberWords[hm.answer].toUpperCase()} ${numberWords[hm.answer]}!`;
+      speakEN(`${numberWords[hm.answer]}!`);
+      if (studyStep(String(hm.answer))) feedback.textContent += ' · ⭐ 별 하나!';
+      const next = activity.querySelector('[data-next]');
+      advanceTimer = setTimeout(() => next.click(), 1800);
+      return;
+    }
+    if (button.dataset.td) {
+      button.classList.add('acted');
+      feedback.textContent = studyStep(button.dataset.td) ? '다섯 마리를 만났어요! ⭐ 별 하나' : '';
+      return;
+    }
+    if (button.dataset.tdAudio) {
+      speakEN(button.dataset.tdAudio);
+      return;
+    }
+    if (button.hasAttribute('data-td-quiz')) {
+      tdNew(true);
+      return;
+    }
+    if (button.dataset.tdAnswer && !solved) {
+      const [name, verb] = button.dataset.tdAnswer.split('|');
+      if (name !== target[0]) {
+        feedback.textContent = '앗, 그 친구는 할 수 없어요. 다시 들어요!';
+        speakEN(`Who can ${target[2]}?`);
+        return;
+      }
+      solved = true;
+      feedback.textContent = `정답! I can ${verb}!`;
+      speakEN(`Yes! I can ${verb}!`);
+      if (studyStep(verb)) feedback.textContent += ' · ⭐ 별 하나!';
+      const next = activity.querySelector('[data-next]');
+      advanceTimer = setTimeout(() => next.click(), 1900);
+      return;
+    }
     if (kind || button.hasAttribute('data-next')) {
       stopAudio();
       if (kind) quizKind = kind;
       if (mode === 'blend') round = (round + 1) % rounds.length;
-      newQuestion();
-      renderQuestion();
+      if (mode === 'howmany') hmNew();
+      else if (mode === 'todo') tdNew(true);
+      else {
+        newQuestion();
+        renderQuestion();
+      }
       feedback.textContent = '';
       activity.querySelector('button').focus();
-    }
-    if (answer && !solved) {
-      if (answer !== target) {
-        feedback.textContent = '한 번 더 들어 보고 골라요!';
-        return;
-      }
-      solved = true;
-      feedback.textContent = '정답! ' + (mode === 'listen' ? target.toUpperCase() : target);
-      if (studyStep(target)) feedback.textContent += ' · ⭐ 별 하나!';
-      const wordButton = byId('whole-word');
-      if (wordButton) {
-        wordButton.hidden = false;
-        play(target);
-      }
-      const next = activity.querySelector('[data-next]');
-      advanceTimer = setTimeout(() => next.click(), 1650);
     }
   });
 

@@ -8,7 +8,7 @@ main { max-width: 1180px; margin: auto; padding: 0 12px 24px; }
 .banner { width: 100%; height: auto; display: block; }
 .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0 1%; gap: 2px; }
 .cards a { display: grid; place-items: center; border-radius: 16px; touch-action: manipulation; }
-.cards img { display: block; width: 100%; height: auto; }
+.cards img, .cards svg.cardart { display: block; width: 100%; height: auto; }
 .art-footer { display: flex; justify-content: space-between; align-items: flex-end; }
 .art-footer img { width: 25%; height: auto; }
 #lesson { max-width: 720px; margin: auto; padding: clamp(12px, 4vw, 28px); border-radius: 22px; border: 2px solid #e6d6bd; background: #fffdf8; }
@@ -26,8 +26,27 @@ button:disabled { opacity: .64; cursor: default; }
 .example strong, .pieces button { font-size: 1.6rem; }
 .choices > div { display: grid; gap: 6px; flex: 1 1 80px; }
 .choices button:first-child { font-size: 1.3rem; }
+/* 🎈 How Many? */
+.hm-scene { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: flex-end; background: #fdf7e3; border: 2px solid #f0dfae; border-radius: 18px; padding: 18px 10px; margin: 12px 0; }
+.pet { position: relative; font-size: 2.7rem; line-height: 1; animation: pet-in .45s backwards; }
+@keyframes pet-in { from { transform: translateY(10px) scale(.6); opacity: 0; } }
+.pet-balloon { position: absolute; left: 50%; top: -1.05em; width: 1em; height: 1.2em; transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 44% 44% 56% 56%; opacity: .85; }
+.pet-balloon::after { content: ""; position: absolute; left: 50%; top: 100%; width: 2px; height: .7em; background: #b9a77d; }
+.hm-balloons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
+.balloon { width: 58px; height: 72px; min-height: 72px; border: 0; border-radius: 50% 50% 50% 50% / 42% 42% 58% 58%; color: #fff; font-size: 1.5rem; font-weight: 850; padding: 0; }
+.balloon::after { content: ""; display: block; margin: 2px auto 0; width: 2px; height: 12px; background: rgba(255,255,255,.8); }
+.balloon[aria-pressed="true"], .balloon:active { transform: scale(1.08); }
+/* 🐸 What Can You Do? */
+.todo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 12px 0; }
+.todo-card { display: grid; gap: 3px; justify-items: center; min-height: 108px; padding: 10px 4px; border-radius: 18px; background: #eef7ff; border: 2px solid #cfe3f2; }
+.todo-card span { font-size: 2.6rem; line-height: 1; }
+.todo-card small { color: #6b7f90; font-size: .78rem; }
+.todo-card.acted { animation: act .5s; }
+@keyframes act { 30% { transform: translateY(-8px) rotate(-4deg); } 60% { transform: translateY(0) rotate(3deg); } }
+.todo-quiz { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.todo-quiz .todo-card span { font-size: 3rem; }
 #feedback { min-height: 1.5em; font-weight: 800; color: #3e6125; }
 #audio-error { color: #a12622; }
 #audio-error:empty { display: none; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-@media (max-width: 650px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 650px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .todo-grid, .todo-quiz { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
