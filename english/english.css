@@ -35,7 +35,7 @@ button:disabled { opacity: .64; cursor: default; }
 .ap-say { min-height: 40px; padding: 4px 10px; }
 .ap-tally { margin: 0 0 8px; font-weight: 800; color: #6b5a45; }
 .ap-bowl { position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(2px, 1.2vw, 8px); padding: clamp(8px, 3vw, 16px); border: 2px solid #f0dfae; border-radius: 20px; background: linear-gradient(#fff8e3, #fdf1d4); }
-.ap-apple { position: relative; width: clamp(46px, 14.6vw, 72px); aspect-ratio: 1; min-height: 0; padding: 3px; border: 0; border-radius: 50%; background: radial-gradient(circle at 50% 42%, #fff, #fffdf4); box-shadow: 0 1px 4px #00000012; }
+.ap-apple { position: relative; width: clamp(44px, 14vw, 68px); aspect-ratio: 1; min-height: 0; padding: 3px; border: 0; border-radius: 50%; background: radial-gradient(circle at 50% 42%, #fff, #fffdf4); box-shadow: 0 1px 4px #00000012; }
 .ap-apple img { display: block; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; transition: transform .16s; }
 .ap-apple:active img { transform: scale(.9); }
 .ap-apple.picked img { animation: ap-bite .4s ease-out; }
