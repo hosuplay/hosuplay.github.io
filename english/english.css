@@ -26,16 +26,41 @@ button:disabled { opacity: .64; cursor: default; }
 .example strong, .pieces button { font-size: 1.6rem; }
 .choices > div { display: grid; gap: 6px; flex: 1 1 80px; }
 .choices button:first-child { font-size: 1.3rem; }
-/* 🎈 How Many? */
-.hm-scene { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: flex-end; background: #fdf7e3; border: 2px solid #f0dfae; border-radius: 18px; padding: 18px 10px; margin: 12px 0; }
-.pet { position: relative; font-size: 2.7rem; line-height: 1; animation: pet-in .45s backwards; }
-@keyframes pet-in { from { transform: translateY(10px) scale(.6); opacity: 0; } }
-.pet-balloon { position: absolute; left: 50%; top: -1.05em; width: 1em; height: 1.2em; transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 44% 44% 56% 56%; opacity: .85; }
-.pet-balloon::after { content: ""; position: absolute; left: 50%; top: 100%; width: 2px; height: .7em; background: #b9a77d; }
-.hm-balloons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
-.balloon { width: 58px; height: 72px; min-height: 72px; border: 0; border-radius: 50% 50% 50% 50% / 42% 42% 58% 58%; color: #fff; font-size: 1.5rem; font-weight: 850; padding: 0; }
-.balloon::after { content: ""; display: block; margin: 2px auto 0; width: 2px; height: 12px; background: rgba(255,255,255,.8); }
-.balloon[aria-pressed="true"], .balloon:active { transform: scale(1.08); }
+/* 🎈 How Many? : 숫자 풍선 달기 */
+.hm-guide { margin: 10px 0 0; }
+.hm-stage { position: relative; overflow: hidden; margin: 10px 0 14px; padding: clamp(8px, 3vw, 16px) clamp(4px, 2vw, 14px) clamp(12px, 3.4vw, 18px); border: 2px solid #e7dcbd; border-radius: 20px; background: linear-gradient(#e9f6ff, #f2fbea 58%, #fdf6e0); }
+.hm-stage::after { content: ""; position: absolute; inset: auto 0 0 0; height: 38%; background: radial-gradient(120% 70% at 50% 100%, #cbe6ab, #e2f2cd 45%, transparent 74%); pointer-events: none; }
+.hm-slots { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(2px, 1.2vw, 10px); align-items: end; }
+.hm-slot { display: grid; justify-items: center; min-width: 0; min-height: 0; padding: 4px 0; border: 0; border-radius: 16px; background: transparent; transition: background .2s, transform .2s, box-shadow .2s; }
+.hm-slot.next { background: #fff8d8; box-shadow: inset 0 0 0 2px #ffce4d; animation: hm-next 1.5s ease-in-out infinite; }
+.hm-slot.over { background: #fff1b8; transform: translateY(-3px); }
+.hm-slot.bump { animation: hm-bump .4s; }
+.hm-line { display: grid; justify-items: center; }
+.hm-pet { font-size: clamp(24px, 8.4vw, 40px); line-height: 1.05; filter: drop-shadow(0 2px 2px #0000001f); }
+.hm-string { display: block; width: 2px; height: clamp(10px, 3.2vw, 20px); background: repeating-linear-gradient(#c8b48a 0 3px, transparent 3px 6px); }
+.hm-string.taut { background: linear-gradient(#a8935f, #7d6a3f); }
+.hm-balloon { position: relative; display: grid; place-items: center; width: clamp(36px, 11vw, 54px); aspect-ratio: 5 / 6; margin-bottom: 2px; border: 0; border-radius: 50% 50% 46% 46% / 54% 54% 46% 46%; color: #fff; font-weight: 900; font-size: clamp(.95rem, 4.4vw, 1.4rem); background: radial-gradient(circle at 32% 25%, #ffffff9c, transparent 44%), var(--balloon, #e8833a); box-shadow: inset -3px -5px 10px #00000026, 0 3px 6px #0000001a; }
+.hm-balloon::after { content: ""; position: absolute; left: 50%; top: 100%; width: 0; height: 0; transform: translateX(-50%); border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 7px solid var(--balloon, #e8833a); }
+.hm-balloon.empty { background: #ffffffb0; border: 2px dashed #cbb894; color: #b9a582; box-shadow: none; }
+.hm-balloon.empty i { font-style: normal; }
+.hm-balloon.empty::after { display: none; }
+.hm-slot .hm-balloon { pointer-events: none; }
+.hm-tray-label { margin: 12px 0 4px; font-size: .95rem; color: #6d5a42; }
+.hm-tray { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(6px, 2.4vw, 14px); min-height: clamp(72px, 20vw, 96px); padding: 8px clamp(4px, 2vw, 12px); border: 2px dashed #ecd7a8; border-radius: 18px; background: #fff8e6; }
+.hm-tray .hm-balloon { width: clamp(42px, 13vw, 62px); min-height: 0; padding: 0; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; transition: transform .15s, box-shadow .15s; }
+.hm-tray .hm-balloon[aria-pressed="true"] { transform: translateY(-8px) scale(1.06) rotate(-4deg); box-shadow: inset -3px -5px 10px #00000026, 0 0 0 3px #fff, 0 0 0 6px #ffd166, 0 8px 12px #00000020; }
+.hm-tray .hm-balloon.dragging { opacity: .28; }
+.hm-drag-ghost { position: fixed; z-index: 60; min-height: 0; margin: 0; pointer-events: none; transform: scale(1.12) rotate(-3deg); box-shadow: 0 10px 18px #00000033; }
+.hm-confetti { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.hm-confetti span { position: absolute; left: calc(6% + var(--i) * 6.4%); bottom: 6%; font-size: clamp(14px, 4.4vw, 22px); opacity: 0; animation: hm-fly 1.6s ease-out forwards; animation-delay: calc(var(--i) * .07s); }
+@keyframes hm-fly { 0% { opacity: 0; transform: translateY(14px) scale(.4); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-96px) scale(1.2) rotate(20deg); } }
+@keyframes hm-next { 50% { box-shadow: inset 0 0 0 2px #ffb703, inset 0 0 18px #ffe08a; } }
+@keyframes hm-bump { 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-3px); } }
+@keyframes hm-bob { 50% { transform: translateY(-5px) rotate(-2deg); } }
+@keyframes hm-count-pop { 40% { transform: scale(1.22) translateY(-6px); } }
+.hm-stage.party .hm-balloon { animation: hm-bob 1.4s ease-in-out infinite; }
+.hm-slot.hm-counting .hm-balloon { animation: hm-count-pop .5s ease-out; }
+.hm-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 /* 🐸 What Can You Do? */
 .todo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 12px 0; }
 .todo-card { display: grid; gap: 3px; justify-items: center; min-height: 108px; padding: 10px 4px; border-radius: 18px; background: #eef7ff; border: 2px solid #cfe3f2; }
