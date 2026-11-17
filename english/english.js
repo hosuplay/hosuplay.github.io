@@ -349,8 +349,8 @@
       const key = `r${rd.stage}-${rd.unit}-w`;
       body.innerHTML = `
         <p>단어 카드를 누르면 천천히 또박또박 읽어 줘요. 다 읽은 카드에는 ✓가 생겨요.</p>
-        <div class="rd-words">${unit.words.map(word => `
-          <button type="button" class="rd-word" ${speak(word)} data-track="${key}" data-need="${unit.words.length}"><span lang="en">${word}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
+        <div class="rd-words">${unit.words.map((word, index) => `
+          <button type="button" class="rd-word" ${speak(word)} data-track="${key}-${index}" data-need="${unit.words.length}"><span lang="en">${word}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
         </div>`;
       return;
     }
@@ -358,11 +358,11 @@
     const need = unit.phrases.length + unit.sentences.length;
     body.innerHTML = `
       <p>짧은 구를 먼저 읽고, 문장을 눌러 통으로 들어 보세요.</p>
-      <div class="rd-phrases">${unit.phrases.map(phrase => `
-        <button type="button" class="rd-phrase" ${speak(phrase)} data-track="${key}" data-need="${need}"><span lang="en">${phrase}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
+      <div class="rd-phrases">${unit.phrases.map((phrase, index) => `
+        <button type="button" class="rd-phrase" ${speak(phrase)} data-track="${key}-${index}" data-need="${need}"><span lang="en">${phrase}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
       </div>
-      <div class="rd-sentences">${unit.sentences.map(sentence => `
-        <button type="button" class="rd-sentence" ${speak(sentence)} data-track="${key}" data-need="${need}"><span lang="en">${sentence}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
+      <div class="rd-sentences">${unit.sentences.map((sentence, index) => `
+        <button type="button" class="rd-sentence" ${speak(sentence)} data-track="${key}-${unit.phrases.length + index}" data-need="${need}"><span lang="en">${sentence}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
       </div>`;
   }
 
