@@ -31,7 +31,9 @@ h3{font-size:17px}
 .line{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
 .line button{border-radius:16px;padding:11px 13px;background:#f9e6ef;font-weight:800}
 .line button.on{background:#ffe28b;box-shadow:inset 0 0 0 3px #e9b84e}
-.result{font-size:34px;font-weight:900;background:#fff3c8;border-radius:20px;padding:16px;margin:14px 0}
+.result{font-size:34px;font-weight:900;background:#fff3c8;border-radius:20px;padding:16px;margin:14px 0;display:block;width:100%;box-shadow:0 4px 0 #ecd98f}
+button.result{font-family:inherit;color:inherit}
+button.result:active{transform:translateY(2px);box-shadow:0 2px 0 #ecd98f}
 .picture{font-size:75px;margin:10px}
 .status{min-height:55px;margin-top:14px;padding:11px;border-radius:18px;background:#fff2f0;font-weight:800;line-height:1.6}
 .progress{display:flex;align-items:center;gap:9px;justify-content:center;margin:14px 0}
@@ -73,7 +75,7 @@ button:focus-visible{outline:3px solid #6da8e8;outline-offset:3px}
 </style>
 <link rel="stylesheet" href="/study/study.css">
 <script defer src="/study/study.js"></script>
-<script src="/hangul-test/audio.js"></script>
+<script src="/hangul-test/audio.js?v=2"></script>
 <script defer src="/hangul-test/today.js?v=3"></script>
 </head><body><main>
 <section data-study="hangul"></section>
@@ -165,11 +167,11 @@ const VOWELS=[
 {v:'ㅑ',s:'야',strokes:[['M40,15 V95','#3f5e7d'],['M40,35 H70','#e2593f'],['M40,72 H70','#e2593f']],note:'사람 + 땅 둘'},
 {v:'ㅓ',s:'어',strokes:[['M40,15 V95','#3f5e7d'],['M12,55 H40','#e2593f']],note:'땅 + 사람'},
 {v:'ㅕ',s:'여',strokes:[['M40,15 V95','#3f5e7d'],['M12,35 H40','#e2593f'],['M12,72 H40','#e2593f']],note:'땅 둘 + 사람'},
-{v:'ㅗ',s:'오',strokes:[['M40,40 V95','#3f5e7d'],['M12,40 H68','#e2593f']],note:'사람 위에 땅'},
-{v:'ㅛ',s:'요',strokes:[['M40,30 V95','#3f5e7d'],['M12,30 H68','#e2593f'],['M12,60 H68','#e2593f']],note:'땅 둘이 위에'},
-{v:'ㅜ',s:'우',strokes:[['M40,15 V70','#3f5e7d'],['M12,70 H68','#e2593f']],note:'사람 아래 땅'},
-{v:'ㅠ',s:'유',strokes:[['M40,15 V95','#3f5e7d'],['M12,42 H68','#e2593f'],['M12,70 H68','#e2593f']],note:'땅 둘이 아래'},
-{v:'ㅡ',s:'으',strokes:[['M12,55 H68','#e2593f']],note:'땅(ㅡ) 그대로'},
+{v:'ㅗ',s:'오',strokes:[['M12,72 H68','#3f5e7d'],['M40,34 V72','#e2593f']],note:'땅(ㅡ) 위에 사람(ㅣ) 하나'},
+{v:'ㅛ',s:'요',strokes:[['M10,76 H70','#3f5e7d'],['M28,32 V76','#e2593f'],['M52,32 V76','#e2593f']],note:'땅(ㅡ) 위에 사람 둘'},
+{v:'ㅜ',s:'우',strokes:[['M12,38 H68','#3f5e7d'],['M40,38 V76','#e2593f']],note:'땅(ㅡ) 아래에 사람(ㅣ) 하나'},
+{v:'ㅠ',s:'유',strokes:[['M10,34 H70','#3f5e7d'],['M28,34 V78','#e2593f'],['M52,34 V78','#e2593f']],note:'땅(ㅡ) 아래에 사람 둘'},
+{v:'ㅡ',s:'으',strokes:[['M12,55 H68','#3f5e7d']],note:'땅(ㅡ) 그대로'},
 {v:'ㅣ',s:'이',strokes:[['M40,15 V95','#3f5e7d']],note:'사람(ㅣ) 그대로'}
 ];
 function strokeSVG(strokes){
@@ -195,11 +197,11 @@ const WORDS=[
 ];
 /* ── 5단계 · 받침 ── */
 const BATCHIM=[
-{w:'공',pic:'⚽',b:'ㅇ',shape:'glottal',story:'입은 그대로 열고 목구멍에서 소리를 웅 웅 울려요.'},
+{w:'공',pic:'⚽',b:'ㅇ',shape:'velar',story:'혀 뒤가 입천장 뒤쪽을 막아서, 소리가 코로 웅 웅 울려요.'},
 {w:'눈',pic:'❄️',b:'ㄴ',shape:'alveolar',story:'혀끝이 윗잇몸에 착 닿아서 소리가 닫혀요.'},
 {w:'달',pic:'🌙',b:'ㄹ',shape:'alveolar',story:'혀끝이 윗잇몸을 스르륵 스치듯 지나가요.'},
 {w:'밥',pic:'🍚',b:'ㅂ',shape:'bilabial',story:'두 입술이 사각 닫혀서 소리를 막아요.'},
-{w:'강',pic:'🌊',b:'ㅇ',shape:'glottal',story:'목구멍이 동그랗게 울려요.'},
+{w:'강',pic:'🌊',b:'ㅇ',shape:'velar',story:'혀 뒤가 목 안쪽을 막고, 소리가 코로 웅 하고 울려요.'},
 {w:'집',pic:'🏠',b:'ㅂ',shape:'bilabial',story:'끝에서 두 입술이 폭 닫혀요.'}
 ];
 /* ── 진행 저장 ── */
@@ -302,7 +304,7 @@ function blendView(){
   +'<p class="small">'+st.name+' · 자음을 먼저 고르고, 모음을 고르면 소리가 이어져요!</p>'
   +'<h3>자음</h3><div class="line">'+st.cons.map(c=>'<button data-bc="'+c+'">'+c+'</button>').join('')+'</div>'
   +'<h3>모음</h3><div class="line">'+st.vows.map(v=>'<button data-bv="'+v+'">'+v+'</button>').join('')+'</div>'
-  +'<div class="result" id="blendview">_ + _ = ?</div>'
+  +'<button type="button" class="result" id="blendview">_ + _ = ?</button>'
   +'<p class="small">'+S.built+' / 6 만들었어요. 6개를 만들면 다음 단계 자음도 만나요!</p>'+badge();
   statusBox.textContent='먼저 자음을 골라요!';
 }
@@ -351,7 +353,7 @@ function batchQuiz(){
   const opts=[
     {t:'두 입술이 폭 닫혀요',shape:'bilabial'},
     {t:'혀끝이 윗잇몸에 닿아요',shape:'alveolar'},
-    {t:'목구멍에서 웅 울려요',shape:'glottal'}
+    {t:'혀 뒤가 목 안쪽을 막아요',shape:'velar'}
   ];
   const correct=opts.find(o=>o.shape===d.shape);
   S.bqCorrect=correct.t;
@@ -392,7 +394,10 @@ document.addEventListener('click',e=>{
     if(!S.pickedC){statusBox.textContent='자음을 먼저 골라요!';return}
     const syl=compose(S.pickedC,b.dataset.bv);
     const view=$('blendview');
-    if(view)view.textContent=S.pickedC+' + '+b.dataset.bv+' → '+syl+' !';
+    if(view){
+      view.dataset.say=syl;
+      view.innerHTML=S.pickedC+' + '+b.dataset.bv+' → '+syl+' 🔊';
+    }
     speak(syl);
     S.built=(S.built||0)+1;
     if(S.built>=6){
@@ -412,12 +417,17 @@ document.addEventListener('click',e=>{
     if(b.dataset.wanswer!==S.expect){statusBox.textContent='한 번 더 살펴볼까요?';return}
     S.right++;
     statusBox.textContent='정답! '+b.dataset.wanswer+' ⭐';
+    speak(b.dataset.wanswer);
     if(S.mode==='match'&&S.right>=3){S.mode='feed';S.right=0;statusBox.textContent='이제 토끼에게 간식을 주러 가요!';setTimeout(wordQ,1200);return}
     if(S.mode==='feed'&&S.right>=2){completeStep();statusBox.textContent='낱말 읽기 완료! ⭐';setTimeout(wordQ,1200);return}
     setTimeout(wordQ,1000);
     return;
   }
-  if(b.dataset.bw!==undefined&&b.dataset.bw){batchView(+b.dataset.bw);return}
+  if(b.dataset.bw!==undefined&&b.dataset.bw){
+    batchView(+b.dataset.bw);
+    speak(BATCHIM[+b.dataset.bw].w);
+    return;
+  }
   if(b.hasAttribute('data-bquiz')){batchQuiz();return}
   if(b.dataset.bcanswer){
     if(b.dataset.bcanswer!==S.bqCorrect){statusBox.textContent='다시 들여다봐요!';return}
