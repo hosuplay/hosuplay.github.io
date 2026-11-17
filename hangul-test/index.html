@@ -50,7 +50,7 @@ button:focus-visible{outline:3px solid #6da8e8;outline-offset:3px}
 @media(max-width:390px){.tabs button{font-size:11px}.panel{padding:15px 10px}.tile{min-height:65px}}
 /* ── 입안 단면 그림 ── */
 .mouthart{width:100%;max-width:360px;height:auto;display:block;margin:auto}
-.mouthart .hot{fill:#ffd23f;opacity:.55;animation:hot 1.3s ease-in-out infinite}
+.mouthart .hot{animation:hot 2.2s ease-in-out infinite}
 .mouthart .wind{stroke:#8fd0ff;stroke-width:5;fill:none;stroke-dasharray:9 13;stroke-linecap:round;animation:wind .9s linear infinite}
 @keyframes hot{50%{opacity:.12}}
 @keyframes wind{to{stroke-dashoffset:-22}}
@@ -122,45 +122,57 @@ const CONS=[
 {c:'ㅇ',shape:'glottal',part:'목구멍',story:'입 안 깊은 둥근 목구멍에서 소리가 울려요. 동그란 이 모양이 바로 목구멍!',fam:['ㅇ','ㅎ'],famNote:'ㅇ에 획을 더하면 바람 소리 ㅎ!'}
 ];
 /* ── 입안 단면 SVG ── */
+function glowAt(cx,cy,k){
+  const r=k||1;
+  return '<circle class="hot" cx="'+cx+'" cy="'+cy+'" r="'+Math.round(26*r)+'" fill="#ffd23f" opacity=".30"/>'
+  +'<circle cx="'+cx+'" cy="'+cy+'" r="'+Math.round(18*r)+'" fill="#ffc61a" opacity=".55"/>'
+  +'<circle cx="'+cx+'" cy="'+cy+'" r="'+Math.round(11*r)+'" fill="#f7a80d" opacity=".95"/>';
+}
 function mouthSVG(shape){
-  const tongueLow='<path d="M74,140 Q120,116 180,124 Q235,132 256,122 Q250,148 205,153 Q130,163 74,144 Z" fill="#ef8fa3" stroke="#d67188" stroke-width="3"/>';
-  let hot='',extra='';
-  if(shape==='velar'){
-    hot='<circle class="hot" cx="248" cy="106" r="15"/>';
-  }else if(shape==='alveolar'){
-    hot='<circle class="hot" cx="115" cy="84" r="13"/>';
-  }else if(shape==='bilabial'){
-    extra='<ellipse cx="66" cy="97" rx="16" ry="20" fill="#d96d84" stroke="#b34f66" stroke-width="3"/><ellipse cx="66" cy="132" rx="16" ry="20" fill="#d96d84" stroke="#b34f66" stroke-width="3"/>';
-    hot='<circle class="hot" cx="62" cy="114" r="15"/>';
-  }else if(shape==='sibilant'){
-    extra='<path class="wind" d="M74,113 H250"/>';
-    hot='<circle class="hot" cx="98" cy="112" r="13"/>';
-  }else if(shape==='glottal'){
-    hot='<circle class="hot" cx="264" cy="112" r="17"/>';
-  }
-  let tongue=tongueLow;
-  if(shape==='velar')tongue+='<ellipse cx="216" cy="111" rx="32" ry="18" fill="#e97b93" transform="rotate(-20 216 111)"/>';
-  if(shape==='alveolar')tongue+='<ellipse cx="120" cy="100" rx="25" ry="15" fill="#e97b93" transform="rotate(20 120 100)"/>';
-  return '<svg class="mouthart" viewBox="0 0 320 226" role="img" aria-label="입안 단면 그림">'
-  +'<path d="M318,6 H124 Q70,6 70,56 V170 Q70,220 124,220 H318 Z" fill="#ffe3d0" stroke="#f3c3ab" stroke-width="4"/>'
-  +'<path d="M70,88 Q150,64 226,90 Q256,100 266,112 Q256,124 226,134 Q150,160 70,140 Z" fill="#9c4b5e"/>'
-  +tongue
-  +'<path d="M104,80 Q170,54 240,92" stroke="#e88ca8" stroke-width="9" fill="none" stroke-linecap="round"/>'
-  +'<path d="M106,82 Q132,70 164,74" stroke="#f7a8c0" stroke-width="7" fill="none" stroke-linecap="round"/>'
-  +'<rect x="84" y="84" width="24" height="15" rx="4" fill="#fff" stroke="#e2d4c8" stroke-width="2"/>'
-  +'<rect x="84" y="129" width="24" height="15" rx="4" fill="#fff" stroke="#e2d4c8" stroke-width="2"/>'
-  +'<ellipse cx="264" cy="112" rx="17" ry="21" fill="#7c4653" stroke="#5f3541" stroke-width="3"/>'
-  +extra+hot
-  +'<ellipse cx="66" cy="86" rx="14" ry="13" fill="#d96d84" stroke="#b34f66" stroke-width="3"/>'
-  +'<ellipse cx="66" cy="142" rx="14" ry="13" fill="#d96d84" stroke="#b34f66" stroke-width="3"/>'
-  +'<line class="artlabel-line" x1="34" y1="56" x2="58" y2="76"/><text class="artlabel" x="10" y="50">입술</text>'
-  +'<line class="artlabel-line" x1="66" y1="30" x2="92" y2="80"/><text class="artlabel" x="52" y="24">앞니</text>'
-  +'<line class="artlabel-line" x1="128" y1="28" x2="134" y2="70"/><text class="artlabel" x="106" y="22">윗잇몸</text>'
-  +'<line class="artlabel-line" x1="216" y1="24" x2="206" y2="60"/><text class="artlabel" x="196" y="18">입천장</text>'
-  +'<line class="artlabel-line" x1="150" y1="196" x2="152" y2="152"/><text class="artlabel" x="136" y="212">혀</text>'
-  +'<line class="artlabel-line" x1="292" y1="176" x2="272" y2="134"/><text class="artlabel" x="272" y="192">목구멍</text>'
+  const tongueUp=shape==='velar'
+    ? '<ellipse cx="230" cy="104" rx="26" ry="15" fill="#e8557f" stroke="#c94f73" stroke-width="3" transform="rotate(-18 230 104)"/>'
+    : shape==='alveolar'
+    ? '<ellipse cx="112" cy="112" rx="22" ry="13" fill="#e8557f" stroke="#c94f73" stroke-width="3" transform="rotate(24 112 112)"/>'
+    : '';
+  const extra=shape==='bilabial'
+    ? '<path d="M50,104 Q64,110 78,104" stroke="#c94f73" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M50,128 Q64,122 78,128" stroke="#c94f73" stroke-width="4" fill="none" stroke-linecap="round"/>'
+    : shape==='sibilant'
+    ? '<path d="M96,116 H240" stroke="#6bbcf5" stroke-width="6" stroke-dasharray="9 11" stroke-linecap="round" fill="none"/><path d="M106,102 L92,116 L106,130" stroke="#6bbcf5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+    : '';
+  const glow=shape==='velar' ? glowAt(238,100)
+    : shape==='alveolar' ? glowAt(104,98)
+    : shape==='bilabial' ? glowAt(58,116,.9)
+    : shape==='sibilant' ? glowAt(90,116,.95)
+    : glowAt(266,114);
+  return '<svg class="mouthart" viewBox="0 0 320 240" role="img" aria-label="입안 단면 그림">'
+  +`<path d="M320,4 H140 Q70,4 70,76 V164 Q70,236 140,236 H320 Z" fill="#ffe6d3" stroke="#f3c3ab" stroke-width="4"/>
+<path d="M72,96 C110,88 200,84 252,86 L268,116 L252,140 C200,142 110,138 72,132 Z" fill="#fde1e6"/>
+<path d="M74,134 C104,118 140,116 180,118 C214,119 238,116 250,108 L252,140 C220,147 150,148 100,145 C86,144 76,140 74,134 Z" fill="#e8557f" stroke="#c94f73" stroke-width="3"/>
+${tongueUp}
+<path d="M100,90 C150,80 210,78 246,86" stroke="#c76d8b" stroke-width="12" fill="none" stroke-linecap="round"/>
+<path d="M240,86 Q252,96 250,110 Q244,102 238,92 Z" fill="#c76d8b"/>
+<rect x="76" y="96" width="22" height="17" rx="4" fill="#fff" stroke="#e0cbbf" stroke-width="2.5"/>
+<rect x="76" y="120" width="22" height="17" rx="4" fill="#fff" stroke="#e0cbbf" stroke-width="2.5"/>
+<ellipse cx="58" cy="82" rx="16" ry="15" fill="#e8557f" stroke="#c94f73" stroke-width="3"/>
+<ellipse cx="58" cy="150" rx="16" ry="15" fill="#e8557f" stroke="#c94f73" stroke-width="3"/>
+<ellipse cx="272" cy="114" rx="15" ry="19" fill="#7b4351" stroke="#5d3341" stroke-width="3"/>
+${extra}
+${glow}
+<line x1="30" y1="56" x2="46" y2="72" stroke="#c9a99a" stroke-width="1.5"/>
+<text x="6" y="50" font-family="sans-serif" font-size="11" font-weight="800" fill="#8a6a5c">입술</text>
+<line x1="58" y1="26" x2="80" y2="92" stroke="#c9a99a" stroke-width="1.5"/>
+<text x="44" y="20" font-family="sans-serif" font-size="11" font-weight="800" fill="#8a6a5c">앞니</text>
+<line x1="112" y1="34" x2="110" y2="88" stroke="#c9a99a" stroke-width="1.5"/>
+<text x="98" y="28" font-family="sans-serif" font-size="11" font-weight="800" fill="#8a6a5c">윗잇몸</text>
+<line x1="196" y1="22" x2="196" y2="78" stroke="#c9a99a" stroke-width="1.5"/>
+<text x="176" y="16" font-family="sans-serif" font-size="11" font-weight="800" fill="#8a6a5c">입천장</text>
+<line x1="146" y1="208" x2="150" y2="146" stroke="#c9a99a" stroke-width="1.5"/>
+<text x="132" y="224" font-family="sans-serif" font-size="11" font-weight="800" fill="#8a6a5c">혀</text>
+<line x1="286" y1="196" x2="276" y2="136" stroke="#c9a99a" stroke-width="1.5"/>
+<text x="260" y="212" font-family="sans-serif" font-size="11" font-weight="800" fill="#8a6a5c">목구멍</text>`
   +'</svg>';
 }
+
 /* ── 2단계 · 천지인 모음 ── */
 const VOWELS=[
 {v:'ㅏ',s:'아',strokes:[['M40,15 V95','#3f5e7d'],['M40,55 H70','#e2593f']],note:'사람(ㅣ) + 땅(ㅡ)'},
