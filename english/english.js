@@ -16,7 +16,36 @@
     bun: '🥐', bus: '🚌', pot: '🍲', hop: '🐰', hot: '🔥', van: '🚐',
     net: '🥅', wet: '💧',
   };
-  const titles = {alphabet: '알파벳 놀이', phonics: '파닉스 소리', listen: '소리 찾기', blend: '소리 합치기', howmany: '🍎 How Many? 사과 세기', todo: '🐸 What Can You Do?'};
+  const titles = {alphabet: '알파벳 놀이', phonics: '파닉스 소리', listen: '소리 찾기', blend: '소리 합치기', howmany: '🍎 How Many? 사과 세기', todo: '🐸 What Can You Do?', read: '📖 파닉스 읽기'};
+
+  /* Reading Universe(readinguniverse.org) 파닉스 읽기 코스 : 규칙 → 단어 → 구·문장 */
+  const readingCourses = [
+    {name: '1단계 · 단모음', note: '자음-모음-자음! 가운데 모음이 짧게 나요.', units: [
+      {label: 'Short a', rule: '가운데 a가 짧게 “애” 소리로 나요.', compare: [], words: ['rat', 'hat', 'map', 'sad', 'cab', 'lab', 'nag', 'mad'], phrases: ['dad is sad', 'tap the map', 'a map', 'the cab', 'in the lab', 'is a nag'], sentences: ['The dad is sad.', 'It is on the map.', 'He is in the lab.']},
+      {label: 'Short e', rule: '가운데 e가 짧게 “에” 소리로 나요.', compare: [], words: ['bed', 'red', 'hen', 'pen', 'ten', 'leg', 'net', 'wet'], phrases: ['a red pen', 'ten hens', 'the wet leg', 'on the bed'], sentences: ['The hen is in the pen.', 'Ben has a red pen.', 'The wet net is on the bed.']},
+      {label: 'Short i', rule: '가운데 i가 짧게 “이” 소리로 나요.', compare: [], words: ['pig', 'fin', 'sit', 'bin', 'lip', 'six', 'hit', 'dig'], phrases: ['a big pig', 'in the bin', 'the lid', 'sit on it'], sentences: ['The pig is big.', 'Tim sat on the bin.', 'The lid is on the pan.']},
+      {label: 'Short o', rule: '가운데 o가 짧게 “오” 소리로 나요.', compare: [], words: ['hot', 'pot', 'box', 'fox', 'log', 'mop', 'top', 'cot'], phrases: ['a hot pot', 'on the log', 'a big box', 'the fox'], sentences: ['The fox got the box.', 'The pot is hot.', 'The cot is by the log.']},
+      {label: 'Short u', rule: '가운데 u가 짧게 “어” 소리로 나요.', compare: [], words: ['bug', 'bun', 'cup', 'cut', 'sun', 'tub', 'mud', 'gum'], phrases: ['a wet cup', 'in the tub', 'the sun is up', 'a big bug'], sentences: ['The bug is in the tub.', 'Dad cut the bun.', 'The sun is up.']},
+    ]},
+    {name: '2단계 · 매직 e', note: '끝에 있는 e는 조용히 숨고, 앞 모음을 이름대로 길게 읽어요!', units: [
+      {label: 'a_e', rule: 'a + 자음 + e! e는 숨쉬고 a는 “에이”로 길게.', compare: [['cap', 'cape'], ['mad', 'made']], words: ['cake', 'made', 'shape', 'plane', 'grapes', 'shake', 'cane', 'shade'], phrases: ['on the plate', 'in the shade', 'bake a cake', 'made a plane'], sentences: ['The rabbit hid in the big cave.', 'Jane will bake the cake with Kate.', 'I do not want to be late for my date.']},
+      {label: 'i_e', rule: 'i + 자음 + e! e는 숨쉬고 i는 “아이”로 길게.', compare: [['bit', 'bite'], ['hid', 'hide']], words: ['bike', 'time', 'kite', 'nine', 'five', 'lime', 'slide', 'vine'], phrases: ['ride a bike', 'in time', 'a nice kite', 'nine limes'], sentences: ['I like to ride my bike.', 'The nine kites are mine.', 'Time to slide down the slide.']},
+      {label: 'o_e', rule: 'o + 자음 + e! e는 숨쉬고 o는 “오우”로 길게.', compare: [['hop', 'hope'], ['not', 'note']], words: ['home', 'bone', 'nose', 'rope', 'stone', 'note', 'hole', 'rose'], phrases: ['on the stone', 'a red rose', 'my home', 'a long rope'], sentences: ['Go home, Rose.', 'The bone is on the plate.', 'A rope is in the hole.']},
+      {label: 'u_e', rule: 'u + 자음 + e! e는 숨쉬고 u는 “유”로 길게.', compare: [['cub', 'cube'], ['tub', 'tube']], words: ['cube', 'mule', 'tube', 'June', 'flute', 'rule', 'huge', 'cute'], phrases: ['a cute mule', 'one cube', 'a long tube', 'ride the mule'], sentences: ['The mule is cute.', 'The cube is huge.', 'Play the flute in June.']},
+    ]},
+    {name: '3단계 · 이중자음', note: '두 글자가 만나 소리 하나! ch, sh, th를 함께 읽어요.', units: [
+      {label: 'ch', rule: 'c와 h가 만나 “ㅊ” 소리를 내요.', compare: [], words: ['chat', 'chip', 'chop', 'chin', 'chick', 'lunch', 'bench', 'inch'], phrases: ['a chick', 'my lunch', 'on the bench', 'chop the chip'], sentences: ['The chick has lunch.', 'Chad sits on the bench.', 'We chat at lunch.']},
+      {label: 'sh', rule: 's와 h가 만나 “슈” 소리를 내요.', compare: [], words: ['shop', 'ship', 'fish', 'shell', 'shed', 'brush', 'wish', 'sheep'], phrases: ['a big fish', 'at the shop', 'a big ship', 'the shell'], sentences: ['The ship is at the shop.', 'I wish I had a fish.', 'The shell is in the shed.']},
+      {label: 'th', rule: '혀를 살짝 물고 “썬/던” 사이 소리를 내요.', compare: [], words: ['thin', 'bath', 'path', 'math', 'thick', 'thumb', 'cloth', 'tooth'], phrases: ['a thin path', 'a hot bath', 'do the math', 'my thumb'], sentences: ['The path is thin.', 'My thumb is thick.', 'I do my math.']},
+    ]},
+    {name: '4단계 · 모음팀', note: '모음 둘이 손잡고 새 소리를 내요. ee, ea, oo, ar!', units: [
+      {label: 'ee', rule: 'ee는 두 개가 만나 길게 “이~” 소리를 내요.', compare: [], words: ['bee', 'tree', 'see', 'feed', 'green', 'sleep', 'three', 'sweet'], phrases: ['see the bee', 'in the tree', 'a green tree', 'three bees'], sentences: ['I see three green trees.', 'The bee can sleep in the tree.', 'The green bee is sweet.']},
+      {label: 'ea', rule: 'ea도 팀이 되어 길게 “이~” 소리를 내요.', compare: [], words: ['read', 'eat', 'tea', 'leaf', 'seat', 'bean', 'seal', 'meat'], phrases: ['a hot tea', 'on the seat', 'a big seal', 'a green leaf'], sentences: ['The seal eats a fish.', 'We sit on the seat and read.', 'I read a book each night.']},
+      {label: 'oo', rule: 'oo는 길게 “우~”(moon) 또는 짧게 “우”(book)로 나요.', compare: [['book', 'moon']], words: ['moon', 'book', 'zoo', 'look', 'food', 'cook', 'room', 'tooth'], phrases: ['look at the moon', 'a good book', 'the big zoo', 'in my room'], sentences: ['Look at the big moon.', 'I read a good book.', 'We cook in the room.']},
+      {label: 'ar', rule: 'a + r은 팀이 되어 “아~” 길게 굴려요.', compare: [], words: ['car', 'star', 'farm', 'arm', 'park', 'barn', 'hard', 'cart'], phrases: ['a red car', 'a big star', 'at the park', 'on the farm'], sentences: ['The car is at the farm.', 'A big star is over the barn.', 'We walk in the park.']},
+    ]},
+  ];
+  let rd = {stage: 0, unit: 0, tab: 0};
   const numberWords = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
     'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
   const tensWords = ['ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety', 'one hundred'];
@@ -44,9 +73,9 @@
   let solved = false;
   let advanceTimer;
   let owner;
-  const progress = {alphabet:new Set(), phonics:new Set(), listen:new Set(), blend:new Set(), howmany:new Set(), todo:new Set()};
+  const progress = {alphabet:new Set(), phonics:new Set(), listen:new Set(), blend:new Set(), howmany:new Set(), todo:new Set(), read:new Set()};
 
-  function studyStep(value) {
+  function studyStep(value, need = 5) {
     const active = window.HosuStudy?.active();
     if (owner !== active) {
       owner = active;
@@ -54,7 +83,7 @@
     }
     const set = progress[mode];
     set.add(value);
-    if (set.size < 5) return false;
+    if (set.size < need) return false;
     set.clear();
     return window.HosuStudy?.award('english');
   }
@@ -93,13 +122,13 @@
     start();
   }
 
-  function speakEN(text) {
+  function speakEN(text, rate = .82) {
     stopAudio();
     try {
       const voice = speechSynthesis;
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'en-US';
-      utter.rate = .82;
+      utter.rate = rate;
       utter.pitch = 1.1;
       voice.speak(utter);
     } catch {
@@ -283,6 +312,60 @@
     speakEN(`Who can ${target[2]}?`);
   }
 
+  /* ── 📖 파닉스 읽기 : Reading Universe 4단계 코스 ── */
+  function renderRead() {
+    const stage = readingCourses[rd.stage];
+    rd.unit = Math.min(rd.unit, stage.units.length - 1);
+    activity.innerHTML = `
+      <div class="toolbar rd-stages" aria-label="단계 고르기">
+        ${readingCourses.map((course, index) => `<button type="button" data-rd-stage="${index}" aria-pressed="${index === rd.stage}">${course.name}</button>`).join('')}
+      </div>
+      <p class="rd-note">${stage.note}</p>
+      <div class="toolbar rd-units" aria-label="코스 고르기">
+        ${stage.units.map((unit, index) => `<button type="button" data-rd-unit="${index}" aria-pressed="${index === rd.unit}">${unit.label}</button>`).join('')}
+      </div>
+      <div class="toolbar rd-tabs" aria-label="학습 순서">
+        ${['① 규칙 보기', '② 단어 읽기', '③ 구 & 문장'].map((label, index) => `<button type="button" data-rd-tab="${index}" aria-pressed="${index === rd.tab}">${label}</button>`).join('')}
+      </div>
+      <div class="rd-body"></div>`;
+    renderReadBody(stage.units[rd.unit]);
+  }
+
+  function renderReadBody(unit) {
+    const body = activity.querySelector('.rd-body');
+    if (!body) return;
+    const speak = text => `data-say="${text.replace(/"/g, '&quot;')}" data-rate="0.8"`;
+    if (rd.tab === 0) {
+      body.innerHTML = `
+        <div class="rd-rule">
+          <p>${unit.rule}</p>
+          ${unit.compare.length ? `<div class="rd-compare">${unit.compare.map(([short, long]) => `
+            <button type="button" class="rd-pair" data-say="${short}, ${long.replace(/"/g, '&quot;')}" data-rate="0.8"><s lang="en">${short}</s> → <b lang="en">${long}</b></button>`).join('')}</div>
+          <p>짧은 말 → 긴 말을 눌러 소리가 어떻게 달라지는지 들어 보세요.</p>` : '<p>아래 단어 카드를 눌러 바로 읽어 보세요.</p>'}
+        </div>`;
+      return;
+    }
+    if (rd.tab === 1) {
+      const key = `r${rd.stage}-${rd.unit}-w`;
+      body.innerHTML = `
+        <p>단어 카드를 누르면 천천히 또박또박 읽어 줘요. 다 읽은 카드에는 ✓가 생겨요.</p>
+        <div class="rd-words">${unit.words.map(word => `
+          <button type="button" class="rd-word" ${speak(word)} data-track="${key}" data-need="${unit.words.length}"><span lang="en">${word}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
+        </div>`;
+      return;
+    }
+    const key = `r${rd.stage}-${rd.unit}-s`;
+    const need = unit.phrases.length + unit.sentences.length;
+    body.innerHTML = `
+      <p>짧은 구를 먼저 읽고, 문장을 눌러 통으로 들어 보세요.</p>
+      <div class="rd-phrases">${unit.phrases.map(phrase => `
+        <button type="button" class="rd-phrase" ${speak(phrase)} data-track="${key}" data-need="${need}"><span lang="en">${phrase}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
+      </div>
+      <div class="rd-sentences">${unit.sentences.map(sentence => `
+        <button type="button" class="rd-sentence" ${speak(sentence)} data-track="${key}" data-need="${need}"><span lang="en">${sentence}</span><i class="ck" aria-hidden="true">✓</i></button>`).join('')}
+      </div>`;
+  }
+
   function renderLetters() {
     const isPhonics = mode === 'phonics';
     activity.innerHTML = `
@@ -322,6 +405,7 @@
     if (mode === 'alphabet' || mode === 'phonics') renderLetters();
     else if (mode === 'howmany') apNew();
     else if (mode === 'todo') tdNew(false);
+    else if (mode === 'read') renderRead();
     else {
       newQuestion();
       if (mode === 'listen') renderListen();
@@ -335,6 +419,20 @@
     if (!button) return;
     const {audio, letter, kind, answer} = button.dataset;
     if (audio) play(audio);
+    if (mode === 'read') {
+      const {rdStage, rdUnit, rdTab, track} = button.dataset;
+      if (rdStage !== undefined) { stopAudio(); rd.stage = +rdStage; rd.unit = 0; rd.tab = 0; renderRead(); return; }
+      if (rdUnit !== undefined) { stopAudio(); rd.unit = +rdUnit; rd.tab = 0; renderRead(); return; }
+      if (rdTab !== undefined) { stopAudio(); rd.tab = +rdTab; renderRead(); return; }
+      if (button.dataset.say) {
+        speakEN(button.dataset.say, +(button.dataset.rate || .82));
+        if (track) {
+          button.classList.add('read');
+          if (studyStep(track, +button.dataset.need || 5)) feedback.textContent = '다 읽었어요! ⭐ 별 하나!';
+        }
+        return;
+      }
+    }
     if (letter) {
       selected = letter;
       showLetter();
