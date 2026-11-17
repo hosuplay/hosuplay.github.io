@@ -212,11 +212,12 @@
       bowl.append(burst);
     }
     const starred = window.HosuStudy?.award('english');
-    feedback.textContent = ap.level <= 2 ? `${ap.target} apples! 다 세었어요 🎉` : `${ap.target}! 다 세었어요 🎉`;
+    const appleText = `${ap.target} apple${ap.target === 1 ? '' : 's'}`;
+    feedback.textContent = ap.level <= 2 ? `${appleText}! 다 세었어요 🎉` : `${ap.target}! 다 세었어요 🎉`;
     if (starred) feedback.textContent += ' · ⭐ 별 하나!';
     speakEN(`Good job!`);
     activity.querySelector('.ap-actions')?.insertAdjacentHTML('afterbegin', '<button type="button" data-ap-next>다음 사과 →</button>');
-    advanceTimer = setTimeout(() => { if (mode === 'howmany') apNew(); }, 3200);
+    advanceTimer = setTimeout(() => { if (mode === 'howmany') apNew(); }, 4500);
   }
 
   /* ── 🔎 소리 찾기 : 보기 버튼만 남기고, 문제 소리를 두 번 들려줍니다 ── */
