@@ -154,7 +154,7 @@
   }
 
   function apAsk() {
-    return apCard().step === 1 ? `Count ${ap.target} apples!` : `Count to ${ap.target}!`;
+    return apCard().step === 1 ? `Count ${ap.target} apple${ap.target === 1 ? '' : 's'}!` : `Count to ${ap.target}!`;
   }
 
   function apNew(level = ap.level) {
