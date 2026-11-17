@@ -13,6 +13,7 @@ main { max-width: 1180px; margin: auto; padding: 0 12px 24px; }
 .art-footer img { width: 25%; height: auto; }
 #lesson { max-width: 720px; margin: auto; padding: clamp(12px, 4vw, 28px); border-radius: 22px; border: 2px solid #e6d6bd; background: #fffdf8; }
 h2 { margin: 8px 0 12px; }
+#lesson h2 { font-size: clamp(1.15rem, 4.6vw, 1.5rem); word-break: keep-all; }
 p { line-height: 1.5; }
 button, select { font: inherit; }
 button { min-height: 48px; padding: 8px 13px; border: 2px solid #d9bb83; border-radius: 13px; background: #fff0c6; color: inherit; font-weight: 750; cursor: pointer; touch-action: manipulation; }
