@@ -199,8 +199,8 @@ const CHEONJI=[
 /* ── 3단계 · 소리 이어 읽기 ── */
 const BLEND_STAGES=[
 {name:'1단계 · 가나다라',cons:['ㄱ','ㄴ','ㄷ','ㄹ'],vows:['ㅏ','ㅣ']},
-{name:'2단계 · 마바사아',cons:['ㅁ','ㅂ','ㅅ','ㅇ'],vows:['ㅓ','ㅜ']},
-{name:'3단계 · 자차카타파하',cons:['ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],vows:['ㅗ','ㅡ']}
+{name:'2단계 · 머버서어',cons:['ㅁ','ㅂ','ㅅ','ㅇ'],vows:['ㅓ','ㅜ']},
+{name:'3단계 · 조초코토포호',cons:['ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],vows:['ㅗ','ㅡ']}
 ];
 /* ── 4단계 · 낱말 읽기 ── */
 const WORDS=[
@@ -260,7 +260,7 @@ function renderCons(){
   +'<div id="conview"></div>'+badge();
   showCon(0);
 }
-function showCon(i){
+function showCon(i,sayIt){
   S.sel=i;
   S.visited=S.visited||new Set();
   S.visited.add(i);
@@ -275,6 +275,7 @@ function showCon(i){
   +'<div class="line">'+d.fam.map((f,fi)=>'<button class="tile" data-say="'+compose(f,'ㅡ')+'" style="min-width:76px">'+f+'<small>획 '+(fi+1)+' · '+compose(f,'ㅡ')+'</small></button>').join('')+'</div>'
   +'<p class="small">획을 누를 때마다 소리가 어떻게 달라지는지 들어 보세요. (소리한글처럼 ㅡ를 붙여 읽어요)</p>';
   area.querySelectorAll('[data-con]').forEach((b,bi)=>b.classList.toggle('on',bi===i));
+  if(sayIt)speak(compose(d.c,'ㅏ'));
 }
 /* 2단계 */
 function renderVowel(){
@@ -301,6 +302,7 @@ function vowelQuiz(){
     +'<button class="primary soft" data-say="'+info.s+'">🔊 다시 듣기</button>'
     +'<div class="grid grid3">'+opts.map(o=>'<button class="tile" data-vanswer="'+o+'">'+o+'</button>').join('')+'</div>';
     statusBox.textContent='소리를 듣고 맞는 모음을 눌러요!';
+    speak(info.s);
   }
   S.vq=q;
   S.vtargets=targets;
@@ -375,6 +377,7 @@ function batchQuiz(){
   +'<button class="primary soft" data-say="'+d.w+'">🔊 '+d.w+' 듣기</button>'
   +'<div class="grid">'+choices.map(c=>'<button class="tile" style="font-size:18px" data-bcanswer="'+c.t+'">'+c.t+'</button>').join('')+'</div>';
   statusBox.textContent='받침 '+d.b+' · 소리가 어디서 닫히는지 골라요!';
+  speak(d.w);
 }
 /* ── 클릭 위임 (한 번만 등록) ── */
 document.addEventListener('click',e=>{
@@ -383,7 +386,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.tab){tab=b.dataset.tab;render();return}
   if(!area.contains(b))return;
   if(b.dataset.say!==undefined&&b.dataset.say){speak(b.dataset.say);return}
-  if(b.dataset.con!==undefined&&b.dataset.con){showCon(+b.dataset.con);return}
+  if(b.dataset.con!==undefined&&b.dataset.con){showCon(+b.dataset.con,true);return}
   if(b.hasAttribute('data-vquiz')){vowelQuiz();return}
   if(b.dataset.vanswer){
     const t=S.vtargets&&S.vtargets[S.round];
