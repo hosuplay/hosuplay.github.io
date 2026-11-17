@@ -335,9 +335,8 @@ function renderBatchim(){
 function batchView(i){
   S.sel=i;
   const d=BATCHIM[i];
-  const shown=d.w.slice(0,-1)+'<b>'+d.b+'</b>';
   area.innerHTML='<div class="step">5단계 · 받침 첫걸음</div><h2>받침이 만나면 입안이 달라져요</h2>'
-  +'<div class="bword">'+shown+' <span style="font-size:34px">'+d.pic+'</span></div>'
+  +'<div class="bword">'+d.w+' <span style="font-size:24px;color:#e2593f;vertical-align:middle">받침 '+d.b+'</span> <span style="font-size:34px">'+d.pic+'</span></div>'
   +mouthSVG(d.shape)
   +'<div class="speech"><strong>받침 '+d.b+' 이야기</strong><p>'+d.story+'</p></div>'
   +'<button class="primary soft" data-say="'+d.w+'">🔊 '+d.w+' 듣기</button>'
