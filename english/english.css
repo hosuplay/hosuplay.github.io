@@ -37,7 +37,7 @@ button:disabled { opacity: .64; cursor: default; }
 .hm-slot.bump { animation: hm-bump .4s; }
 .hm-line { display: grid; justify-items: center; }
 .hm-pet { font-size: clamp(26px, 9vw, 42px); line-height: 1.05; filter: drop-shadow(0 2px 2px #0000001f); }
-.hm-string { display: block; width: 2px; height: clamp(10px, 3.2vw, 20px); background: repeating-linear-gradient(#c8b48a 0 3px, transparent 3px 6px); }
+.hm-string { display: block; width: 2px; height: clamp(14px, 4.6vw, 26px); background: repeating-linear-gradient(#c8b48a 0 3px, transparent 3px 6px); }
 .hm-string.taut { width: 3px; border-radius: 2px; background: linear-gradient(#b08a4c, #7d6a3f); }
 .hm-balloon { position: relative; display: grid; place-items: center; width: clamp(38px, 12.4vw, 56px); aspect-ratio: 5 / 6; margin-bottom: 2px; border: 0; border-radius: 50% 50% 46% 46% / 54% 54% 46% 46%; color: #fff; font-weight: 900; font-size: clamp(.95rem, 4.4vw, 1.4rem); background: radial-gradient(circle at 32% 25%, #ffffff9c, transparent 44%), var(--balloon, #e8833a); box-shadow: inset -3px -5px 10px #00000026, 0 3px 6px #0000001a; }
 .hm-balloon::after { content: ""; position: absolute; left: 50%; top: 100%; width: 0; height: 0; transform: translateX(-50%); border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 7px solid var(--balloon, #e8833a); }
