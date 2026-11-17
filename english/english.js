@@ -109,6 +109,8 @@
   const hm = {start: 1, filled: [], selected: 0, done: false, drag: null, muteClick: false};
   const hmNumbers = () => hmPets.map((_, i) => hm.start + i);
   const hmColor = index => balloonColors[index % balloonColors.length];
+  const hmWord = number => numberWords[number][0].toUpperCase() + numberWords[number].slice(1);
+  const hmJosa = number => number === 6 || number === 10 ? '은' : '는';
 
   function hmBalloonHTML(number, index, filled) {
     if (!filled) return `<span class="hm-balloon empty" aria-hidden="true"><i>${number}</i></span>`;
@@ -189,7 +191,7 @@
       return;
     }
     if (numbers[index] !== number) {
-      feedback.textContent = `${number}은 ${hmOrdinal(numbers.indexOf(number))} 자리에 달아요. 다시 해 볼까요?`;
+      feedback.textContent = `${number}${hmJosa(number)} ${hmOrdinal(numbers.indexOf(number))} 자리에 달아요. 다시 해 볼까요?`;
       hmPulse(slot);
       hmPulse(activity.querySelector(`.hm-tray .hm-balloon[data-balloon="${number}"]`));
       return;
@@ -203,11 +205,15 @@
       if (+balloon.dataset.balloon === number) balloon.remove();
       else balloon.setAttribute('aria-pressed', 'false');
     });
-    feedback.textContent = `${numberWords[number]}! ${hmOrdinal(index)} 자리 🎈`;
-    speakEN(`${numberWords[number]}!`);
-    if (studyStep(String(number))) feedback.textContent += ' · ⭐ 별 하나!';
-    if (hm.filled.every((value, i) => value === numbers[i])) hmFinish();
-    else hmMarkNext();
+    feedback.textContent = `${hmWord(number)}! ${hmOrdinal(index)} 자리 🎈`;
+    speakEN(`${hmWord(number)}!`);
+    const starred = studyStep(String(number));
+    if (hm.filled.every((value, i) => value === numbers[i])) {
+      hmFinish(starred);
+      return;
+    }
+    if (starred) feedback.textContent += ' · ⭐ 별 하나!';
+    hmMarkNext();
   }
 
   function hmCount(numbers) {
@@ -233,9 +239,10 @@
     }
   }
 
-  function hmFinish() {
+  function hmFinish(starred) {
     hm.done = true;
     hmMarkNext();
+    activity.classList.add('hm-done');
     const numbers = hmNumbers();
     const stage = activity.querySelector('[data-hm-stage]');
     stage?.classList.add('party');
@@ -246,8 +253,8 @@
       burst.innerHTML = Array.from({length: 14}, (_, i) => `<span style="--i:${i}">${['⭐', '✨', '🎈', '💛', '🎉', '💜'][i % 6]}</span>`).join('');
       stage.append(burst);
     }
-    const words = numbers.map(number => numberWords[number]);
-    feedback.textContent = `${words.map(word => word[0].toUpperCase() + word.slice(1)).join(', ')}! 다섯 개 다 달았어요 🎉`;
+    const words = numbers.map(hmWord);
+    feedback.textContent = `${words.join(', ')}! 다섯 개 다 달았어요 🎉` + (starred ? ' · ⭐ 별 하나!' : '');
     hmCount(numbers);
     activity.querySelector('.hm-actions')?.insertAdjacentHTML('beforeend', hm.start === 1
       ? '<button type="button" data-hm="6">6~10 풍선 달기 →</button>'
