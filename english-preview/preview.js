@@ -29,7 +29,7 @@ function sayPhonicsSound(letters,onDone){
  try{
   if(currentAudio){currentAudio.pause();currentAudio=null}
   speechSynthesis.cancel();speechSynthesis.resume();
-  const u=new SpeechSynthesisUtterance(cue);u.lang='en-US';u.rate=.48;u.pitch=1;u.volume=1;
+  const u=new SpeechSynthesisUtterance(cue);u.lang='en-US';u.rate=.8;u.pitch=1;u.volume=1;
   const v=speechSynthesis.getVoices().find(v=>v.lang==='en-US')||speechSynthesis.getVoices().find(v=>v.lang.startsWith('en'));if(v)u.voice=v;
   let done=false;const finish=()=>{if(!done){done=true;if(onDone)onDone()}};
   u.onend=finish;u.onerror=finish;speechSynthesis.speak(u);
@@ -68,11 +68,28 @@ function animalArt(id){
  };
  return '<svg class="animal-drawing" viewBox="0 0 130 120" role="img" aria-label="동물 그림" xmlns="http://www.w3.org/2000/svg">'+(bodies[id]||'')+'</svg>';
 }
+function phonicsArt(word){
+ const shape={
+ rain:'<path d="M20 65 Q7 42 33 37 Q37 13 65 25 Q87 7 101 35 Q126 37 113 65Z" fill="#f7fbff" stroke="#92b8d2" stroke-width="4"/><path d="M33 77l-7 16 M59 77l-7 16 M85 77l-7 16 M108 77l-7 16" stroke="#5aafe4" stroke-width="6" stroke-linecap="round"/>',
+ ship:'<path d="M15 70H117L98 97H38Z" fill="#e7a46d" stroke="#aa7653" stroke-width="3"/><path d="M65 70V15M65 20L103 60H65Z" fill="#fff2d3" stroke="#aa7653" stroke-width="3"/><path d="M15 106q12 -8 24 0t24 0t24 0t24 0" fill="none" stroke="#75b8db" stroke-width="5"/>',
+ chip:'<path d="M34 45L20 100Q65 118 110 100L96 45Z" fill="#ed7763" stroke="#b95a4e" stroke-width="3"/><path d="M39 50L31 24 M55 49L53 17 M72 50L80 20 M87 51L101 27" stroke="#f1c86c" stroke-width="13" stroke-linecap="round"/>',
+ thin:'<circle cx="65" cy="62" r="43" fill="#f4d8b7" stroke="#bc9577" stroke-width="3"/><circle cx="50" cy="55" r="4" fill="#58453d"/><circle cx="80" cy="55" r="4" fill="#58453d"/><path d="M50 81q15 12 30 0" stroke="#b66c71" stroke-width="4" fill="none"/>',
+ sing:'<path d="M57 23v60a14 14 0 1 1 -9 -13V31l49 -11v54a14 14 0 1 1 -9 -13V10Z" fill="#89b5e4" stroke="#5c88b5" stroke-width="3"/>',
+ see:'<path d="M12 62Q65 8 118 62Q65 116 12 62Z" fill="#fff" stroke="#a48b76" stroke-width="4"/><circle cx="65" cy="62" r="23" fill="#81b4a4"/><circle cx="65" cy="62" r="12" fill="#3b4b50"/><circle cx="71" cy="55" r="5" fill="white"/>',
+ moon:'<path d="M81 12a48 48 0 1 0 34 75A48 48 0 0 1 81 12Z" fill="#f4d579" stroke="#bd9d54" stroke-width="3"/><circle cx="26" cy="25" r="4" fill="#f4d579"/>',
+ boat:'<path d="M13 79h104l-22 27H36Z" fill="#e8a47b" stroke="#b47758" stroke-width="3"/><path d="M63 78V13L102 72H63Z" fill="#f5e6a4" stroke="#c7a65b" stroke-width="3"/><path d="M14 114q12 -7 24 0t24 0t24 0t24 0" stroke="#78badb" stroke-width="5" fill="none"/>',
+ duck:'<ellipse cx="68" cy="77" rx="37" ry="24" fill="#f5e4c3" stroke="#b69b70" stroke-width="3"/><circle cx="48" cy="43" r="20" fill="#a2c58e" stroke="#759b72" stroke-width="3"/><path d="M30 43L10 50L31 57" fill="#edb15c"/><circle cx="51" cy="40" r="3" fill="#463d36"/><path d="M58 71q15 -16 29 2" stroke="#b69b70" stroke-width="4" fill="none"/>',
+ phone:'<rect x="36" y="12" width="60" height="105" rx="12" fill="#92b8da" stroke="#6089aa" stroke-width="4"/><rect x="44" y="25" width="44" height="69" rx="4" fill="#e9f6ff"/><circle cx="66" cy="105" r="5" fill="#e9f6ff"/>',
+ whale:'<path d="M18 74Q33 35 83 51Q109 57 111 80Q120 75 123 62Q129 88 107 95Q58 111 18 74Z" fill="#8bbbd5" stroke="#5f94b1" stroke-width="3"/><circle cx="45" cy="70" r="4" fill="#344c58"/><path d="M76 48q-7 -15 0 -25 M84 48q7 -15 0 -25" fill="none" stroke="#6db5dd" stroke-width="4"/>',
+ queen:'<path d="M24 44L42 64L65 26L88 64L106 44L96 98H34Z" fill="#f4d078" stroke="#bb944c" stroke-width="3"/><circle cx="24" cy="42" r="6" fill="#ed9c9c"/><circle cx="65" cy="24" r="6" fill="#9ac9e9"/><circle cx="106" cy="42" r="6" fill="#bba5df"/>'
+ };
+ return '<svg class="phonics-drawing" viewBox="0 0 130 125" role="img" aria-label="'+word+' 그림" xmlns="http://www.w3.org/2000/svg">'+(shape[word]||'')+'</svg>';
+}
 function card(t,sub='',cls=''){return '<button class="answer '+cls+'" data-answer="'+t+'"><strong>'+t+'</strong><small>'+sub+'</small></button>'}
 function render(){
 const s=$('stage');let q=question;
 if(mode==='alphabet'){instruction('글자를 듣고 같은 소문자를 찾아봐!');let other=shuffle(alphabet.filter(x=>x!==q)).slice(0,2);s.innerHTML='<div class="big-letter">'+q.toUpperCase()+'</div><button class="listen" data-say="'+q+'">🔊 글자 이름 듣기</button><div class="answers">'+shuffle([q,...other]).map(x=>card(x)).join('')+'</div>';}
-if(mode==='phonics'){instruction('소리를 듣고 같은 소리가 나는 글자를 골라봐!');let other=shuffle(sounds.filter(x=>x[0]!==q[0])).slice(0,2);s.innerHTML='<div class="big-emoji">'+q[2]+'</div><button class="listen" data-say="'+q[1]+'">🔊 '+q[1]+' 듣기</button><div class="answers">'+shuffle([q,...other]).map(x=>card(x[0])).join('')+'</div>';}
+if(mode==='phonics'){instruction('소리를 듣고 같은 소리가 나는 글자를 골라봐!');let other=shuffle(sounds.filter(x=>x[0]!==q[0])).slice(0,2);s.innerHTML='<div class="phonics-picture">'+phonicsArt(q[1])+'</div><button class="listen" data-say="'+q[1]+'">🔊 '+q[1]+' 듣기</button><div class="answers">'+shuffle([q,...other]).map(x=>card(x[0])).join('')+'</div>';}
 if(mode==='blend'){instruction('글자를 하나씩 눌러봐. 그다음 소리를 이어 붙여!');s.innerHTML='<div class="big-emoji">'+q[1]+'</div><div class="phoneme-tiles">'+[...q[0]].map((x,i)=>'<button class="phoneme" data-phoneme="'+i+'"><b>'+x+'</b><small>🔊</small></button>').join('')+'</div><div class="blend-actions"><button data-join="pair" disabled>① 앞의 두 소리 붙이기</button><button data-join="whole" disabled>② '+q[0]+' 읽기</button></div><div class="word-result" hidden>🌟 '+q[0]+'!</div>';}
 if(mode==='read'){instruction('그림을 보고 알맞은 단어를 골라봐!');let other=shuffle(words.filter(x=>x[0]!==q[0])).slice(0,2);s.innerHTML='<div class="big-emoji">'+q[1]+'</div><div class="answers">'+shuffle([q,...other]).map(x=>card(x[0])).join('')+'</div>';}
 if(mode==='animals'){instruction('어떤 동물이 '+q.ko+'를 제일 잘할까? 🔊 문제 듣기를 눌러봐!');let other=shuffle(animals.filter(x=>x.id!==q.id && !((q.id==='run'||q.id==='jump')&&(x.id==='run'||x.id==='jump')) && !(q.id==='swim'&&x.id==='fly'))).slice(0,2);s.innerHTML='<div class="animal-question"><div class="action-word">'+q.ko+'</div><button class="listen" data-say="I can '+q.verb+'!">🔊 문제 듣기</button></div><div class="animal-choices">'+shuffle([q,...other]).map(x=>'<button class="animal-choice" data-answer="'+x.id+'"><span class="animal-full" role="img" aria-label="'+x.name+'">'+animalArt(x.id)+'</span><strong>'+x.name+'</strong></button>').join('')+'</div>';}
@@ -80,7 +97,7 @@ if(mode==='listen'){instruction('소리를 듣고 알맞은 그림을 골라봐!
 }
 function key(){return mode==='animals'?question.id:Array.isArray(question)?question[0]:question}
 function markWrong(){if(!missed){wrong.push(question);missed=true} $('feedback').textContent='괜찮아! 다시 해보자. 이 문제는 조금 뒤에 또 나와 💛';}
-function correct(button){if(locked)return;locked=true;if(button)button.classList.add('correct');$('feedback').textContent='🌟 잘했어! 정답이야!';if(mode==='animals')speak('I can '+question.verb+'!',.62);if(mode==='phonics')sayPhonicsSound(question[0],()=>{if(mode==='phonics')setTimeout(()=>speak(question[1],.58),350)});if(mode==='read'||mode==='listen')speak(key());if(mode==='alphabet')speak(key());if(mode==='blend')speak(key(),.48);state[mode].push(key());timer=setTimeout(()=>{index++;if(index>=5 && wrong.length===0){finish()}else next()},3200)}
+function correct(button){if(locked)return;locked=true;if(button)button.classList.add('correct');$('feedback').textContent='🌟 잘했어! 정답이야!';if(mode==='animals')speak('I can '+question.verb+'!',.62);if(mode==='phonics')sayPhonicsSound(question[0],()=>{if(mode==='phonics')speak(question[1],.78)});if(mode==='read'||mode==='listen')speak(key());if(mode==='alphabet')speak(key());if(mode==='blend')speak(key(),.48);state[mode].push(key());timer=setTimeout(()=>{index++;if(index>=5 && wrong.length===0){finish()}else next()},2600)}
 function finish(){clear();completed.add(mode);$('track-fill').style.width='100%';$('round').textContent='완료!';$('instruction').textContent='다섯 문제를 다 풀었어!';$('stage').innerHTML='<div class="finish">🏆<strong>참 잘했어!</strong><span>다른 영어놀이도 해볼까?</span><button id="finish-home">놀이 고르기 🏡</button></div>';$('feedback').textContent=wrong.length?'틀렸던 문제는 다음에 또 연습해보자!':'모두 끝! 🌟';$('skip').hidden=true;updateProgress()}
 function updateProgress(){$('progress').style.width=(completed.size/6*100)+'%';$('total').textContent=completed.size+' / 6'}
 function home(){clear();mode='';$('home').hidden=false;$('lesson').hidden=true;$('skip').hidden=true;updateProgress()}
