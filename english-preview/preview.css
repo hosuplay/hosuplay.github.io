@@ -19,3 +19,7 @@
 .animal-question{display:flex;align-items:center;flex-direction:column;gap:6px}.action-word{font-size:clamp(1.8rem,6vw,2.6rem);font-weight:950;color:#4b80ae}
 .animal-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0}.animal-choice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:180px;border:3px solid #c8def1;background:#edf7ff;border-radius:25px;box-shadow:0 5px 0 #d5e3ef}.animal-choice .animal-full{font-size:clamp(4.2rem,12vw,7rem);line-height:1.25}.animal-choice strong{font-size:clamp(.9rem,3vw,1.3rem);color:#3d5b72}.animal-choice.correct{background:#dcf6d5;border-color:#81c77d}.animal-choice.wrong{background:#ffe3dd;border-color:#eaa99a}
 @media(max-width:560px){.animal-choices{gap:7px}.animal-choice{min-height:145px;border-radius:18px}.animal-choice .animal-full{font-size:clamp(3.5rem,14vw,5rem)}.animal-entry button{gap:6px;padding:10px}}
+
+/* Hide removed navigation and use full width for the five main cards. */
+.home-layout{display:block}.home-layout .menu{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.home-layout .menu-card{min-height:255px}.side-menu,.animal-entry{display:none!important}
+@media(max-width:750px){.home-layout .menu{gap:4px}.home-layout .menu-card{min-height:170px}}
