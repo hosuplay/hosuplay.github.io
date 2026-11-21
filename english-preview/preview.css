@@ -20,3 +20,18 @@
 #lesson .todo-card{min-height:120px;border-radius:20px}
 #lesson #feedback{font-size:1.2rem;font-weight:850;color:#36845a;text-align:center;min-height:1.5em}
 @media(max-width:500px){#lesson{padding:12px}#activity{padding:12px}#lesson .choices .choice{min-height:80px}}
+
+/* Sound-by-sound blending controls */
+#lesson .blend-instruction{text-align:center;font-size:clamp(1.1rem,4.5vw,1.35rem);font-weight:850}
+#lesson .blend-row{display:flex;justify-content:center;gap:10px;flex-wrap:nowrap}
+#lesson .blend-letter{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;flex:1 1 0;max-width:125px;min-width:0;min-height:112px;font-size:clamp(2.1rem,9vw,3.4rem);background:#fff0bf;border:3px solid #e6bf6e;border-radius:22px}
+#lesson .blend-letter small{font-size:14px;color:#93682d;font-weight:700}
+#lesson .blend-letter.read{background:#d8f1d0;border-color:#8fc37b;color:#276d39}
+#lesson .blend-path{display:grid;gap:12px;margin:18px 0}
+#lesson .blend-path button{min-height:75px;font-size:clamp(1rem,4vw,1.25rem);background:#e7f2ff;border-color:#b7d5f2;color:#315b88}
+#lesson .blend-path button strong{display:inline-block;margin-left:8px;font-size:1.55em;color:#25519b}
+#lesson .blend-path button:disabled{opacity:.48;filter:grayscale(.3)}
+#lesson .blend-path button.read{background:#d7f1d2;border-color:#8ec67e}
+#lesson .blend-result{margin:16px 0;background:#fff3ce}
+#lesson [data-blend-replay]{background:#fffdf5}
+#lesson [data-next]{background:#ffe6a1}
