@@ -93,38 +93,3 @@ button:disabled { opacity: .64; cursor: default; }
 #audio-error:empty { display: none; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 @media (max-width: 650px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .todo-grid, .todo-quiz { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-
-/* 2026-11: Original menu artwork preserved. Children's activity screens refreshed. */
-#lesson{max-width:780px;background:#fffdf8;border:3px solid #f2dcae;border-radius:28px;box-shadow:0 8px 0 #f2e4c9;padding:clamp(16px,4vw,30px)}
-#lesson .home-link{display:inline-flex;text-decoration:none;background:#fff2d5;padding:9px 17px;border-radius:999px;border:2px solid #f2d9a4;color:#785527;font-size:1rem}
-#lesson h2{font-size:clamp(1.55rem,6vw,2.2rem);color:#3f608f;letter-spacing:-.04em;margin:18px 0 14px}
-#lesson #activity{background:#fff;border:2px solid #f5e8d3;border-radius:24px;padding:clamp(14px,3vw,22px);min-height:220px}
-#lesson #activity>p{font-size:clamp(1rem,4.2vw,1.22rem);font-weight:750;color:#63584b}
-#lesson button{border-radius:17px;min-height:54px;border:2px solid #e9ca87;background:#fff2cf;box-shadow:0 3px 0 #ead6ac;transition:transform .12s,background .12s}
-#lesson button:active{transform:translateY(2px);box-shadow:0 1px 0 #ead6ac}
-#lesson button[aria-pressed="true"]{background:#d9eafa;border-color:#78a6d4;color:#244b78;box-shadow:0 3px 0 #b8d2eb}
-#lesson .letters{grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:9px}
-#lesson .letters button{min-height:66px;font-size:1.3rem}
-#lesson .example{background:#eaf5ff;border:2px solid #c8e3f7;border-radius:23px;padding:clamp(16px,4vw,24px)}
-#lesson .example strong{font-size:clamp(2.8rem,12vw,5rem);color:#3e6db1;line-height:1.2;display:block;text-align:center}
-#lesson .toolbar{gap:10px;margin:14px 0}
-#lesson .toolbar button{flex:1 1 140px}
-#lesson .choices{gap:12px;margin:20px 0}
-#lesson .choices .choice{min-height:90px;flex:1 1 120px;font-size:clamp(1.6rem,6vw,2rem);background:#e9f3ff;border-color:#b9d6f4;box-shadow:0 4px 0 #c8dced}
-#lesson .choices .choice.right{background:#d8f5ce;border-color:#7bc76d;box-shadow:0 4px 0 #b2e0a7;animation:hosu-yes .35s ease}
-#lesson .choices .choice.wrong{background:#ffe1d8;border-color:#edb4a5}
-#lesson .blend-row{gap:12px;margin:22px 0}
-#lesson .blend-letter{min-height:88px;min-width:66px;font-size:clamp(2rem,9vw,3rem);background:#ffedbb}
-#lesson .blend-letter.read{background:#cfeeca;border-color:#76b56c;color:#316f39}
-#lesson .blend-result{background:#e8f5ff;border:2px solid #c5e1f6;padding:20px}
-#lesson .todo-card{min-height:130px;border-radius:22px;background:#ecf6ff;border-color:#c9e2f7}
-#lesson .todo-card span{font-size:3.2rem}
-#lesson .rd-rule{border-radius:22px;background:#fff2d4;padding:16px}
-#lesson .rd-word{min-height:85px;border-radius:20px;background:#eaf4ff;border-color:#c2dcf5}
-#lesson .ap-bowl{border-radius:24px}
-#lesson #feedback{font-size:clamp(1.05rem,4.5vw,1.3rem);font-weight:850;color:#36845a;min-height:1.6em;text-align:center}
-#lesson #audio-error{font-size:.95rem;color:#a13c32}
-@keyframes hosu-yes{50%{transform:scale(1.08)}}
-@media(max-width:540px){#lesson{padding:12px;border-radius:22px}#lesson #activity{padding:12px}#lesson .toolbar button{flex:1 1 115px}#lesson .choices .choice{min-height:80px;flex-basis:80px}#lesson .todo-grid{gap:7px}#lesson .todo-card{min-height:110px}}
-@media(prefers-reduced-motion:reduce){#lesson button,#lesson .choices .choice.right{animation:none;transition:none}}
