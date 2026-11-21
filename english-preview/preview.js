@@ -105,7 +105,7 @@
     stopAudio();
     const current = playback;
     let played = 0;
-    try { player.src = 'audio/' + key + '.wav?v=3'; } catch {}
+    try { player.src = '../english/audio/' + key + '.wav?v=3'; } catch {}
     const start = () => {
       if (current !== playback) return;
       played++;
