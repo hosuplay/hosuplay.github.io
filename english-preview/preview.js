@@ -105,6 +105,33 @@ function finish(){clear();completed.add(mode);$('track-fill').style.width='100%'
 function updateProgress(){$('progress').style.width=(completed.size/6*100)+'%';$('total').textContent=completed.size+' / 6'}
 function home(){clear();mode='';$('home').hidden=false;$('lesson').hidden=true;$('skip').hidden=true;updateProgress()}
 $('home').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)start(b.dataset.mode)});
-$('stage').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='finish-home'){home();return}if(locked)return;if(b.dataset.say){speak(b.dataset.say);return}if(b.dataset.phoneme!==undefined){let n=+b.dataset.phoneme;if(n>blendStep){markWrong();return}phoneme(question[0][n]);b.classList.add('played');if(n===blendStep)blendStep++;if(blendStep>=2)document.querySelector('[data-join="pair"]').disabled=false;if(blendStep>=question[0].length)document.querySelector('[data-join="whole"]').disabled=false;$('feedback').textContent=blendStep===question[0].length?'이제 붙여서 읽어보자!':'좋아! 다음 글자도 눌러봐';return}if(b.dataset.join==='pair'){phoneme(question[0][0]);setTimeout(()=>{if(mode==='blend')phoneme(question[0][1])},650);$('feedback').textContent='앞의 두 소리를 이어서 말해봐!';return}if(b.dataset.join==='whole'){document.querySelector('.word-result').hidden=false;correct(b);return}if(b.dataset.answer){if(b.dataset.answer===key())correct(b);else{if(mode==='phonics')sayPhonicsSound(b.dataset.answer);else if(mode==='alphabet')speak(b.dataset.answer,.72);else if(mode==='read'||mode==='listen')speak(b.dataset.answer,.72);b.classList.add('wrong');markWrong();if(mode==='animals'){const chosen=animals.find(x=>x.id===b.dataset.answer);if(chosen){speak('I can '+chosen.verb+'!',.6);$('feedback').textContent='🔊 '+chosen.name+'는 '+chosen.ko+'! 다른 동물도 눌러봐. 이 문제는 나중에 다시 나와 💛'}}setTimeout(()=>b.classList.remove('wrong'),700)}return}});
+$('stage').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='finish-home'){home();return}if(locked)return;if(b.dataset.say){speak(b.dataset.say);return}if(b.dataset.phoneme!==undefined){let n=+b.dataset.phoneme;if(n>blendStep){markWrong();return}phoneme(question[0][n]);b.classList.add('played');if(n===blendStep)blendStep++;if(blendStep>=2)document.querySelector('[data-join="pair"]').disabled=false;if(blendStep>=question[0].length)document.querySelector('[data-join="whole"]').disabled=false;$('feedback').textContent=blendStep===question[0].length?'이제 붙여서 읽어보자!':'좋아! 다음 글자도 눌러봐';return}if(b.dataset.join==='pair'){phoneme(question[0][0]);setTimeout(()=>{if(mode==='blend')phoneme(question[0][1])},650);$('feedback').textContent='앞의 두 소리를 이어서 말해봐!';return}if(b.dataset.join==='whole'){document.querySelector('.word-result').hidden=false;correct(b);return}if(b.dataset.answer){
+ const chosen=b.dataset.answer;
+ const isCorrect=chosen===key();
+ // Each card plays ITS OWN sound on tap, regardless of whether it is correct.
+ if(mode==='phonics'){
+   if(isCorrect){
+     correct(b);
+   }else{
+     sayPhonicsSound(chosen);
+   }
+ }else if(mode==='animals'){
+   const animal=animals.find(x=>x.id===chosen);
+   if(!isCorrect&&animal)speak('I can '+animal.verb+'!',.62);
+   if(isCorrect)correct(b);
+ }else{
+   if(isCorrect)correct(b);
+   else speak(chosen,.7);
+ }
+ if(!isCorrect){
+   b.classList.add('wrong');
+   markWrong();
+   if(mode==='animals'){
+     const animal=animals.find(x=>x.id===chosen);
+     if(animal)$('feedback').textContent='🔊 '+animal.name+'는 '+animal.ko+'! 다시 골라봐 💛';
+   }
+   setTimeout(()=>b.classList.remove('wrong'),700);
+ }
+ return}});
 $('back').onclick=home;$('skip').onclick=()=>{if(!locked){markWrong();index++;if(index>=5 && wrong.length===0)finish();else next()}};$('repeat').onclick=()=>{if(!mode)return;if(mode==='alphabet')speak(key());else if(mode==='phonics')sayPhonicsSound(question[0]);else if(mode==='animals')speak('I can '+question.verb+'!',.55);else if(mode==='blend')phoneme(question[0][Math.min(blendStep,question[0].length-1)]);else speak(key())};$('sound').onclick=()=>{muted=!muted;$('sound').firstChild.textContent=muted?'🔇':'🔊'};$('reset').onclick=()=>{completed.clear();home()};updateProgress();
 })();
