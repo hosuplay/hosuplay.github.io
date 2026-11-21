@@ -38,16 +38,48 @@ function sayPhonicsSound(letters,onDone){
   speechSynthesis.speak(u);
  }catch(e){audioNotice('소리 재생을 다시 시도해줘.');if(onDone)onDone()}
 }
-function phoneme(l){
- if(muted){muted=false;$('sound').firstChild.textContent='🔊'}
+// Phoneme clips are very short (especially /f/ and /n/). Amplify and
+// slow the real recorded sounds rather than reading letter names with TTS.
+let audioContext=null,activeSources=[],soundToken=0;
+const soundBuffers=new Map();
+async function phoneme(l){
+ const token=++soundToken;
+ activeSources.forEach(source=>{try{source.stop()}catch(e){}});activeSources=[];
+ if(currentAudio){currentAudio.pause();currentAudio=null}
+ try{speechSynthesis.cancel()}catch(e){}
  try{
-  if(currentAudio){currentAudio.pause();currentAudio=null}
-  const a=new Audio('../english/audio/sound-'+l+'.wav?v=3');currentAudio=a;
-  a.onerror=()=>speak(l,.55);
-  a.play().catch(()=>speak(l,.55));
- }catch(e){speak(l,.55)}
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx)throw Error('Web Audio unavailable');
+  if(!audioContext)audioContext=new Ctx();
+  if(audioContext.state==='suspended')await audioContext.resume();
+  if(!soundBuffers.has(l)){
+   const request=fetch('../english/audio/sound-'+encodeURIComponent(l)+'.wav?v=3').then(async r=>{
+    if(!r.ok)throw Error('missing clip');
+    return await audioContext.decodeAudioData(await r.arrayBuffer());
+   });
+   soundBuffers.set(l,request);
+  }
+  const buffer=await soundBuffers.get(l);
+  if(token!==soundToken)return;
+  const gain=audioContext.createGain();gain.gain.value=2.1;
+  const limiter=audioContext.createDynamicsCompressor();
+  limiter.threshold.value=-15;limiter.knee.value=9;limiter.ratio.value=8;
+  gain.connect(limiter);limiter.connect(audioContext.destination);
+  const slow=0.78;
+  const repeat=['f','n','s','h'].includes(l)?2:1;
+  let startAt=audioContext.currentTime+.015;
+  for(let i=0;i<repeat;i++){
+   const source=audioContext.createBufferSource();source.buffer=buffer;source.playbackRate.value=slow;
+   source.connect(gain);source.start(startAt);activeSources.push(source);
+   startAt+=buffer.duration/slow+.13;
+  }
+ }catch(e){
+  if(token!==soundToken)return;
+  soundBuffers.delete(l);
+  speak(l,.7);
+ }
 }
-function clear(){clearTimeout(timer);if(currentAudio){currentAudio.pause();currentAudio=null}try{speechSynthesis.cancel()}catch(e){}}
+function clear(){soundToken++;activeSources.forEach(source=>{try{source.stop()}catch(e){}});activeSources=[];clearTimeout(timer);if(currentAudio){currentAudio.pause();currentAudio=null}try{speechSynthesis.cancel()}catch(e){}}
 function start(m){clear();mode=m;index=0;wrong=[];used=new Set();last='';locked=false;state[m]=[];$('home').hidden=true;$('lesson').hidden=false;$('lesson-title').textContent=titles[m];next()}
 function candidate(){
  if(wrong.length && (index>=5 || (index>1 && index%3===2)))return wrong.shift();
@@ -123,7 +155,7 @@ function finish(){clear();completed.add(mode);$('track-fill').style.width='100%'
 function updateProgress(){$('progress').style.width=(completed.size/6*100)+'%';$('total').textContent=completed.size+' / 6'}
 function home(){clear();mode='';$('home').hidden=false;$('lesson').hidden=true;$('skip').hidden=true;updateProgress()}
 $('home').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)start(b.dataset.mode)});
-$('stage').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='finish-home'){home();return}if(locked)return;if(b.dataset.say){speak(b.dataset.say);return}if(b.dataset.phoneme!==undefined){let n=+b.dataset.phoneme;if(n>blendStep){markWrong();return}phoneme(question[0][n]);b.classList.add('played');if(n===blendStep)blendStep++;if(blendStep>=2)document.querySelector('[data-join="pair"]').disabled=false;if(blendStep>=question[0].length)document.querySelector('[data-join="whole"]').disabled=false;$('feedback').textContent=blendStep===question[0].length?'이제 붙여서 읽어보자!':'좋아! 다음 글자도 눌러봐';return}if(b.dataset.join==='pair'){phoneme(question[0][0]);setTimeout(()=>{if(mode==='blend')phoneme(question[0][1])},650);$('feedback').textContent='앞의 두 소리를 이어서 말해봐!';return}if(b.dataset.join==='whole'){document.querySelector('.word-result').hidden=false;correct(b);return}if(b.dataset.answer){
+$('stage').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='finish-home'){home();return}if(locked)return;if(b.dataset.say){speak(b.dataset.say);return}if(b.dataset.phoneme!==undefined){let n=+b.dataset.phoneme;if(n>blendStep){markWrong();return}phoneme(question[0][n]);b.classList.add('played');if(n===blendStep)blendStep++;if(blendStep>=2)document.querySelector('[data-join="pair"]').disabled=false;if(blendStep>=question[0].length)document.querySelector('[data-join="whole"]').disabled=false;$('feedback').textContent=blendStep===question[0].length?'이제 붙여서 읽어보자!':'좋아! 다음 글자도 눌러봐';return}if(b.dataset.join==='pair'){phoneme(question[0][0]);setTimeout(()=>{if(mode==='blend')phoneme(question[0][1])},1050);$('feedback').textContent='앞의 두 소리를 이어서 말해봐!';return}if(b.dataset.join==='whole'){document.querySelector('.word-result').hidden=false;correct(b);return}if(b.dataset.answer){
  const chosen=b.dataset.answer;
  const isCorrect=chosen===key();
  // Each card plays ITS OWN sound on tap, regardless of whether it is correct.
