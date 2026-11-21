@@ -31,3 +31,5 @@
 .animal-choice strong{font-size:clamp(.8rem,2.6vw,1.05rem)}
 .animal-shortcut{border:2px solid #d5e6c4;background:#f2fae9;color:#487648;border-radius:999px;padding:7px 12px;font-size:.83rem;font-weight:850;margin-left:8px}
 @media(max-width:560px){.animal-choice{min-height:112px}.animal-choice .animal-full{height:75px}.animal-drawing{height:74px;width:min(100%,95px)}.animal-shortcut{display:inline-block;margin:7px 0 0}}
+
+.phonics-picture{display:flex;justify-content:center;align-items:center;height:145px;margin:0 auto 8px}.phonics-drawing{width:135px;height:130px;max-width:100%}
