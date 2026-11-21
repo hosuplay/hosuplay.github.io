@@ -23,3 +23,11 @@
 /* Hide removed navigation and use full width for the five main cards. */
 .home-layout{display:block}.home-layout .menu{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.home-layout .menu-card{min-height:255px}.side-menu,.animal-entry{display:none!important}
 @media(max-width:750px){.home-layout .menu{gap:4px}.home-layout .menu-card{min-height:170px}}
+
+/* Compact original animal drawings, not system emoji */
+.animal-choice{min-height:125px;gap:3px;padding:8px 4px;border-radius:18px}
+.animal-choice .animal-full{display:grid;place-items:center;width:100%;height:88px;font-size:initial;line-height:normal}
+.animal-drawing{display:block;width:min(100%,112px);height:85px;object-fit:contain}
+.animal-choice strong{font-size:clamp(.8rem,2.6vw,1.05rem)}
+.animal-shortcut{border:2px solid #d5e6c4;background:#f2fae9;color:#487648;border-radius:999px;padding:7px 12px;font-size:.83rem;font-weight:850;margin-left:8px}
+@media(max-width:560px){.animal-choice{min-height:112px}.animal-choice .animal-full{height:75px}.animal-drawing{height:74px;width:min(100%,95px)}.animal-shortcut{display:inline-block;margin:7px 0 0}}
