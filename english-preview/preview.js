@@ -22,21 +22,21 @@ function speak(t,rate=.88){
   speechSynthesis.speak(u);
  }catch(e){audioNotice('소리를 재생할 수 없어. Safari에서 다시 시도해줘.')}
 }
-const phonicsCues={sh:'shh',ch:'ch',th:'th',ng:'ng',ee:'ee',oo:'oo',ai:'ay',oa:'oh',ck:'k',ph:'f',wh:'wh',qu:'kw'};
+// Never use letter-name TTS for phonics choices. Speak the example word
+// until dedicated digraph phoneme recordings are available.
+const phonicsExamples={sh:'ship',ch:'chip',th:'thin',ng:'sing',ee:'see',oo:'moon',ai:'rain',oa:'boat',ck:'duck',ph:'phone',wh:'whale',qu:'queen'};
 function sayPhonicsSound(letters,onDone){
- const cue=phonicsCues[letters]||letters;
- // Every answer card speaks its own phonics cue immediately on tap.
+ const example=phonicsExamples[letters];
+ if(!example){phoneme(letters);if(onDone)setTimeout(onDone,650);return}
+ // Word pronunciation is an interim fallback, not a claim of isolated phoneme audio.
  if(muted){muted=false;$('sound').firstChild.textContent='🔊'}
- if(!('speechSynthesis' in window)){audioNotice('소리 재생이 지원되지 않아.');if(onDone)onDone();return}
  try{
-  if(currentAudio){currentAudio.pause();currentAudio=null}
   speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(cue);u.lang='en-US';u.rate=.72;u.pitch=1;u.volume=1;
+  const u=new SpeechSynthesisUtterance(example);u.lang='en-US';u.rate=.85;u.pitch=1;u.volume=1;
   const voices=speechSynthesis.getVoices();const v=voices.find(v=>v.lang==='en-US')||voices.find(v=>v.lang.startsWith('en'));if(v)u.voice=v;
   let done=false;const finish=()=>{if(!done){done=true;if(onDone)onDone()}};
-  u.onend=finish;u.onerror=finish;
-  speechSynthesis.speak(u);
- }catch(e){audioNotice('소리 재생을 다시 시도해줘.');if(onDone)onDone()}
+  u.onend=finish;u.onerror=finish;speechSynthesis.speak(u);
+ }catch(e){if(onDone)onDone()}
 }
 // Phoneme clips are very short (especially /f/ and /n/). Amplify and
 // slow the real recorded sounds rather than reading letter names with TTS.
