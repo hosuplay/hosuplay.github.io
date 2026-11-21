@@ -278,21 +278,34 @@
   }
 
   /* ── 🔗 소리 합치기 : 글자를 왼쪽부터 눌러 소리를 이어 붙입니다 ── */
+  /* Interactive phoneme blending: tap each sound, then join and read. */
+  const phonemeHints = {a:'애',e:'에',i:'이',o:'아',u:'어',b:'ㅂ',c:'ㅋ',d:'ㄷ',f:'ㅍ',g:'ㄱ',h:'ㅎ',j:'ㅈ',k:'ㅋ',l:'ㄹ',m:'ㅁ',n:'ㄴ',p:'ㅍ',r:'ㄹ',s:'ㅅ',t:'ㅌ',v:'ㅂ',w:'우',x:'ㅋㅅ',y:'이',z:'ㅈ'};
   function renderBlend() {
     const word = target;
     const picture = wordPictures[word] || '🔤';
     blendStep = 0;
     activity.innerHTML = `
-      <p>글자를 왼쪽부터 차례로 눌러 소리를 이어 봐요.</p>
-      <div class="blend-row">${[...word].map((letter, index) => `
-        <button type="button" class="blend-letter" data-blend="${index}" lang="en">${letter}</button>`).join('')}</div>
+      <p class="blend-instruction">👂 하나씩 듣고, 소리를 붙여서 읽어봐!</p>
+      <div class="blend-row" aria-label="글자별 음가 듣기">${[...word].map((letter, index) => `
+        <button type="button" class="blend-letter" data-blend="${index}" lang="en" aria-label="${letter} 소리 듣기">${letter}<small>${phonemeHints[letter]||''}</small></button>`).join('')}</div>
+      <div class="blend-path" aria-label="소리 합치기 단계">
+        <button type="button" data-blend-pair disabled>① 앞의 두 소리 붙이기 <strong>${word.slice(0,2)}</strong></button>
+        <button type="button" data-blend-whole disabled>② 모두 붙여 읽기 <strong>${word}</strong></button>
+      </div>
       <div class="blend-result" data-blend-result hidden>
         <span aria-hidden="true">${picture}</span>
-        <strong lang="en">${word}!</strong>
+        <strong lang="en">${word}!</strong><p>🎉 소리를 합쳤어!</p>
       </div>
-      <button type="button" data-next>다음 문제 →</button>`;
+      <button type="button" data-blend-replay>🔊 처음부터 다시 듣기</button>
+      <button type="button" data-next>다음 단어 →</button>`;
   }
-
+  function soundPair() {
+    // The two-consonant/vowel join is modeled by saying the full word slowly:
+    // isolated speech synthesis of "ca" often says /kɑː/ instead of /kæ/.
+    const first = target[0], vowel = target[1];
+    play('sound-'+first,1);
+    setTimeout(()=>{if(mode==='blend')play('sound-'+vowel,1)},700);
+  }
   /* ── 🐸 What Can You Do? ── */
   function tdNew(quiz) {
     clearTimeout(advanceTimer);
@@ -473,24 +486,30 @@
         return;
       }
     }
-    if (mode === 'blend' && button.dataset.blend !== undefined) {
-      const index = +button.dataset.blend;
-      if (index < blendStep) return;
-      if (index > blendStep) { if (!reviewQueue.blend.includes(round)) reviewQueue.blend.push(round); feedback.textContent = '왼쪽부터 눌러 봐! 이 단어는 조금 뒤에 다시 나와.'; return; }
-      play('sound-' + target[index]);
-      button.classList.add('read');
-      blendStep++;
-      if (blendStep >= target.length) {
-        const result = activity.querySelector('[data-blend-result]');
-        if (result) result.hidden = false;
-        activity.querySelector('.blend-row')?.classList.add('done');
-        feedback.textContent = `${target}! 다 읽었어요`;
-        setTimeout(() => { if (mode === 'blend') speakEN(`${target}!`); }, 760);
-        if (studyStep(target)) feedback.textContent += ' · ⭐ 별 하나!';
-        const next = activity.querySelector('[data-next]');
-        advanceTimer = setTimeout(() => next?.click(), 2400);
+    if (mode === 'blend') {
+      if (button.hasAttribute('data-blend-replay')) { blendStep=0; renderBlend(); play('sound-'+target[0],1); return; }
+      if (button.dataset.blend !== undefined) {
+        const index=+button.dataset.blend;
+        if (index>blendStep) { if(!reviewQueue.blend.includes(round))reviewQueue.blend.push(round);feedback.textContent='왼쪽 글자부터 하나씩 눌러보자!';return; }
+        play('sound-'+target[index],1);
+        button.classList.add('read');
+        if(index===blendStep)blendStep++;
+        if(blendStep>=2)activity.querySelector('[data-blend-pair]').disabled=false;
+        if(blendStep>=target.length)activity.querySelector('[data-blend-whole]').disabled=false;
+        feedback.textContent=blendStep>=target.length?'잘했어! 이제 소리를 합쳐보자!':'좋아! 다음 글자를 눌러봐.';
+        return;
       }
-      return;
+      if(button.hasAttribute('data-blend-pair')){soundPair();button.classList.add('read');feedback.textContent='ㅋ + 애처럼 소리를 이어서 읽어봐!';return;}
+      if(button.hasAttribute('data-blend-whole')){
+        speakEN(target,.55);
+        button.classList.add('read');
+        activity.querySelector('[data-blend-result]').hidden=false;
+        feedback.textContent='🌟 정답! '+target+'!';
+        if(studyStep(target))feedback.textContent+=' · ⭐ 별 하나!';
+        const next=activity.querySelector('[data-next]');
+        advanceTimer=setTimeout(()=>{if(mode==='blend')next?.click()},2100);
+        return;
+      }
     }
     if (button.dataset.td) {
       button.classList.add('acted');
