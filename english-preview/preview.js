@@ -146,7 +146,9 @@ function say(text,rate){
       try{const v=usVoice();if(v)u.voice=v}catch(e){}
       let started=false,done=false,wd=null;
       const finish=x=>{if(done)return;done=true;if(wd)clearTimeout(wd);resolve(x)};
-      u.onstart=()=>{started=true};
+      u.onstart=()=>{started=true;const el=$('feedback');
+        /* drop the "tap 🔊" hint once the voice really plays */
+        if(el&&/듣기 버튼을 한 번|음성을 재생할 수 없어|음원 파일을 불러오지/.test(el.textContent))el.textContent=''};
       u.onend=()=>finish(tok===token?'ok':'cancelled');
       u.onerror=e=>finish(tok!==token?'cancelled':(/interrupt|cancel/i.test((e&&e.error)||'')?'cancelled':'unavailable'));
       wd=setTimeout(()=>{
