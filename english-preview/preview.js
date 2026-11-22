@@ -38,17 +38,15 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    iOS Safari only speaks when speak() starts inside a tap, so every button
    speaks at once and the single automatic playback keeps a 🔊 button.
 */
-const AUDIO='audio/',V='23';
+const AUDIO='audio/',V='24';
 const CLIP_KEYS=new Set('abcdefghijklmnopqrstuvwxyz'.split('').map(l=>'sound-'+l)
   .concat(['sound-ck','sound-ph','sound-wh','sound-qu']));
 const hasClip=k=>CLIP_KEYS.has(k);
 /* example word read for a digraph whose own recording we do not have */
 const DIGRAPH_WORD={sh:'ship',ch:'chip',th:'thin',ng:'sing',ee:'see',oo:'moon',ai:'rain',oa:'boat'};
-/* letter names spelled the way a US voice says them (a lone "a" is read as a
-   word, not as the letter name, in most voices) */
-const LETTER_SAY={a:'ay',b:'bee',c:'see',d:'dee',e:'ee',f:'eff',g:'gee',h:'aitch',
- i:'eye',j:'jay',k:'kay',l:'ell',m:'em',n:'en',o:'oh',p:'pee',q:'cue',r:'ar',
- s:'ess',t:'tee',u:'you',v:'vee',w:'double you',x:'ex',y:'why',z:'zee'};
+/* Letter names are handed to the voice as the plain capital letter ('A'..'Z').
+   v23 spelled them out ("ay", "bee" …) and the iOS en-US voice read "ay" as
+   "아이"; a capital letter is read as its name by US English voices. */
 const SENTENCE={jump:'I can jump!',run:'I can run!',swim:'I can swim!',
  fly:'I can fly!',dance:'I can dance!',crawl:'I can crawl!'};
 const ctxSupported=()=>!!(window.AudioContext||window.webkitAudioContext);
@@ -63,10 +61,19 @@ function unlockAudio(){
       master=ac.createGain();
       master.gain.value=muted?0:1;
       master.connect(ac.destination);
-      const b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();
-      s.buffer=b;s.connect(ac.destination);s.start();
     }
-    if(ac.state!=='running')ac.resume().catch(()=>{});
+    /* iOS only starts audio that was kicked from inside the gesture, so a
+       one-sample silent buffer is played whenever the context wakes up */
+    const kick=()=>{
+      try{
+        const b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();
+        s.buffer=b;s.connect(ac.destination);s.start();
+      }catch(e){}
+    };
+    if(ac.state!=='running'){
+      try{const p=ac.resume();if(p&&p.catch)p.catch(()=>{})}catch(e){}
+      kick();
+    }
     return ac;
   }catch(e){return null}
 }
@@ -182,9 +189,14 @@ async function playClip(key,tok){
   try{buf=await loadClip(key)}
   catch(e){if(tok===token)audioNotice('이 소리의 음원 파일을 불러오지 못했어. 잠시 뒤 다시 해볼까?');return 'missing'}
   if(tok!==token)return 'cancelled';
-  const c=unlockAudio();
+  /* the context may still be waking up on a first tap or after the phone was
+     asleep, so wait for it instead of giving up after one resume() call */
+  let c=unlockAudio();
   if(!c)return 'noaudio';
-  if(c.state!=='running')await Promise.race([c.resume().catch(()=>{}),sleep(250)]);
+  for(let i=0;i<4&&c.state!=='running';i++){
+    try{await c.resume()}catch(e){}
+    if(c.state!=='running')await sleep(120);
+  }
   if(tok!==token)return 'cancelled';
   if(c.state!=='running')return 'blocked';
   return await new Promise(resolve=>{
@@ -213,7 +225,7 @@ function soundHint(code){
   return saySeq([{text:w,rate:0.78},{text:w,rate:0.85}],260);
 }
 const phoneme3=soundHint;
-const sayName=l=>saySeq([{text:LETTER_SAY[l]||l,rate:0.8}]);
+const sayName=l=>saySeq([{text:String(l).toUpperCase(),rate:0.8}]);
 const sayWord=w=>saySeq([{text:w,rate:0.82}]);
 const saySentence=id=>saySeq([{text:SENTENCE[id]||('I can '+id+'!'),rate:0.85}]);
 /* "🔊 소리와 단어 듣기": the sound, then the word, then the sound again */
@@ -326,14 +338,14 @@ function start(m){
 function transition(){$('feedback').textContent='';$('skip').hidden=true}
 function startup(m){
  unlockAudio();
- if(m==='alphabet')preload(alphabet.map(l=>'sound-'+l));
- else if(m==='phonics')preload(sounds.map(s=>'sound-'+s[0]));
+ if(m==='phonics')preload(sounds.map(s=>'sound-'+s[0]));
  else if(m==='blend')preload(alphabet.map(l=>'sound-'+l));
 }
 
 /* five slots, each with a different question shape, in a fresh order */
 function roundPlan(m){
- if(m==='alphabet')return shuffle(['name','match','sound','name','sound']);
+ /* 알파벳 놀이는 이름·짝 찾기만 (글자 소리 듣기는 파닉스에서) */
+ if(m==='alphabet')return shuffle(['name','match','name','match','name']);
  if(m==='phonics')return shuffle(['sound','picture','sound','picture','sound']);
  if(m==='read')return shuffle(['read3','read4','rhyme','read3','read4']);
  if(m==='listen')return shuffle(['pic3','pic4','pic3','pic4','pic3']);
@@ -381,11 +393,6 @@ function render(){
   if(f==='match'){
    instruction('대문자와 짝이 되는 소문자를 찾아봐!');
    s.innerHTML='<div class="big-letter">'+letter.toUpperCase()+'</div>'+
-    '<div class="answers">'+shuffle([letter,...others]).map(x=>textCard(x)).join('')+'</div>';
-  }else if(f==='sound'){
-   instruction('글자의 소리를 듣고 같은 글자를 찾아봐!');
-   s.innerHTML='<div class="big-letter mystery">?</div>'+
-    '<button class="listen" data-phoneme-q="'+letter+'">🔊 글자 소리 듣기</button>'+
     '<div class="answers">'+shuffle([letter,...others]).map(x=>textCard(x)).join('')+'</div>';
   }else{
    instruction('글자 이름을 듣고 같은 글자를 찾아봐!');
