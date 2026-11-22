@@ -16,8 +16,8 @@ function speak(t,rate=.88){
   if(currentAudio){currentAudio.pause();currentAudio=null}
   speechSynthesis.cancel();
   speechSynthesis.resume();
-  const word=/^[a-z]{2,8}$/i.test(t);const spoken=word?t+'. '+t+'.':t;const u=new SpeechSynthesisUtterance(spoken);u.lang='en-US';u.rate=Math.max(rate,.82);u.pitch=1;u.volume=1;
-  const voices=speechSynthesis.getVoices();const en=voices.find(v=>v.lang==='en-US')||voices.find(v=>v.lang.startsWith('en'));if(en)u.voice=en;
+  const word=/^[a-z]{2,8}$/i.test(t);const spoken=word?t:t;const u=new SpeechSynthesisUtterance(spoken);u.lang='en-US';u.rate=Math.max(rate,.82);u.pitch=1;u.volume=1;
+  const voices=speechSynthesis.getVoices();const en=voices.find(v=>v.lang==='en-US'&&/samantha|ava|allison|female/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices.find(v=>v.lang.startsWith('en'));if(en)u.voice=en;
   u.onerror=()=>audioNotice('소리가 안 들리면 화면의 🔊 다시 듣기를 눌러줘.');
   speechSynthesis.speak(u);
  }catch(e){audioNotice('소리를 재생할 수 없어. Safari에서 다시 시도해줘.')}
@@ -44,7 +44,7 @@ async function playClip(key, token=soundToken){
   if(token!==soundToken)return false;
   return await new Promise(resolve=>{
    const source=audioContext.createBufferSource();source.buffer=buffer;
-   const gain=audioContext.createGain();gain.gain.value=1.25;
+   const gain=audioContext.createGain();gain.gain.value=file.startsWith('sound-')?Math.min(5,Math.max(1.25,0.17/Math.max(0.035,Math.sqrt(buffer.getChannelData(0).reduce((a,v)=>a+v*v,0)/buffer.length)))):1.15;
    source.connect(gain);gain.connect(audioContext.destination);
    activeSources.push(source);
    source.onended=()=>{activeSources=activeSources.filter(x=>x!==source);resolve(token===soundToken)};
@@ -65,11 +65,11 @@ async function playSequence(keys,gapMs=120){
  }
  return token===soundToken;
 }
-function phoneme(l){return playSequence(['sound-'+l])}
+function phoneme(l){return playSequence(Array(3).fill('sound-'+l),190)}
 function sayPhonicsSound(letters,onDone){
- playSequence(['sound-'+letters]).then(ok=>{if(ok&&onDone)onDone()});
+ playSequence(Array(3).fill('sound-'+letters),190).then(ok=>{if(ok&&onDone)onDone()});
 }
-function playWord(word){return playSequence([word])}
+async function playWord(word){const ok=await playSequence([word]);if(!ok&&mode!=='phonics'){audioNotice('녹음 음원을 불러오지 못해 음성으로 읽어줄게.');speak(word,.8)}return ok}
 function clear(){stopClips();clearTimeout(timer);if(currentAudio){currentAudio.pause();currentAudio=null}try{speechSynthesis.cancel()}catch(e){}}
 function start(m){clear();mode=m;index=0;wrong=[];used=new Set();last='';locked=false;state[m]=[];$('home').hidden=true;$('lesson').hidden=false;$('lesson-title').textContent=titles[m];next()}
 function candidate(){
@@ -135,13 +135,13 @@ const s=$('stage');let q=question;
 if(mode==='alphabet'){instruction('글자를 듣고 같은 소문자를 찾아봐!');let other=shuffle(alphabet.filter(x=>x!==q)).slice(0,2);s.innerHTML='<div class="big-letter">'+q.toUpperCase()+'</div><button class="listen" data-say="'+q+'">🔊 글자 이름 듣기</button><div class="answers">'+shuffle([q,...other]).map(x=>card(x)).join('')+'</div>';}
 if(mode==='phonics'){instruction('소리를 듣고 같은 소리가 나는 글자를 골라봐!');let other=shuffle(sounds.filter(x=>x[0]!==q[0])).slice(0,2);s.innerHTML='<div class="phonics-picture">'+phonicsArt(q[1])+'</div><button class="listen" data-phonics="'+q[0]+'">🔊 '+q[1]+' 듣기</button><div class="answers">'+shuffle([q,...other]).map(x=>card(x[0])).join('')+'</div>';}
 if(mode==='blend'){instruction('글자를 하나씩 눌러봐. 그다음 소리를 이어 붙여!');s.innerHTML='<div class="word-hero">'+wordArt(q[0])+'</div><div class="phoneme-tiles">'+[...q[0]].map((x,i)=>'<button class="phoneme" data-phoneme="'+i+'"><b>'+x+'</b><small>🔊</small></button>').join('')+'</div><div class="blend-actions"><button data-join="pair" disabled>① 앞의 두 소리 붙이기</button><button data-join="whole" disabled>② '+q[0]+' 읽기</button></div><div class="word-result" hidden>🌟 '+q[0]+'!</div>';}
-if(mode==='read'){instruction('그림을 보고 알맞은 단어를 골라봐!');let other=shuffle(words.filter(x=>x[0]!==q[0])).slice(0,2);s.innerHTML='<div class="word-hero">'+wordArt(q[0])+'</div><div class="answers">'+shuffle([q,...other]).map(x=>wordCard(x)).join('')+'</div>';}
+if(mode==='read'){instruction('그림을 보고 알맞은 단어를 골라봐!');let other=shuffle(words.filter(x=>x[0]!==q[0])).slice(0,2);s.innerHTML='<div class="word-hero">'+wordArt(q[0])+'</div><div class="answers">'+shuffle([q,...other]).map(x=>card(x[0])).join('')+'</div>';}
 if(mode==='animals'){instruction('어떤 동물이 '+q.ko+'를 제일 잘할까? 🔊 문제 듣기를 눌러봐!');let other=shuffle(animals.filter(x=>x.id!==q.id && !((q.id==='run'||q.id==='jump')&&(x.id==='run'||x.id==='jump')) && !(q.id==='swim'&&x.id==='fly'))).slice(0,2);s.innerHTML='<div class="animal-question"><div class="action-word">'+q.ko+'</div><button class="listen" data-say="I can '+q.verb+'!">🔊 문제 듣기</button></div><div class="animal-choices">'+shuffle([q,...other]).map(x=>'<button class="animal-choice" data-answer="'+x.id+'"><span class="animal-full" role="img" aria-label="'+x.name+'">'+animalArt(x.id)+'</span><strong>'+x.name+'</strong></button>').join('')+'</div>';}
 if(mode==='listen'){instruction('소리를 듣고 알맞은 그림을 골라봐!');let other=shuffle(words.filter(x=>x[0]!==q[0])).slice(0,2);s.innerHTML='<button class="listen" data-say="'+q[0]+'">🔊 듣기</button><div class="answers image-answers">'+shuffle([q,...other]).map(x=>wordCard(x)).join('')+'</div>';timer=setTimeout(()=>{if(mode==='listen'&&!locked)playWord(q[0])},650);}
 }
 function key(){return mode==='animals'?question.id:Array.isArray(question)?question[0]:question}
 function markWrong(){if(!missed){wrong.push(question);missed=true} $('feedback').textContent='괜찮아! 다시 해보자. 이 문제는 조금 뒤에 또 나와 💛';}
-function correct(button){if(locked)return;locked=true;if(button)button.classList.add('correct');$('feedback').textContent='🌟 잘했어! 정답이야!';if(mode==='animals')speak('I can '+question.verb+'!',.62);if(mode==='phonics')playSequence(['sound-'+question[0],question[1]],220);if(mode==='read'||mode==='listen')playWord(key());if(mode==='alphabet')speak(key());if(mode==='blend')playWord(key());state[mode].push(key());timer=setTimeout(()=>{index++;if(index>=5 && wrong.length===0){finish()}else next()},2600)}
+function correct(button){if(locked)return;locked=true;if(button)button.classList.add('correct');$('feedback').textContent='🌟 잘했어! 정답이야!';if(mode==='animals')speak('I can '+question.verb+'!',.62);if(mode==='phonics')playSequence([...Array(3).fill('sound-'+question[0]),question[1]],190);if(mode==='read'||mode==='listen')playWord(key());if(mode==='alphabet')speak(key());if(mode==='blend')playSequence([...question[0].split('').map(ch=>'sound-'+ch),key()],110);state[mode].push(key());timer=setTimeout(()=>{index++;if(index>=5 && wrong.length===0){finish()}else next()},2600)}
 function finish(){clear();completed.add(mode);$('track-fill').style.width='100%';$('round').textContent='완료!';$('instruction').textContent='다섯 문제를 다 풀었어!';$('stage').innerHTML='<div class="finish">🏆<strong>참 잘했어!</strong><span>다른 영어놀이도 해볼까?</span><button id="finish-home">놀이 고르기 🏡</button></div>';$('feedback').textContent=wrong.length?'틀렸던 문제는 다음에 또 연습해보자!':'모두 끝! 🌟';$('skip').hidden=true;updateProgress()}
 function updateProgress(){$('progress').style.width=(completed.size/6*100)+'%';$('total').textContent=completed.size+' / 6'}
 function home(){clear();mode='';$('home').hidden=false;$('lesson').hidden=true;$('skip').hidden=true;updateProgress()}
@@ -162,7 +162,7 @@ $('stage').addEventListener('click',e=>{const b=e.target.closest('button');if(!b
    if(isCorrect)correct(b);
  }else{
    if(isCorrect)correct(b);
-   else speak(chosen,.9);
+   else playWord(chosen);
  }
  if(!isCorrect){
    b.classList.add('wrong');
