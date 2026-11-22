@@ -274,7 +274,7 @@ function render(){
   }else if(f==='sound'){
    instruction('글자의 소리를 듣고 같은 글자를 찾아봐!');
    s.innerHTML='<div class="big-letter mystery">?</div>'+
-    '<button class="listen" data-phoneme-q="'+letter+'">🔊 '+letter+' 소리 듣기</button>'+
+    '<button class="listen" data-phoneme-q="'+letter+'">🔊 글자 소리 듣기</button>'+
     '<div class="answers">'+shuffle([letter,...others]).map(x=>textCard(x)).join('')+'</div>';
   }else{
    instruction('글자 이름을 듣고 같은 글자를 찾아봐!');
