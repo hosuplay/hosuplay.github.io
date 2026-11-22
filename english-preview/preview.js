@@ -34,7 +34,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
      name-<a..z>                                       letter names
      animal-<verb>                                     "I can jump!" sentences
 */
-const AUDIO='audio/',V='22';
+const AUDIO='audio/',V='22b';
 const ctxSupported=()=>!!(window.AudioContext||window.webkitAudioContext);
 let ac=null,master=null,token=0,buffers=new Map(),active=[];
 
