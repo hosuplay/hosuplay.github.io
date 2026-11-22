@@ -41,3 +41,7 @@
 .word-hero{display:grid;place-items:center;height:140px;margin-bottom:8px}
 .word-hero .word-drawing,.word-hero .animal-drawing{width:145px;height:135px}
 @media(max-width:560px){.word-answer{min-height:130px}.word-picture,.word-drawing,.word-picture .animal-drawing{height:75px}.word-answer strong{font-size:clamp(1.1rem,5vw,1.8rem)}}
+
+/* v21: static audio only (no browser TTS). Big listen target for the listening quiz. */
+.listen-big{display:block;margin:6px auto 14px;padding:22px 46px;font-size:1.5rem;border-width:3px;box-shadow:0 5px 0 #cfe4f3}
+.listen:active{transform:translateY(2px)}
