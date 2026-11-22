@@ -1,41 +1,38 @@
-# 체험판(v22) 음원 출처 / Audio credits
+# 체험판(v23) 음원 출처 / Audio credits
 
-`english-preview/audio/`의 파일은 아래 출처로만 만들었습니다. 상용 파닉스 교재 음원을 복제한 것은 없습니다.
-All files in this folder were produced from the sources below; no commercial phonics recordings were copied.
+`english-preview/audio/`에는 **사람이 녹음한 단일 글자 음가 30개**만 남아 있습니다.
+기계 합성(Piper·Kokoro)으로 만들었던 글자 이름·단어·동물 문장·조합 음가 파일은 v23에서 모두 지웠습니다.
 
-## 1. 단일 글자 음가 `sound-a.wav` ~ `sound-z.wav`
+## 1. 단일 글자 음가 `sound-a.wav` ~ `sound-z.wav`, `sound-ck/ph/wh/qu.wav`
 
-- 출처: **Open Letter Sounds** — https://github.com/purplecomputerorg/openlettersounds
-  (`sounds/en-us/marin/`)
-- 라이선스: **CC0 1.0** (해당 폴더의 `sounds/LICENSE` 전문 확인, 저작권 표기 불필요)
+- 출처: **Open Letter Sounds** — https://github.com/purplecomputerorg/openlettersounds (`sounds/en-us/marin/`)
+- 라이선스: **CC0 1.0**
 - 제작: Purple Computer, OpenAI `gpt-audio-1.5` voice `marin`, 사람이 최종 선별(`reviewed: true`)
-- 가공: 앞뒤 무음 정리, -20 dBFS RMS / 피크 -1.5 dBFS 이하로 음량 평준화, 24 kHz mono 16-bit PCM
-- `sound-ck, sound-ph, sound-wh, sound-qu`는 같은 소리인 CC0 `k, f, w, q` 음가를 사용합니다.
+- 가공: 앞뒤 무음 정리, -20 dBFS RMS / 피크 -1.5 dBFS 이하 음량 평준화, 24 kHz mono 16-bit PCM
+- `sound-ck, sound-ph, sound-wh, sound-qu`는 같은 소리인 CC0 `k, f, w, q` 음가를 씁니다.
+- 파일 내용은 v22와 같습니다(다시 만들지 않았습니다).
 
-## 2. 조합 음가 `sound-ee, sound-oo, sound-ai, sound-oa`, 단어, 동물 문장
+## 2. 글자 이름·단어·동물 문장·조합 음가 — 기기 내장 음성
 
-- 엔진: **Kokoro-82M** (`kokoro-onnx` 런타임) — 모델 Apache-2.0, 런타임 MIT
-  모델: https://github.com/thewh1teagle/kokoro-onnx/releases/tag/model-files-v1.0
-- 목소리: `af_heart` (미국 영어 여성)
-- 파일
-  - `sound-ee, sound-oo, sound-ai, sound-oa`: 미국 영어 IPA(`iː`, `uː`, `eɪ`, `oʊ`)를 직접 입력해 합성
-  - `sound-sh, sound-ch`: `ship`, `chip` 합성음에서 유성 시작 전까지의 마찰 구간을 잘라 사용
-  - `sound-th`(v22): `thin` 합성음의 첫 무성 마찰 구간(θ)만 잘라 내고, 잡음 구간을 등파워 크로스페이드로 반복해 0.32초로 만듦
-  - 단어 28개 (`cat … duck`): 단어를 그대로 합성
-  - `animal-*`: `I can jump!` 형태의 문장 합성
+- 아이폰/브라우저가 가진 **미국 영어 음성**(`window.speechSynthesis`, `lang='en-US'`)으로 재생합니다. 음원 파일이 없습니다.
+- 글자 이름: `ay, bee, see, dee, ee, eff …`처럼 이름을 철자로 넣어 읽힙니다(한 글자 `a`를 그냥 넣으면 대부분의 음성이 단어처럼 읽습니다).
+- 단어 28개, 동물 문장 6개(`I can jump!` 등): 그대로 읽힙니다.
+- 조합 음가 `sh ch th ng ee oo ai oa`: 해당 음가만 따로 녹음한 사람 음원이 없어 **대표 단어**(ship, chip, thin, sing, see, moon, rain, boat)를 읽어 줍니다.
 
-## 3. 글자 이름 `name-a` ~ `name-z`, 조합 음가 `sound-ng` (v22)
+## 3. 조합 음가 사람 녹음 — 확인했지만 쓰지 않은 이유
 
-- 엔진: **Piper** (`piper-tts` 런타임) + 음성 **en_US-ljspeech-medium**
-  - 모델·설정: https://huggingface.co/rhasspy/piper-voices (`en/en_US/ljspeech/medium/`)
-  - 라이선스: 학습 데이터 **LJ Speech Dataset — public domain**. 음성 모델은 공개 배포본을 사용했고, 이 앱에는 합성 결과 WAV만 들어갑니다.
-- 방식: 글자 이름을 철자가 아니라 **미국 영어 IPA로 직접 지정**해 합성했습니다
-  (`a = ˈeɪ`, `b = bˈiː`, `g = dʒˈiː`, `z = zˈiː` …). v21에서처럼 `ay, bee, ee, gee` 같은 철자를 읽히면 `ay`가 /aɪ/로, 홀로 놓인 장모음이 끝에서 흐려져 "아이·비에·즁에"처럼 들렸기 때문입니다.
-- `sound-ng`: 낱개 음소 `ŋː`를 그대로 합성했습니다(단어를 잘라 늘리던 v21 방식은 기계적인 버징이 생겼습니다).
-- 가공: 앞뒤 무음 정리, -20 dBFS RMS / 피크 -1.5 dBFS 이하로 음량 평준화, 24 kHz mono 16-bit PCM
+Wikimedia Commons의 표준 IPA 발음 표본은 실제 화자 녹음이지만 라이선스가 **CC BY-SA 3.0**(Peter Isotalo)이라 이번 조건(CC0/Public Domain만)에 맞지 않아 넣지 않았습니다.
 
-## 라이선스 판단에서 제외한 후보
+- `File:Voiceless palato-alveolar sibilant.ogg` (ʃ) — CC BY-SA 3.0
+- `File:Voiceless palato-alveolar affricate.ogg` (tʃ) — CC BY-SA 3.0
+- `File:Voiceless dental fricative.ogg` (θ) — CC BY-SA 3.0
+- `File:Velar nasal.ogg` (ŋ) — CC BY-SA 3.0
 
-- `vocamax/ipa-audios`: 저장소에 라이선스 파일이 없고(LICENSE 없음) 출처·화자 정보가 확인되지 않아 사용하지 않았습니다.
-- `purplecomputerorg/openlettersounds`: 조합 음가(2글자) 파일은 제공하지 않습니다(단일 글자 26개 + 대안 테이크만 존재).
-- 그 밖에 이전 검토에서 언급된 유료·출처 불명 음원, 상용 교재 음원은 사용하지 않았습니다.
+CC0 음소 표본도 Commons에 있으나(예: `File:Voiceless labio-dental fricative.ogg`), 영어 파닉스에 필요한 ʃ·tʃ·θ·ŋ·iː·uː·eɪ·oʊ 음가의 CC0 사람 녹음은 확인하지 못했습니다. Lingua Libre 녹음은 대부분 CC BY-SA 4.0입니다.
+
+## 4. v23에서 지운 파일
+
+- `name-a` ~ `name-z` (Piper / LJSpeech 합성)
+- `sound-ng`, `sound-th`, `sound-sh`, `sound-ch` (합성·절단)
+- `sound-ee`, `sound-oo`, `sound-ai`, `sound-oa` (Kokoro IPA 합성)
+- 단어 28개 (`cat` ~ `duck`), 동물 문장 6개 (`animal-*`) — Kokoro 합성

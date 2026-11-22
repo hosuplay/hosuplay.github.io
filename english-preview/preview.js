@@ -3,7 +3,7 @@
 const alphabet='abcdefghijklmnopqrstuvwxyz'.split('');
 
 /* 28 words: 3-letter basics up to 5-letter digraph words.
-   Every entry needs english-preview/audio/<word>.wav (v22 build). */
+   Words are spoken by the device voice in v23 (no word clips). */
 const WORDS=[
  {w:'cat',ko:'고양이'},{w:'dog',ko:'강아지'},{w:'sun',ko:'해'},{w:'hat',ko:'모자'},
  {w:'pig',ko:'돼지'},{w:'bed',ko:'침대'},{w:'frog',ko:'개구리'},{w:'drum',ko:'북'},
@@ -26,15 +26,31 @@ const titles={animals:'동물 행동 놀이',alphabet:'알파벳 놀이',phonics
 const $=id=>document.getElementById(id),pick=a=>a[Math.floor(Math.random()*a.length)],shuffle=a=>[...a].sort(()=>Math.random()-.5);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-/* ------------------------------------------------------------------ audio
-   Every sound is a static file under english-preview/audio/ (v22).
-   No speechSynthesis anywhere.
-     sound-<a..z,sh,ch,th,ng,ee,oo,ai,oa,ck,ph,wh,qu>   phoneme clips
-     <word>                                            example words
-     name-<a..z>                                       letter names
-     animal-<verb>                                     "I can jump!" sentences
+/* ------------------------------------------------------------------ audio (v23)
+   No machine-synthesised clips are used any more.
+     · single-letter phonemes   sound-<a..z,ck,ph,wh,qu>.wav
+       real human recordings, Open Letter Sounds, CC0 1.0
+     · letter names, example words, animal sentences
+       the device's own US English voice (speechSynthesis, lang='en-US')
+   The digraphs sh ch th ng ee oo ai oa have no CC0/PD human phoneme
+   recording on Wikimedia Commons, so their hint is the example word read by
+   that same voice instead of a forced synthetic phoneme.
+   iOS Safari only speaks when speak() starts inside a tap, so every button
+   speaks at once and the single automatic playback keeps a 🔊 button.
 */
-const AUDIO='audio/',V='22b';
+const AUDIO='audio/',V='23';
+const CLIP_KEYS=new Set('abcdefghijklmnopqrstuvwxyz'.split('').map(l=>'sound-'+l)
+  .concat(['sound-ck','sound-ph','sound-wh','sound-qu']));
+const hasClip=k=>CLIP_KEYS.has(k);
+/* example word read for a digraph whose own recording we do not have */
+const DIGRAPH_WORD={sh:'ship',ch:'chip',th:'thin',ng:'sing',ee:'see',oo:'moon',ai:'rain',oa:'boat'};
+/* letter names spelled the way a US voice says them (a lone "a" is read as a
+   word, not as the letter name, in most voices) */
+const LETTER_SAY={a:'ay',b:'bee',c:'see',d:'dee',e:'ee',f:'eff',g:'gee',h:'aitch',
+ i:'eye',j:'jay',k:'kay',l:'ell',m:'em',n:'en',o:'oh',p:'pee',q:'cue',r:'ar',
+ s:'ess',t:'tee',u:'you',v:'vee',w:'double you',x:'ex',y:'why',z:'zee'};
+const SENTENCE={jump:'I can jump!',run:'I can run!',swim:'I can swim!',
+ fly:'I can fly!',dance:'I can dance!',crawl:'I can crawl!'};
 const ctxSupported=()=>!!(window.AudioContext||window.webkitAudioContext);
 let ac=null,master=null,token=0,buffers=new Map(),active=[];
 
@@ -74,12 +90,88 @@ function loadClip(key){
   p.catch(()=>buffers.delete(key));
   return p;
 }
-function preload(keys){keys.forEach(k=>{loadClip(k).catch(()=>{})})}
+function preload(keys){keys.forEach(k=>{if(hasClip(k))loadClip(k).catch(()=>{})})}
+
+/* ---------------------------------------------------------- built-in voice */
+const synth=window.speechSynthesis||null;
+const Voice=window.SpeechSynthesisUtterance||null;
+const canSay=()=>!!(synth&&Voice&&typeof synth.speak==='function');
+/* the phone's default voice may be Korean, which would read English with
+   Korean sounds, so an en-US voice is chosen explicitly */
+function usVoice(){
+  if(!synth||typeof synth.getVoices!=='function')return null;
+  let best=null,score=-1;
+  (synth.getVoices()||[]).forEach(v=>{
+    const lang=(v.lang||'').replace('_','-').toLowerCase();
+    let s=-1;
+    if(lang==='en-us')s=100;else if(lang.indexOf('en')===0)s=30;
+    if(s<0)return;
+    const n=(v.name||'').toLowerCase();
+    if(/samantha|ava|allison|susan|zoe|evan|nathan|joelle|noelle|google us english|aria|jenny|michelle|guy|ana|siri/.test(n))s+=25;
+    if(/premium|enhanced|neural|natural/.test(n))s+=10;
+    if(v.localService)s+=4;
+    if(s>score){score=s;best=v}
+  });
+  return best;
+}
+if(synth&&typeof synth.addEventListener==='function'){
+  try{synth.addEventListener('voiceschanged',()=>usVoice())}catch(e){}
+}
+function cancelSpeech(){
+  if(!synth)return;
+  try{if(synth.speaking||synth.pending)synth.cancel()}catch(e){}
+}
 function cancelAudio(){
   token++;
   active.forEach(s=>{try{s.stop()}catch(e){}});
   active=[];
   clearTimeout(timer);
+  cancelSpeech();
+}
+/* Speak one line; resolves 'ok' | 'blocked' | 'unavailable' | 'cancelled'.
+   'blocked' means the browser refused because the call did not start from a
+   tap (iOS Safari) - the 🔊 button then plays it straight away. */
+function say(text,rate){
+  if(!canSay())return Promise.resolve('unavailable');
+  if(muted)return Promise.resolve('ok');
+  return (async()=>{
+    /* iOS drops a new utterance queued in the same tick as cancel() */
+    if(synth.speaking||synth.pending){try{synth.cancel()}catch(e){}await sleep(70)}
+    const tok=token;
+    const r=await new Promise(resolve=>{
+      let u;
+      try{u=new Voice(String(text))}catch(e){resolve('unavailable');return}
+      u.lang='en-US';u.rate=rate||0.85;u.pitch=1;u.volume=1;
+      const v=usVoice();if(v)u.voice=v;
+      let started=false,done=false,wd=null;
+      const finish=x=>{if(done)return;done=true;if(wd)clearTimeout(wd);resolve(x)};
+      u.onstart=()=>{started=true};
+      u.onend=()=>finish(tok===token?'ok':'cancelled');
+      u.onerror=e=>finish(tok!==token?'cancelled':(/interrupt|cancel/i.test((e&&e.error)||'')?'cancelled':'unavailable'));
+      wd=setTimeout(()=>{
+        if(done||started)return;
+        if(synth.speaking||synth.pending)return;
+        try{synth.cancel()}catch(e){}
+        finish('blocked');
+      },1500);
+      try{synth.speak(u)}catch(e){finish('unavailable')}
+    });
+    if(r==='blocked')audioNotice('🔊 아래 듣기 버튼을 한 번 눌러줘!');
+    else if(r==='unavailable')audioNotice('이 기기에서는 영어 음성을 재생할 수 없어.');
+    return r;
+  })();
+}
+async function saySeq(lines,gap){
+  cancelAudio();
+  const tok=token;
+  for(let i=0;i<lines.length;i++){
+    const it=typeof lines[i]==='string'?{text:lines[i]}:lines[i];
+    const r=await say(it.text,it.rate);
+    if(tok!==token)return 'cancelled';
+    if(r!=='ok')return r;
+    if(i<lines.length-1)await sleep(it.pause===undefined?(gap||200):it.pause);
+  }
+  return 'ok';
 }
 async function playClip(key,tok){
   let buf;
@@ -109,10 +201,26 @@ async function playSeq(keys,gap=130){
   }
   return 'ok';
 }
-/* three clear repetitions of one phoneme */
-function phoneme3(code){return playSeq(['sound-'+code,'sound-'+code,'sound-'+code],120)}
-const nameOf=l=>'name-'+l;
-const wordClip=w=>w;
+/* one digraph or letter, heard three times; a digraph without a human
+   recording is the example word read twice by the built-in voice */
+function soundHint(code){
+  if(hasClip('sound-'+code))return playSeq(['sound-'+code,'sound-'+code,'sound-'+code],120);
+  const w=DIGRAPH_WORD[code]||code;
+  return saySeq([{text:w,rate:0.78},{text:w,rate:0.85}],260);
+}
+const phoneme3=soundHint;
+const sayName=l=>saySeq([{text:LETTER_SAY[l]||l,rate:0.8}]);
+const sayWord=w=>saySeq([{text:w,rate:0.82}]);
+const saySentence=id=>saySeq([{text:SENTENCE[id]||('I can '+id+'!'),rate:0.85}]);
+/* "🔊 소리와 단어 듣기": the sound, then the word, then the sound again */
+async function previewSound(code,word){
+  if(!hasClip('sound-'+code))return saySeq([{text:word,rate:0.78},{text:word,rate:0.85}],300);
+  await playSeq(['sound-'+code]);
+  await sleep(160);
+  await say(word,0.82);
+  await sleep(160);
+  return playSeq(['sound-'+code]);
+}
 
 /* ------------------------------------------------------------------ art
    A sticker scene per word: soft gradient card, ground, sparkles and a drawn
@@ -213,11 +321,9 @@ function start(m){
 function transition(){$('feedback').textContent='';$('skip').hidden=true}
 function startup(m){
  unlockAudio();
- if(m==='alphabet')preload(alphabet.map(l=>nameOf(l)).concat(alphabet.map(l=>'sound-'+l)));
- else if(m==='phonics')preload(sounds.map(s=>'sound-'+s[0]).concat(sounds.map(s=>s[1])));
- else if(m==='blend')preload(WORDS.map(w=>w.w).concat(alphabet.map(l=>'sound-'+l)));
- else if(m==='read'||m==='listen')preload(WORDS.map(w=>w.w));
- else if(m==='animals')preload(animals.map(a=>'animal-'+a.id));
+ if(m==='alphabet')preload(alphabet.map(l=>'sound-'+l));
+ else if(m==='phonics')preload(sounds.map(s=>'sound-'+s[0]));
+ else if(m==='blend')preload(alphabet.map(l=>'sound-'+l));
 }
 
 /* five slots, each with a different question shape, in a fresh order */
@@ -329,7 +435,7 @@ function render(){
   const word=q.w;
   timer=setTimeout(()=>{
    if(mode!=='listen'||locked)return;
-   playSeq([wordClip(word)]).then(r=>{if(r==='blocked')audioNotice('🔊 위의 듣기 버튼을 눌러줘!')});
+   sayWord(word).then(r=>{if(r==='blocked')audioNotice('🔊 위의 듣기 버튼을 눌러줘!')});
   },600);
  }
 }
@@ -352,18 +458,11 @@ function correct(button){
    if(qi>=5&&wrong.length===0)finish();else next();
   },900);
  };
- if(mode==='animals'){playSeq(['animal-'+question.id]).then(done);return}
- if(mode==='phonics'){
-  if(fmt()==='picture')playSeq([question[1]]).then(done);
-  else playSeq(['sound-'+question[0],question[1]],300).then(done);
-  return;
- }
- if(mode==='blend'){
-  const letters=[...question.w].map(c=>'sound-'+c);
-  playSeq([...letters,question.w],120).then(done);return;
- }
- if(mode==='alphabet'){playSeq([nameOf(key())]).then(done);return}
- playSeq([wordClip(key())]).then(done);
+ if(mode==='animals'){saySentence(question.id).then(done);return}
+ if(mode==='phonics'){sayWord(question[1]).then(done);return}
+ if(mode==='blend'){sayWord(question.w).then(done);return}
+ if(mode==='alphabet'){sayName(key()).then(done);return}
+ sayWord(key()).then(done);
 }
 
 function finish(){
@@ -386,13 +485,13 @@ $('stage').addEventListener('click',e=>{
  if(b.id==='finish-home'){home();return}
  if(locked)return;
  if(b.dataset.soundPreview){
-  playSeq(['sound-'+b.dataset.soundPreview,b.dataset.word,'sound-'+b.dataset.soundPreview],300);return;
+  previewSound(b.dataset.soundPreview,b.dataset.word);return;
  }
- if(b.dataset.phonemeQ){phoneme3(b.dataset.phonemeQ);return}
+ if(b.dataset.phonemeQ){soundHint(b.dataset.phonemeQ);return}
  if(b.dataset.say){
-  if(mode==='listen')playSeq([wordClip(b.dataset.say)]);
-  else if(mode==='animals')playSeq(['animal-'+b.dataset.say]);
-  else playSeq([nameOf(b.dataset.say)]);
+  if(mode==='listen')sayWord(b.dataset.say);
+  else if(mode==='animals')saySentence(b.dataset.say);
+  else sayName(b.dataset.say);
   return;
  }
  if(b.dataset.phoneme!==undefined){
@@ -424,15 +523,15 @@ $('stage').addEventListener('click',e=>{
   if(mode==='phonics'){
    if(fmt()==='picture'){
     const snd=sounds.find(x=>x[0]===chosen);
-    if(snd)playSeq([snd[1]]);
-   }else phoneme3(chosen);
+    if(snd)sayWord(snd[1]);
+   }else soundHint(chosen);
   }
-  else if(mode==='alphabet')playSeq([nameOf(chosen)]);
+  else if(mode==='alphabet')sayName(chosen);
   else if(mode==='animals'){
    const a=animals.find(x=>x.id===chosen);
-   if(a){playSeq(['animal-'+a.id]);$('feedback').textContent='🔊 '+a.name+'는 '+a.ko+'! 다시 골라봐 💛'}
+   if(a){saySentence(a.id);$('feedback').textContent='🔊 '+a.name+'는 '+a.ko+'! 다시 골라봐 💛'}
   }
-  else playSeq([wordClip(chosen)]);
+  else sayWord(chosen);
   setTimeout(()=>b.classList.remove('wrong'),700);
  }
 });
@@ -446,17 +545,17 @@ $('skip').onclick=()=>{
 $('repeat').onclick=()=>{
  if(!mode||!question)return;
  unlockAudio();
- if(mode==='alphabet')playSeq([nameOf(key())]);
- else if(mode==='phonics')phoneme3(question[0]);
- else if(mode==='animals')playSeq(['animal-'+question.id]);
+ if(mode==='alphabet')sayName(key());
+ else if(mode==='phonics')soundHint(question[0]);
+ else if(mode==='animals')saySentence(question.id);
  else if(mode==='blend')phoneme3(question.w[Math.min(blendStep,question.w.length-1)]);
- else playSeq([wordClip(key())]);
+ else sayWord(key());
 };
 $('sound').onclick=()=>{
  muted=!muted;
  $('sound').firstChild.textContent=muted?'🔇':'🔊';
  if(master)master.gain.value=muted?0:1;
- if(!muted)unlockAudio();
+ if(muted)cancelSpeech();else unlockAudio();
 };
 $('reset').onclick=()=>{cancelAudio();completed.clear();Object.keys(decks).forEach(k=>delete decks[k]);lastKey='';home()};
 
