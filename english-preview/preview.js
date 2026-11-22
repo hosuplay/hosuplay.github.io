@@ -38,7 +38,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    iOS Safari only speaks when speak() starts inside a tap, so every button
    speaks at once and the single automatic playback keeps a 🔊 button.
 */
-const AUDIO='audio/',V='24c';
+const AUDIO='audio/',V='24d';
 const CLIP_KEYS=new Set('abcdefghijklmnopqrstuvwxyz'.split('').map(l=>'sound-'+l)
   .concat(['sound-ck','sound-ph','sound-wh','sound-qu']));
 const hasClip=k=>CLIP_KEYS.has(k);
