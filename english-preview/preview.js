@@ -142,7 +142,8 @@ function say(text,rate){
       let u;
       try{u=new Voice(String(text))}catch(e){resolve('unavailable');return}
       u.lang='en-US';u.rate=rate||0.85;u.pitch=1;u.volume=1;
-      const v=usVoice();if(v)u.voice=v;
+      /* a stale voice handle must never stop the question */
+      try{const v=usVoice();if(v)u.voice=v}catch(e){}
       let started=false,done=false,wd=null;
       const finish=x=>{if(done)return;done=true;if(wd)clearTimeout(wd);resolve(x)};
       u.onstart=()=>{started=true};
@@ -166,7 +167,8 @@ async function saySeq(lines,gap){
   const tok=token;
   for(let i=0;i<lines.length;i++){
     const it=typeof lines[i]==='string'?{text:lines[i]}:lines[i];
-    const r=await say(it.text,it.rate);
+    let r;
+    try{r=await say(it.text,it.rate)}catch(e){r='unavailable'}
     if(tok!==token)return 'cancelled';
     if(r!=='ok')return r;
     if(i<lines.length-1)await sleep(it.pause===undefined?(gap||200):it.pause);
