@@ -70,3 +70,18 @@
  .badge{font-size:.68rem;padding:2px 8px}
 }
 .big-letter.mystery{color:#cbb289;text-shadow:4px 5px #f6ead2;font-size:clamp(3.4rem,12vw,5.6rem)}
+
+/* v24: the sticker art is kept inside its answer card on narrow phones, and the
+   bottom buttons keep clear of the iPhone Safari toolbar */
+.answers .answer{overflow:hidden;min-width:0}
+.word-answer{overflow:hidden;min-width:0}
+.word-answer .word-picture{width:100%;max-width:100%;height:auto;aspect-ratio:1/1;max-height:170px;padding:3px;box-sizing:border-box;overflow:hidden}
+.word-answer .word-picture .word-drawing,
+.word-answer .word-picture .animal-drawing{display:block;width:100%;max-width:100%;height:100%;aspect-ratio:1/1;box-sizing:border-box}
+.answers.image-answers .word-answer .word-picture{height:auto;max-height:170px}
+.answers.image-answers .word-answer .word-picture .word-drawing{width:100%;max-width:100%;height:100%;border-radius:16px}
+.animal-choice{overflow:hidden;min-width:0}
+.animal-choice .animal-full{width:100%;max-width:100%;overflow:hidden}
+.animal-choice .animal-drawing{width:100%;max-width:100%;height:auto;aspect-ratio:160/145;border-radius:14px}
+.app{padding-bottom:max(56px,calc(28px + env(safe-area-inset-bottom)))}
+#lesson{padding-bottom:max(30px,calc(20px + env(safe-area-inset-bottom)))}

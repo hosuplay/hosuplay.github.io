@@ -38,7 +38,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    iOS Safari only speaks when speak() starts inside a tap, so every button
    speaks at once and the single automatic playback keeps a 🔊 button.
 */
-const AUDIO='audio/',V='24';
+const AUDIO='audio/',V='24b';
 const CLIP_KEYS=new Set('abcdefghijklmnopqrstuvwxyz'.split('').map(l=>'sound-'+l)
   .concat(['sound-ck','sound-ph','sound-wh','sound-qu']));
 const hasClip=k=>CLIP_KEYS.has(k);
@@ -50,7 +50,14 @@ const DIGRAPH_WORD={sh:'ship',ch:'chip',th:'thin',ng:'sing',ee:'see',oo:'moon',a
 const SENTENCE={jump:'I can jump!',run:'I can run!',swim:'I can swim!',
  fly:'I can fly!',dance:'I can dance!',crawl:'I can crawl!'};
 const ctxSupported=()=>!!(window.AudioContext||window.webkitAudioContext);
-let ac=null,master=null,token=0,buffers=new Map(),active=[];
+let ac=null,master=null,token=0,buffers=new Map(),clips=new Map(),active=[],activeEls=[],speechPrimed=false;
+
+/* iPhone: an audio session of type 'playback' keeps the sound coming even with
+   the side silent switch on (iOS 17+). It is set at start and on every touch. */
+function setAudioSession(){
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+}
+setAudioSession();
 
 function unlockAudio(){
   const AC=window.AudioContext||window.webkitAudioContext;
@@ -77,8 +84,37 @@ function unlockAudio(){
     return ac;
   }catch(e){return null}
 }
-document.addEventListener('pointerdown',()=>unlockAudio(),{passive:true});
-document.addEventListener('touchend',()=>unlockAudio(),{passive:true});
+/* iOS starts speech only inside a touch, and a say() that runs after an await
+   (sound clip, then word) loses the gesture. Speaking once, silently, from the
+   first touch unlocks the queue for the whole page. */
+function primeSpeech(){
+  if(speechPrimed||!canSay())return;
+  try{
+    const u=new Voice(' ');
+    u.lang='en-US';u.volume=0;u.rate=2;
+    synth.speak(u);speechPrimed=true;
+  }catch(e){}
+}
+function onGesture(){
+  setAudioSession();
+  unlockAudio();
+  primeSpeech();
+  warmMedia();
+}
+/* the first touch also opens a silent media element, so a clip started after
+   an await later in the same tap still counts as allowed to play */
+const SILENT_WAV='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=';
+let warmEl=null;
+function warmMedia(){
+  if(warmEl)return;
+  try{
+    warmEl=new Audio(SILENT_WAV);
+    warmEl.muted=true;
+    warmEl.play().then(()=>{try{warmEl.pause();warmEl.currentTime=0}catch(e){}}).catch(()=>{warmEl=null});
+  }catch(e){warmEl=null}
+}
+document.addEventListener('pointerdown',onGesture,{passive:true});
+document.addEventListener('touchend',onGesture,{passive:true});
 
 function audioNotice(msg){const el=$('feedback');if(el)el.textContent=msg}
 
@@ -97,7 +133,7 @@ function loadClip(key){
   p.catch(()=>buffers.delete(key));
   return p;
 }
-function preload(keys){keys.forEach(k=>{if(hasClip(k))loadClip(k).catch(()=>{})})}
+function preload(keys){keys.forEach(k=>{if(hasClip(k)){try{clipEl(k)}catch(e){}}})}
 
 /* ---------------------------------------------------------- built-in voice */
 const synth=window.speechSynthesis||null;
@@ -132,6 +168,8 @@ function cancelAudio(){
   token++;
   active.forEach(s=>{try{s.stop()}catch(e){}});
   active=[];
+  activeEls.forEach(el=>{try{el.pause();el.currentTime=0}catch(e){}});
+  activeEls=[];
   clearTimeout(timer);
   cancelSpeech();
 }
@@ -184,7 +222,48 @@ async function saySeq(lines,gap){
   }
   return 'ok';
 }
+function clipEl(key){
+  let c=clips.get(key);
+  if(!c){
+    const url=AUDIO+encodeURIComponent(key)+'.wav?v='+V;
+    const el=new Audio(url);
+    el.preload='auto';
+    el.setAttribute('playsinline','');
+    c={el,url};
+    clips.set(key,c);
+  }
+  return c;
+}
+/* a sound clip is played through an HTML media element, which the iPhone plays
+   at media volume whether or not the silent switch is on; play() also runs
+   straight inside the tap. A decoded buffer stays as the fallback. */
 async function playClip(key,tok){
+  const el=clipEl(key).el;
+  el.muted=!!muted;
+  try{if(!el.paused)el.pause();el.currentTime=0}catch(e){}
+  let played=false;
+  try{await el.play();played=true}catch(e){played=false}
+  if(!played)return playClipBuffer(key,tok);
+  return await new Promise(resolve=>{
+    let done=false;
+    const finish=x=>{
+      if(done)return;done=true;
+      el.removeEventListener('ended',onend);
+      el.removeEventListener('error',onerr);
+      activeEls=activeEls.filter(x=>x!==el);
+      resolve(x);
+    };
+    const onend=()=>finish(tok===token?'ok':'cancelled');
+    const onerr=()=>finish('missing');
+    activeEls.push(el);
+    el.addEventListener('ended',onend);
+    el.addEventListener('error',onerr);
+    const dur=(isFinite(el.duration)&&el.duration>0)?el.duration*1000:1800;
+    setTimeout(()=>finish(tok===token?'ok':'cancelled'),dur+700);
+  });
+}
+/* fallback: decode through the Web Audio API and play through the master gain */
+async function playClipBuffer(key,tok){
   let buf;
   try{buf=await loadClip(key)}
   catch(e){if(tok===token)audioNotice('이 소리의 음원 파일을 불러오지 못했어. 잠시 뒤 다시 해볼까?');return 'missing'}
@@ -291,19 +370,105 @@ function art(word,label){
   '<circle cx="150" cy="96" r="3.4" fill="#fff" opacity=".7"/>'+
   a.d+'</svg>';
 }
-/* the six animal drawings stay as they are (original HosuPlay art) */
+/* the six animal stickers, drawn fresh in v24 in the same soft sticker style
+   as the word art: a rounded gradient card, a cute face and a soft outline */
 function animalArt(id){
- const head=(x,y,c)=>'<circle cx="'+x+'" cy="'+y+'" r="19" fill="'+c+'" stroke="#9c7958" stroke-width="2"/>';
- const eye=(x,y)=>'<circle cx="'+x+'" cy="'+y+'" r="2.8" fill="#493a32"/>';
- const bodies={
- jump:'<path d="M45 76 Q25 54 50 42 Q68 28 80 55 L96 83 Q74 79 61 88 Z" fill="#d99c65" stroke="#9c7958" stroke-width="2"/><path d="M76 80 Q88 100 112 89" fill="none" stroke="#d99c65" stroke-width="12" stroke-linecap="round"/><path d="M45 78 L32 100 M68 79 L61 101" stroke="#9c7958" stroke-width="7" stroke-linecap="round"/><path d="M45 35 L36 6 Q43 0 50 27 M59 32 L63 3 Q74 2 67 34" fill="#d99c65" stroke="#9c7958" stroke-width="2"/>'+head(52,42,'#e5ab77')+eye(59,38)+'<ellipse cx="40" cy="49" rx="7" ry="5" fill="#ffe3bb"/>',
- run:'<ellipse cx="69" cy="70" rx="39" ry="25" fill="#f5d3a6" stroke="#9c7958" stroke-width="2"/><path d="M43 84 L36 105 M59 87 L56 105 M85 87 L88 105 M100 80 L105 104" stroke="#9c7958" stroke-width="7" stroke-linecap="round"/><path d="M102 58 Q123 44 119 66" fill="none" stroke="#b47a52" stroke-width="8" stroke-linecap="round"/>'+head(38,51,'#f5d3a6')+'<path d="M23 38 Q5 40 20 65" fill="#b47a52" stroke="#9c7958" stroke-width="2"/>'+eye(42,48)+'<circle cx="24" cy="56" r="4" fill="#654837"/>',
- swim:'<ellipse cx="67" cy="75" rx="41" ry="23" fill="#f3eadb" stroke="#8b755d" stroke-width="2"/><path d="M72 68 Q86 51 100 69 Q90 85 72 80" fill="#a8c9db" stroke="#8b755d" stroke-width="2"/><path d="M99 80 L119 68 L116 88" fill="#e6c2a0"/><path d="M40 63 L42 32" stroke="#8b755d" stroke-width="16" stroke-linecap="round"/>'+head(42,31,'#4b8c62')+'<path d="M23 35 L8 41 L25 46" fill="#efb94f" stroke="#a47737" stroke-width="2"/>'+eye(43,27)+'<path d="M51 92 L48 105 M70 93 L70 105" stroke="#e3a44b" stroke-width="5"/>',
- fly:'<ellipse cx="67" cy="70" rx="25" ry="34" fill="#e95442" stroke="#a47a59" stroke-width="2"/><path d="M61 64 Q80 60 86 80 L65 94" fill="#f8c24e" stroke="#a47a59" stroke-width="2"/><path d="M65 94 L50 112" stroke="#356c9d" stroke-width="12" stroke-linecap="round"/>'+head(65,40,'#f0d8b7')+'<path d="M46 42 L29 49 L47 54" fill="#4b4b4b"/>'+eye(70,37)+'<path d="M50 99 L40 109" stroke="#a47a59" stroke-width="4"/>',
- dance:'<path d="M61 80 Q16 19 9 76 Q18 108 61 95 Q103 18 121 75 Q118 108 67 97" fill="#70b999" stroke="#438b73" stroke-width="2"/><circle cx="26" cy="65" r="10" fill="#ebcf6b"/><circle cx="98" cy="65" r="10" fill="#ebcf6b"/><circle cx="62" cy="48" r="10" fill="#ebcf6b"/><ellipse cx="63" cy="84" rx="19" ry="27" fill="#3d83ae"/>'+head(63,54,'#3d83ae')+eye(69,52)+'<path d="M46 56 L36 60 L46 65" fill="#e2b652"/>',
- crawl:'<ellipse cx="30" cy="80" rx="18" ry="20" fill="#b8d979"/><ellipse cx="54" cy="75" rx="20" ry="22" fill="#a5d36d"/><ellipse cx="80" cy="78" rx="20" ry="22" fill="#b8d979"/>'+head(101,64,'#c8df7d')+eye(107,59)+'<path d="M95 43 L89 29 M107 43 L114 29" stroke="#749b56" stroke-width="4" stroke-linecap="round"/><path d="M35 99 L31 107 M62 97 L61 107 M85 97 L88 107" stroke="#749b56" stroke-width="5"/>'
+ const A={
+  jump:{bg:['#fff2dc','#ffd9a3'],d:
+   '<ellipse cx="80" cy="133" rx="42" ry="6" fill="#0001"/>'+
+   '<path d="M58 108q-26 8-32-10-4-14 10-17" fill="none" stroke="#d99b62" stroke-width="12" stroke-linecap="round"/>'+
+   '<ellipse cx="62" cy="122" rx="17" ry="8" fill="#e3ad74" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="98" cy="124" rx="18" ry="8" fill="#e3ad74" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="86" cy="96" rx="28" ry="31" fill="#eab97f" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="92" cy="102" rx="16" ry="22" fill="#fbe7c9"/>'+
+   '<path d="M74 84q-14 8-12 22" fill="none" stroke="#d99b62" stroke-width="9" stroke-linecap="round"/>'+
+   '<ellipse cx="88" cy="32" rx="8" ry="17" transform="rotate(-20 88 32)" fill="#d99b62" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="110" cy="30" rx="8" ry="18" transform="rotate(14 110 30)" fill="#d99b62" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="88" cy="33" rx="3.6" ry="10" transform="rotate(-20 88 33)" fill="#f4b9a8"/>'+
+   '<ellipse cx="110" cy="31" rx="3.6" ry="11" transform="rotate(14 110 31)" fill="#f4b9a8"/>'+
+   '<circle cx="100" cy="56" r="21" fill="#eab97f" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="112" cy="64" rx="14" ry="10" fill="#fbe7c9"/>'+
+   '<ellipse cx="120" cy="60" rx="4.6" ry="3.6" fill="#6b4834"/>'+
+   '<path d="M106 68q6 5 12 0" fill="none" stroke="#8a6132" stroke-width="2.6" stroke-linecap="round"/>'+
+   '<circle cx="100" cy="51" r="3.8" fill="#3f2f26"/><circle cx="101.4" cy="49.6" r="1.3" fill="#fff"/>'+
+   '<circle cx="90" cy="64" r="5" fill="#f2a79b" opacity=".55"/>'},
+  run:{bg:['#e8f6ff','#bfe3ff'],d:
+   '<ellipse cx="82" cy="133" rx="42" ry="6" fill="#0001"/>'+
+   '<path d="M96 106q10 10 7 21" fill="none" stroke="#d9a86f" stroke-width="9" stroke-linecap="round"/>'+
+   '<path d="M50 104q-12 8-13 20" fill="none" stroke="#d9a86f" stroke-width="9" stroke-linecap="round"/>'+
+   '<ellipse cx="82" cy="90" rx="34" ry="23" fill="#f2d3a6" stroke="#8a6132" stroke-width="3"/>'+
+   '<path d="M112 78q16-12 21 3" fill="none" stroke="#c98f5c" stroke-width="9" stroke-linecap="round"/>'+
+   '<circle cx="46" cy="68" r="21" fill="#f2d3a6" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="33" cy="52" rx="9" ry="16" transform="rotate(-26 33 52)" fill="#c98f5c" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="60" cy="49" rx="8" ry="14" transform="rotate(18 60 49)" fill="#c98f5c" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="31" cy="76" rx="14" ry="9" fill="#fdf3e2"/>'+
+   '<ellipse cx="20" cy="73" rx="5" ry="4" fill="#4a3226"/>'+
+   '<path d="M27 83q7 5 12 0" fill="none" stroke="#8a6132" stroke-width="2.6" stroke-linecap="round"/>'+
+   '<circle cx="49" cy="63" r="3.8" fill="#3b2a20"/><circle cx="50.4" cy="61.6" r="1.3" fill="#fff"/>'+
+   '<circle cx="38" cy="72" r="5" fill="#f2a79b" opacity=".5"/>'+
+   '<path d="M58 85q10 8 22 3" fill="none" stroke="#e2607a" stroke-width="6" stroke-linecap="round"/>'+
+   '<circle cx="71" cy="93" r="3.4" fill="#ffd75e" stroke="#d9a83c" stroke-width="1.4"/>'+
+   '<path d="M68 108q-3 12 1 20" fill="none" stroke="#d9a86f" stroke-width="9" stroke-linecap="round"/>'+
+   '<path d="M90 108q-4 12-1 20" fill="none" stroke="#d9a86f" stroke-width="9" stroke-linecap="round"/>'},
+  swim:{bg:['#e3f4ff','#b7ddf6'],d:
+   '<path d="M8 120q11-7 22 0t22 0 22 0 22 0 22 0 22 0" fill="none" stroke="#7cc4ea" stroke-width="5" stroke-linecap="round"/>'+
+   '<path d="M12 133q11-7 22 0t22 0 22 0 22 0 22 0 22 0" fill="none" stroke="#a9d8f5" stroke-width="5" stroke-linecap="round"/>'+
+   '<path d="M120 88q14-4 16 8-8 6-16 0z" fill="#fff6e2" stroke="#8a6132" stroke-width="3"/>'+
+   '<ellipse cx="90" cy="96" rx="34" ry="21" fill="#fff6e2" stroke="#8a6132" stroke-width="3"/>'+
+   '<path d="M58 90q-10-26 2-36l18 10q-6 14-2 26z" fill="#fff6e2" stroke="#8a6132" stroke-width="3"/>'+
+   '<circle cx="60" cy="50" r="19" fill="#fff6e2" stroke="#8a6132" stroke-width="3"/>'+
+   '<path d="M42 46q-16 2-19 9 9 8 20 3z" fill="#f6b93b" stroke="#c68b1e" stroke-width="2.6"/>'+
+   '<circle cx="63" cy="46" r="3.8" fill="#3b2a20"/><circle cx="64.4" cy="44.6" r="1.3" fill="#fff"/>'+
+   '<circle cx="52" cy="56" r="5" fill="#f2a79b" opacity=".5"/>'+
+   '<ellipse cx="94" cy="94" rx="17" ry="11" fill="#ffe3ae" stroke="#d9b477" stroke-width="2.4"/>'},
+  fly:{bg:['#eef7ff','#cfe8ff'],d:
+   '<path d="M64 78q-32-26-50-8 8 30 50 24z" fill="#5aa9e6" stroke="#2f6fa3" stroke-width="3"/>'+
+   '<path d="M96 78q32-26 50-8-8 30-50 24z" fill="#5aa9e6" stroke="#2f6fa3" stroke-width="3"/>'+
+   '<path d="M74 110l-12 22 9-1 7-19z" fill="#5aa9e6" stroke="#2f6fa3" stroke-width="2.6"/>'+
+   '<path d="M84 112l2 20 8-4-2-16z" fill="#3f9d6a" stroke="#2f6f4d" stroke-width="2.6"/>'+
+   '<ellipse cx="80" cy="86" rx="22" ry="27" fill="#e95442" stroke="#a4372b" stroke-width="3"/>'+
+   '<ellipse cx="82" cy="90" rx="12" ry="16" fill="#ffe7a3"/>'+
+   '<circle cx="80" cy="52" r="19" fill="#e95442" stroke="#a4372b" stroke-width="3"/>'+
+   '<ellipse cx="88" cy="57" rx="10" ry="8" fill="#fff3e6"/>'+
+   '<path d="M92 52q11 3 8 12-7 3-11-3z" fill="#f6b93b" stroke="#c68b1e" stroke-width="2.6"/>'+
+   '<circle cx="82" cy="48" r="3.4" fill="#3b2a20"/><circle cx="83.2" cy="46.8" r="1.2" fill="#fff"/>'+
+   '<circle cx="30" cy="34" r="3" fill="#fff" opacity=".9"/><circle cx="128" cy="30" r="2.6" fill="#fff" opacity=".9"/>'+
+   '<circle cx="120" cy="118" r="3.4" fill="#fff" opacity=".8"/>'},
+  dance:{bg:['#eafaf1','#c2ecd8'],d:
+   '<path d="M16 110a64 64 0 0 1 128 0z" fill="#4fa88a" stroke="#2f7a63" stroke-width="3"/>'+
+   '<g fill="#ffe9a3" stroke="#d9b34c" stroke-width="2"><circle cx="46" cy="86" r="9"/><circle cx="80" cy="66" r="10"/><circle cx="114" cy="86" r="9"/><circle cx="63" cy="74" r="8"/><circle cx="97" cy="74" r="8"/></g>'+
+   '<g fill="#2f7fa8"><circle cx="46" cy="86" r="4.4"/><circle cx="80" cy="66" r="5"/><circle cx="114" cy="86" r="4.4"/><circle cx="63" cy="74" r="4"/><circle cx="97" cy="74" r="4"/></g>'+
+   '<path d="M74 130v8M86 130v8" stroke="#e3a030" stroke-width="4" stroke-linecap="round"/>'+
+   '<ellipse cx="80" cy="108" rx="16" ry="23" fill="#2f7fa8" stroke="#1f5f80" stroke-width="3"/>'+
+   '<path d="M80 90V66" stroke="#2f7fa8" stroke-width="10" stroke-linecap="round"/>'+
+   '<circle cx="80" cy="56" r="14" fill="#2f7fa8" stroke="#1f5f80" stroke-width="3"/>'+
+   '<path d="M92 54q12 3 9 12-8 3-12-4z" fill="#f6b93b" stroke="#c68b1e" stroke-width="2.4"/>'+
+   '<circle cx="82" cy="52" r="3.2" fill="#fff"/><circle cx="83" cy="52" r="1.8" fill="#2a3b46"/>'+
+   '<path d="M80 42V32M74 40l-4-9M86 40l4-9" stroke="#2f7a63" stroke-width="2.4" stroke-linecap="round"/>'+
+   '<circle cx="80" cy="30" r="3.4" fill="#ffe9a3" stroke="#d9b34c" stroke-width="1.6"/><circle cx="68" cy="29" r="3" fill="#ffe9a3" stroke="#d9b34c" stroke-width="1.6"/><circle cx="92" cy="29" r="3" fill="#ffe9a3" stroke="#d9b34c" stroke-width="1.6"/>'},
+  crawl:{bg:['#f3fbe4','#d5efae'],d:
+   '<ellipse cx="80" cy="132" rx="46" ry="6" fill="#0001"/>'+
+   '<path d="M42 118v10M62 114v12M84 111v13M106 110v13M120 108v13" stroke="#6f8f4a" stroke-width="4" stroke-linecap="round"/>'+
+   '<circle cx="40" cy="104" r="14" fill="#a9d46f" stroke="#6f8f4a" stroke-width="3"/>'+
+   '<circle cx="60" cy="98" r="16" fill="#c0e07f" stroke="#6f8f4a" stroke-width="3"/>'+
+   '<circle cx="82" cy="94" r="17" fill="#a9d46f" stroke="#6f8f4a" stroke-width="3"/>'+
+   '<circle cx="104" cy="93" r="17" fill="#c0e07f" stroke="#6f8f4a" stroke-width="3"/>'+
+   '<circle cx="126" cy="90" r="18" fill="#b6da72" stroke="#6f8f4a" stroke-width="3"/>'+
+   '<path d="M120 74l-6-12M132 74l8-11" stroke="#6f8f4a" stroke-width="2.6" stroke-linecap="round"/>'+
+   '<circle cx="113" cy="60" r="3.4" fill="#ffe066" stroke="#d9b34c" stroke-width="1.4"/><circle cx="141" cy="61" r="3.4" fill="#ffe066" stroke="#d9b34c" stroke-width="1.4"/>'+
+   '<circle cx="120" cy="86" r="3.6" fill="#3f4a2a"/><circle cx="132" cy="86" r="3.6" fill="#3f4a2a"/>'+
+   '<circle cx="121.2" cy="84.8" r="1.2" fill="#fff"/><circle cx="133.2" cy="84.8" r="1.2" fill="#fff"/>'+
+   '<path d="M120 96q6 6 12 0" fill="none" stroke="#6f8f4a" stroke-width="2.6" stroke-linecap="round"/>'+
+   '<circle cx="112" cy="95" r="4.6" fill="#f2a79b" opacity=".5"/><circle cx="139" cy="95" r="4.6" fill="#f2a79b" opacity=".5"/>'}
  };
- return '<svg class="animal-drawing" viewBox="0 0 130 120" role="img" aria-label="동물 그림" xmlns="http://www.w3.org/2000/svg">'+(bodies[id]||'')+'</svg>';
+ const a=A[id]||{bg:['#fff8ec','#ffe9c9'],d:''};
+ return '<svg class="animal-drawing" viewBox="0 0 160 145" role="img" aria-label="동물 그림" xmlns="http://www.w3.org/2000/svg">'+
+  '<defs><linearGradient id="an-'+id+'" x1="0" y1="0" x2="0" y2="1">'+
+  '<stop offset="0" stop-color="'+a.bg[0]+'"/><stop offset="1" stop-color="'+a.bg[1]+'"/></linearGradient></defs>'+
+  '<rect x="2" y="2" width="156" height="141" rx="24" fill="url(#an-'+id+')" stroke="#fff" stroke-width="3"/>'+
+  '<circle cx="34" cy="26" r="22" fill="#fff" opacity=".26"/><circle cx="132" cy="116" r="18" fill="#fff" opacity=".16"/>'+
+  '<circle cx="18" cy="112" r="2.8" fill="#fff" opacity=".8"/><circle cx="146" cy="34" r="2.4" fill="#fff" opacity=".85"/>'+
+  a.d+'</svg>';
 }
 
 /* ------------------------------------------------------------------ deck
@@ -567,7 +732,8 @@ $('sound').onclick=()=>{
  muted=!muted;
  $('sound').firstChild.textContent=muted?'🔇':'🔊';
  if(master)master.gain.value=muted?0:1;
- if(muted)cancelSpeech();else unlockAudio();
+ clips.forEach(c=>{try{c.el.muted=muted}catch(e){}});
+ if(muted)cancelSpeech();else{unlockAudio();primeSpeech()}
 };
 $('reset').onclick=()=>{cancelAudio();completed.clear();Object.keys(decks).forEach(k=>delete decks[k]);lastKey='';home()};
 
