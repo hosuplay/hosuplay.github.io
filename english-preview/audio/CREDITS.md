@@ -26,11 +26,11 @@ All files in this folder were produced from the sources below; no commercial pho
 
 ## 3. 글자 이름 `name-a` ~ `name-z`, 조합 음가 `sound-ng` (v22)
 
-- 엔진: **Piper** (`piper-tts`, GPL-3.0 런타임) + 음성 **en_US-hfc_female-medium**
-  - 모델·설정: https://huggingface.co/rhasspy/piper-voices (`en/en_US/hfc_female/medium/`)
-  - 라이선스: Piper 음성은 rhasspy/piper-voices 저장소 배포 조건을 따르며, 이 앱은 개인용으로 음성을 재배포하지 않고 합성 결과 파일만 사용합니다.
+- 엔진: **Piper** (`piper-tts` 런타임) + 음성 **en_US-ljspeech-medium**
+  - 모델·설정: https://huggingface.co/rhasspy/piper-voices (`en/en_US/ljspeech/medium/`)
+  - 라이선스: 학습 데이터 **LJ Speech Dataset — public domain**. 음성 모델은 공개 배포본을 사용했고, 이 앱에는 합성 결과 WAV만 들어갑니다.
 - 방식: 글자 이름을 철자가 아니라 **미국 영어 IPA로 직접 지정**해 합성했습니다
-  (`a = ˈeɪ`, `b = ˈbiː`, `g = ˈdʒiː`, `z = ˈziː` …). v21에서처럼 `ay, bee, ee, gee` 같은 철자를 읽히면 `ay`가 /aɪ/로, 홀로 놓인 장모음이 끝에서 흐려져 "아이·비에·즁에"처럼 들렸기 때문입니다.
+  (`a = ˈeɪ`, `b = bˈiː`, `g = dʒˈiː`, `z = zˈiː` …). v21에서처럼 `ay, bee, ee, gee` 같은 철자를 읽히면 `ay`가 /aɪ/로, 홀로 놓인 장모음이 끝에서 흐려져 "아이·비에·즁에"처럼 들렸기 때문입니다.
 - `sound-ng`: 낱개 음소 `ŋː`를 그대로 합성했습니다(단어를 잘라 늘리던 v21 방식은 기계적인 버징이 생겼습니다).
 - 가공: 앞뒤 무음 정리, -20 dBFS RMS / 피크 -1.5 dBFS 이하로 음량 평준화, 24 kHz mono 16-bit PCM
 
