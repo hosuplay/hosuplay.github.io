@@ -288,7 +288,7 @@ function render(){
   if(f==='picture'){
    instruction('이 소리가 들어 있는 그림을 찾아봐!');
    const others=shuffle(sounds.filter(x=>x[0]!==code)).slice(0,2);
-   s.innerHTML='<div class="phonics-prompt"><b>'+code+'</b><span>'+ko+'</span></div>'+
+   s.innerHTML='<div class="phonics-prompt"><b>'+code+'</b></div>'+
     '<button class="listen" data-sound-preview="'+code+'" data-word="'+word+'">🔊 소리와 단어 듣기</button>'+
     '<div class="answers image-answers">'+shuffle([q,...others]).map(x=>pictureCard(x[1],x[2],x[0],true)).join('')+'</div>';
   }else{

@@ -47,23 +47,24 @@
 .listen:active{transform:translateY(2px)}
 
 /* v22: wider word pool, varied question shapes, bigger sticker art */
-.word-hero{position:relative;height:170px;margin-bottom:10px}
-.word-hero .word-drawing{width:180px;height:165px}
+.word-hero{position:relative;display:grid;place-items:center;height:198px;margin-bottom:12px}
+.word-hero .word-drawing{width:212px;height:192px}
 .badge{position:absolute;top:-2px;right:4px;background:#ffd75e;color:#7a5210;border:2px solid #e8b53c;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:900}
 .answers.four{grid-template-columns:repeat(2,minmax(0,1fr));max-width:520px;margin-left:auto;margin-right:auto}
 .answers.four .answer strong{font-size:clamp(1.5rem,6vw,2.6rem)}
 .answers.image-answers .word-answer{padding:10px 6px 8px}
-.answers.image-answers .word-answer .word-picture{height:110px}
-.answers.image-answers .word-answer .word-picture .word-drawing{width:120px;height:108px;border-radius:16px}
+.answers.image-answers .word-answer{padding:8px 5px 6px}
+.answers.image-answers .word-answer .word-picture{height:128px}
+.answers.image-answers .word-answer .word-picture .word-drawing{width:140px;height:126px;border-radius:18px}
 .phonics-prompt{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:4px}
 .phonics-prompt b{font-size:clamp(2.4rem,9vw,3.4rem);color:#c07a1f;letter-spacing:1px}
 .phonics-prompt span{font-size:1.05rem;font-weight:850;color:#8a6a45}
 .word-answer strong{letter-spacing:.5px}
 @media(max-width:560px){
- .word-hero{height:140px}
- .word-hero .word-drawing{width:150px;height:136px}
- .answers.image-answers .word-answer .word-picture{height:82px}
- .answers.image-answers .word-answer .word-picture .word-drawing{width:92px;height:82px;border-radius:12px}
+ .word-hero{height:158px}
+ .word-hero .word-drawing{width:172px;height:156px}
+ .answers.image-answers .word-answer .word-picture{height:96px}
+ .answers.image-answers .word-answer .word-picture .word-drawing{width:104px;height:94px;border-radius:14px}
  .answers.four{gap:7px}
  .answers.four .answer strong{font-size:clamp(1.2rem,5.6vw,2rem)}
  .badge{font-size:.68rem;padding:2px 8px}
