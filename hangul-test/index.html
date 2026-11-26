@@ -25,6 +25,7 @@ h3{font-size:17px}
 .tile{min-height:74px;border-radius:21px;background:#e6f3ff;font-size:30px;font-weight:900;box-shadow:0 4px 0 #cde2f3;padding:6px}
 .tile small{display:block;font-size:11px;font-weight:700;color:#6d8aa4}
 .tile.picked,.tile.on{background:#ffe28b}
+.tile.correct{background:#c9f0d6;box-shadow:0 4px 0 #a7dcb8}
 .tile:disabled{opacity:.55}
 .primary{background:#ffe18b;padding:15px 12px;border-radius:21px;font-size:16px;font-weight:850;width:100%;margin:7px 0;box-shadow:0 4px 0 #e9c76b}
 .soft{background:#e8f5ff}
@@ -75,8 +76,8 @@ button:focus-visible{outline:3px solid #6da8e8;outline-offset:3px}
 </style>
 <link rel="stylesheet" href="/study/study.css">
 <script defer src="/study/study.js"></script>
-<script src="/hangul-test/audio.js?v=2"></script>
-<script defer src="/hangul-test/today.js?v=3"></script>
+<script src="/hangul-test/audio.js?v=3"></script>
+<script defer src="/hangul-test/today.js?v=4"></script>
 </head><body><main>
 <section data-study="hangul"></section>
 <div data-study-content hidden tabindex="-1">
@@ -112,7 +113,33 @@ function compose(a,b){
   const ci=c>-1?c:CHO.indexOf(b),ji=c>-1?j:JUNG.indexOf(a);
   return ci<0||ji<0?'':String.fromCharCode(0xAC00+ci*588+ji*28);
 }
-function speak(t){playHangul(t,statusBox)}
+function speak(t){return playHangul(t,statusBox)}
+/* ── 소리·다음 문제 이동 관리 ──
+ * 소리는 한 번에 하나만 나고(playHangul이 이전 소리를 즉시 정리),
+ * '다음 문제로'는 고정 타이머가 아니라 그 낱말 음성이 실제로 끝난 뒤에만 넘어간다.
+ * 정답을 누른 순간 화면을 잠가 연타로 두 번 넘어가지 않게 한다. */
+let advanceTimer=0,soundRun=0;
+function clearAdvance(){if(advanceTimer){clearTimeout(advanceTimer);advanceTimer=0}}
+function later(fn,ms){clearAdvance();advanceTimer=setTimeout(()=>{advanceTimer=0;fn()},ms)}
+function lockArea(keep){
+  area.querySelectorAll('button').forEach(x=>{
+    if(x===keep)x.classList.add('correct');
+    else x.disabled=true;
+  });
+}
+function playThen(text,fn){
+  clearAdvance();
+  const me=++soundRun;
+  let fired=false;
+  const run=()=>{if(fired)return;fired=true;clearAdvance();fn()};
+  playHangul(text,statusBox).then(res=>{
+    if(me!==soundRun)return;
+    if(res==='cancelled')return;
+    run();
+  });
+  // 안전장치: ended 이벤트가 끝내 오지 않아도 6초 뒤에는 넘어간다
+  advanceTimer=setTimeout(()=>{advanceTimer=0;run()},6000);
+}
 /* ── 1단계 · 자음 탄생 ── */
 const CONS=[
 {c:'ㄱ',shape:'velar',part:'목구멍',story:'혀 뒤쪽이 목구멍 쪽으로 살짝 말려서 소리를 막았다가 내보내요.',fam:['ㄱ','ㅋ'],famNote:'ㄱ에 획을 하나 더하면 바람이 센 ㅋ!'},
@@ -243,6 +270,8 @@ function setState(o){S=o||{}}
 /* ── 렌더 ── */
 function render(){
   document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  soundRun++;clearAdvance();
+  if(window.stopHangul)stopHangul();
   statusBox.textContent='';
   setState(null);
   if(tab==='cons')renderCons();
@@ -297,6 +326,7 @@ function vowelQuiz(){
     const info=VOWELS.find(v=>v.v===t);
     const others=targets.filter(x=>x!==t).sort(()=>Math.random()-.5).slice(0,2);
     const opts=[t,...others].sort(()=>Math.random()-.5);
+    S.locked=false;
     area.innerHTML='<div class="step">2단계 · 모음 비밀</div><h2>소리를 듣고 모음을 골라요</h2>'
     +'<div class="result">'+(S.round+1)+' / '+targets.length+'</div>'
     +'<button class="primary soft" data-say="'+info.s+'">🔊 다시 듣기</button>'
@@ -328,6 +358,8 @@ function renderWord(){
   wordQ();
 }
 function wordQ(){
+  S.locked=false;
+  clearAdvance();
   const t=WORDS[Math.floor(Math.random()*WORDS.length)];
   S.expect=t.w;
   S.expectPic=t.pic;
@@ -364,6 +396,7 @@ function batchView(i){
 function batchQuiz(){
   const d=BATCHIM[Math.floor(Math.random()*BATCHIM.length)];
   S.bqAnswer=d;
+  S.bqLocked=false;
   const opts=[
     {t:'두 입술이 폭 닫혀요',shape:'bilabial'},
     {t:'혀끝이 윗잇몸에 닿아요',shape:'alveolar'},
@@ -390,15 +423,28 @@ document.addEventListener('click',e=>{
   if(b.hasAttribute('data-vquiz')){vowelQuiz();return}
   if(b.dataset.vanswer){
     const t=S.vtargets&&S.vtargets[S.round];
-    if(b.dataset.vanswer===t){
-      statusBox.textContent='정답! '+t+' ⭐';
-      S.round++;
-      if(S.round<S.vtargets.length)setTimeout(S.vq,900);
+    const pick=b.dataset.vanswer;
+    if(S.locked)return; // 이미 정답을 고른 뒤 음성이 끝나기를 기다리는 중
+    if(pick!==t){
+      const info=VOWELS.find(v=>v.v===pick);
+      statusBox.textContent='「'+pick+'」는 '+(info?info.s:'')+' 소리! 다시 들어 볼까요?';
+      speak(info?info.s:pick); // 오답도 누른 모음의 소리를 들려주고 그대로 둔다
+      return;
+    }
+    const info=VOWELS.find(v=>v.v===t);
+    S.locked=true;
+    S.round++;
+    lockArea(b);
+    statusBox.textContent='정답! '+t+' ⭐';
+    playThen(info?info.s:t,()=>{ // 모음 소리가 끝난 뒤 다음 문제로
+      S.locked=false;
+      if(S.round<S.vtargets.length)S.vq();
       else{completeStep();render()}
-    }else statusBox.textContent='한 번 더 들어 볼까요?';
+    });
     return;
   }
   if(b.dataset.bc){ /* 3단계 자음 */
+    if(S.switching)return;
     S.pickedC=b.dataset.bc;
     area.querySelectorAll('[data-bc]').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');
@@ -406,6 +452,7 @@ document.addEventListener('click',e=>{
     return;
   }
   if(b.dataset.bv){ /* 3단계 모음 → 합체 */
+    if(S.switching)return;
     if(!S.pickedC){statusBox.textContent='자음을 먼저 골라요!';return}
     const syl=compose(S.pickedC,b.dataset.bv);
     const view=$('blendview');
@@ -413,29 +460,44 @@ document.addEventListener('click',e=>{
       view.dataset.say=syl;
       view.innerHTML=S.pickedC+' + '+b.dataset.bv+' → '+syl+' 🔊';
     }
-    speak(syl);
     S.built=(S.built||0)+1;
     if(S.built>=6){
       completeStep();
+      S.switching=true;
       statusBox.textContent=syl+' 완성! 다음 단계 자음 만나러 가요! ⭐';
-      setTimeout(()=>{S.stage=(S.stage+1)%BLEND_STAGES.length;S.pickedC=null;S.built=0;blendView()},1500);
-    }else{
-      statusBox.textContent=syl+' ! 또 만들어 볼까요?';
-      S.pickedC=null;
-      const p=area.querySelector('p.small:last-of-type');
-      if(p)p.textContent=S.built+' / 6 만들었어요. 6개를 만들면 다음 단계 자음도 만나요!';
-      setTimeout(()=>area.querySelectorAll('.line .on').forEach(x=>x.classList.remove('on')),900);
+      playThen(syl,()=>{ // 합체 소리가 끝난 뒤 다음 단계로
+        S.stage=(S.stage+1)%BLEND_STAGES.length;
+        S.pickedC=null;S.built=0;S.switching=false;
+        blendView();
+      });
+      return;
     }
+    statusBox.textContent=syl+' ! 또 만들어 볼까요?';
+    S.pickedC=null;
+    const p=area.querySelector('p.small:last-of-type');
+    if(p)p.textContent=S.built+' / 6 만들었어요. 6개를 만들면 다음 단계 자음도 만나요!';
+    later(()=>area.querySelectorAll('.line .on').forEach(x=>x.classList.remove('on')),900);
+    speak(syl);
     return;
   }
-  if(b.dataset.wanswer){ /* 4단계 정답 */
-    if(b.dataset.wanswer!==S.expect){statusBox.textContent='한 번 더 살펴볼까요?';return}
+  if(b.dataset.wanswer){ /* 4단계 선택지: 정답·오답 상관없이 누른 낱말 소리를 들려준다 */
+    const word=b.dataset.wanswer;
+    if(S.locked)return; // 정답 뒤 음성이 끝나기를 기다리는 중
+    if(word!==S.expect){ /* 오답: 그 낱말만 읽어 주고 다시 고를 수 있게 그대로 둔다 */
+      statusBox.textContent='「'+word+'」! 다른 낱말을 다시 골라 볼까요?';
+      speak(word);
+      return;
+    }
+    S.locked=true; /* 정답: 연타로 두 번 넘어가지 않게 잠근다 */
     S.right++;
-    statusBox.textContent='정답! '+b.dataset.wanswer+' ⭐';
-    speak(b.dataset.wanswer);
-    if(S.mode==='match'&&S.right>=3){S.mode='feed';S.right=0;statusBox.textContent='이제 토끼에게 간식을 주러 가요!';setTimeout(wordQ,1200);return}
-    if(S.mode==='feed'&&S.right>=2){completeStep();statusBox.textContent='낱말 읽기 완료! ⭐';setTimeout(wordQ,1200);return}
-    setTimeout(wordQ,1000);
+    lockArea(b);
+    statusBox.textContent='정답! '+word+' ⭐';
+    playThen(word,()=>{ /* 낱말 음성이 완전히 끝난 뒤 다음 문제로 */
+      S.locked=false;
+      if(S.mode==='match'&&S.right>=3){S.mode='feed';S.right=0;statusBox.textContent='이제 토끼에게 간식을 주러 가요!';later(wordQ,900);return}
+      if(S.mode==='feed'&&S.right>=2){completeStep();statusBox.textContent='낱말 읽기 완료! ⭐';later(wordQ,900);return}
+      wordQ();
+    });
     return;
   }
   if(b.dataset.bw!==undefined&&b.dataset.bw){
@@ -445,11 +507,21 @@ document.addEventListener('click',e=>{
   }
   if(b.hasAttribute('data-bquiz')){batchQuiz();return}
   if(b.dataset.bcanswer){
-    if(b.dataset.bcanswer!==S.bqCorrect){statusBox.textContent='다시 들여다봐요!';return}
-    statusBox.textContent='정답! '+S.bqAnswer.w+' ⭐';
+    if(S.bqLocked)return;
+    if(b.dataset.bcanswer!==S.bqCorrect){
+      statusBox.textContent='다시 들여다봐요!';
+      speak(S.bqAnswer.w); // 오답이어도 받침 낱말 소리를 다시 들려준다
+      return;
+    }
+    S.bqLocked=true;
     S.bqRight=(S.bqRight||0)+1;
-    if(S.bqRight>=3)completeStep();
-    setTimeout(()=>batchView(S.sel),1300);
+    lockArea(b);
+    statusBox.textContent='정답! '+S.bqAnswer.w+' ⭐';
+    playThen(S.bqAnswer.w,()=>{ // 낱말 소리가 끝난 뒤 다음으로
+      S.bqLocked=false;
+      if(S.bqRight>=3)completeStep();
+      batchView(S.sel);
+    });
     return;
   }
 });

@@ -11,7 +11,7 @@
   let owner;
   let advance;
   function speak(text) {
-    playHangul(text, panel.querySelector('[role="status"]'));
+    return playHangul(text, panel.querySelector('[role="status"]'));
   }
   function add(tag,text) {
     const node = document.createElement(tag);
@@ -52,9 +52,11 @@
       }
       feedback.textContent = step.result || '찾았어요! ' + step.sound;
       controls.forEach(control => control.disabled = true);
-      speak(step.sound);
       next.disabled = false;
-      advance = setTimeout(() => next.click(), 1550);
+      speak(step.sound).then(result => { // 소리가 끝난 뒤 다음 문제로
+        if (result === 'cancelled') return;
+        advance = setTimeout(() => next.click(), 120);
+      });
     }));
     const feedback = add('p','');
     feedback.setAttribute('role','status');
